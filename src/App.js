@@ -1,28 +1,18 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { FocusZone } from 'office-ui-fabric-react/lib/FocusZone'
+import { DefaultButton } from 'office-ui-fabric-react/lib/Button'
+import { observer } from 'mobx-react'
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+const App = observer(() => (
+  <FocusZone isCircularNavigation={true}>
+    <div className="w-80 center sans-serif">
+      <div className="mt3 f4 ttu tracked">Tree Notes</div>
+      <div className="mt3 flex">
+        <DefaultButton text="delete all" />
+        <DefaultButton className="ml3" text="add" />
       </div>
-    );
-  }
-}
-
-export default App;
+      <div className="mt3" />
+    </div>
+  </FocusZone>
+))
+export default App
