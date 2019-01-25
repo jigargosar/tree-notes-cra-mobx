@@ -102,6 +102,7 @@ const Store = t
 
 const store = Store.create()
 window.store = store
+
 const App = observer(() => (
   <FocusZone isCircularNavigation={true}>
     <div className="w-80 center sans-serif">
