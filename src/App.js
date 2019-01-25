@@ -1,10 +1,18 @@
 import React from 'react'
 import { DefaultButton, FocusZone } from 'office-ui-fabric-react'
 import { observer } from 'mobx-react'
-import { types } from 'mobx-state-tree'
+import { types as t } from 'mobx-state-tree'
+import * as faker from 'faker'
+import * as nanoid from 'nanoid'
 
-const Store = types.model('Store', {
+let Note = t.model('Note', {
+  _id: t.optional(t.identifier, () => `N__${nanoid()}`),
+  title: t.optional(t.string, () => faker.name.lastName(null)),
+})
+const Store = t.model('Store', {
   title: 'HOO',
+  byId: t.map(Note),
+  parentIds: t.map(t.string),
 })
 
 const store = Store.create()
