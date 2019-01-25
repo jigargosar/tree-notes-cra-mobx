@@ -5,6 +5,7 @@ import { addDisposer, getSnapshot, types as t } from 'mobx-state-tree'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
 import { autorun } from 'mobx'
+import * as R from 'ramda'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
@@ -34,23 +35,28 @@ const Store = t
     parentIds: t.map(t.string),
   })
   .views(self => {
-    const rootNote = Note.create({
-      _id: ROOT_NOTE_ID,
-      title: 'Root Note',
-      childIds: [],
-    })
     return {
       get root() {
-        return rootNote
+        return self.byId.get(ROOT_NOTE_ID)
       },
     }
   })
   .actions(self => ({
     afterCreate() {
+      if (!self.root) {
+        const rootNote = Note.create({
+          _id: ROOT_NOTE_ID,
+          title: 'Root Note',
+          childIds: [],
+        })
+        self.byId.put(rootNote)
+      }
+
       addDisposer(
         self,
         autorun(() => {
           console.table(getSnapshot(self.root))
+          console.table(R.values(getSnapshot(self.byId)))
         }),
       )
     },
