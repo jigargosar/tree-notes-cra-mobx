@@ -51,7 +51,7 @@ let Note = t
 
 const Store = t
   .model('Store', {
-    title: 'HOO',
+    title: 'HAL',
     byId: t.map(Note),
     parentIds: t.map(t.string),
   })
@@ -103,21 +103,30 @@ const Store = t
   }))
 
 const store = Store.create()
-
 window.store = store
 addMiddleware(store, actionLogger)
+onPatch(store, patch => console.log(patch))
 
-const App = observer(() => (
-  <FocusZone isCircularNavigation={true}>
-    <div className="w-80 center sans-serif">
-      <div className="mt3 f4 ttu tracked">Tree Notes</div>
-      <div className="mt3 flex">
-        <DefaultButton text="delete all" />
-        <DefaultButton className="ml3" text="add" onClick={store.add} />
+const App = observer(function AppInner() {
+  return (
+    <FocusZone isCircularNavigation={true}>
+      <div className="w-80 center sans-serif">
+        <div className="mt3 f4 ttu tracked">Tree Notes</div>
+        <div className="mt3 flex">
+          <DefaultButton text="delete all" />
+          <DefaultButton className="ml3" text="add" onClick={store.add} />
+        </div>
+        <div className="mt3">{store.title}</div>
       </div>
-      <div className="mt3">{store.title}</div>
-    </div>
-  </FocusZone>
-))
+    </FocusZone>
+  )
+})
 
 export default App
+
+// spy(event => {
+//   console.log('SPY', event)
+//   if (event.type === 'action') {
+//     console.log(`${event.name} with args: ${event.arguments}`)
+//   }
+// })
