@@ -19,6 +19,9 @@ let Note = t
     get id() {
       return self._id
     },
+    get childCount() {
+      return self.childIds.length
+    },
   }))
   .actions(self => ({
     newAt(idx = 0) {
@@ -58,8 +61,13 @@ const Store = t
       addDisposer(
         self,
         autorun(() => {
-          console.table(getSnapshot(self.root))
-          console.table(R.values(getSnapshot(self.byId)))
+          console.group('Store Updated')
+          console.log('Root ChildIds:', self.root.childCount)
+          console.table(getSnapshot(self.root.childIds))
+          const allNotes = R.values(getSnapshot(self.byId))
+          console.log('All Notes:', allNotes.length)
+          console.table(allNotes)
+          console.groupEnd()
         }),
       )
     },
