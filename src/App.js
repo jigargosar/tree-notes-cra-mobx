@@ -5,11 +5,12 @@ import {
   addDisposer,
   getParentOfType,
   getSnapshot,
+  onPatch,
   types as t,
 } from 'mobx-state-tree'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
-import { autorun, reaction } from 'mobx'
+import { autorun } from 'mobx'
 import * as R from 'ramda'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
@@ -30,14 +31,22 @@ let Note = t
   }))
   .actions(self => ({
     afterAttach() {
+      // addDisposer(
+      //   self,
+      //   reaction(
+      //     () => self.childIds.slice(),
+      //     () => {
+      //       getParentOfType(self, Store).noteChildIdsChanged(self)
+      //     },
+      //   ),
+      // )
       addDisposer(
         self,
-        reaction(
-          () => self.childIds.slice(),
-          () => {
+        onPatch(self, ({ path }) => {
+          if (path.startsWith('/childIds')) {
             getParentOfType(self, Store).noteChildIdsChanged(self)
-          },
-        ),
+          }
+        }),
       )
     },
     newAt(idx = 0) {
