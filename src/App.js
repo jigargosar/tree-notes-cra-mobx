@@ -5,7 +5,6 @@ import { addDisposer, getSnapshot, types as t } from 'mobx-state-tree'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
 import { autorun } from 'mobx'
-import * as R from 'ramda'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
@@ -21,17 +20,10 @@ let Note = t
     },
   }))
   .actions(self => ({
-    addNew() {
+    newAt(idx = 0) {
       const newNote = Note.create()
-
-      // self.parentIds.set(newId, self.root.id)
-      // self.byId.put(newNote)
-      const newId = newNote.id
-      self.childIds.unshift(newId)
-    },
-    insertChildIdAt(idx, childId) {
-      const clampedChildIdx = R.clamp(0, self.childIds.length)(idx)
-      self.childIds = R.insert(clampedChildIdx)(childId)(self.childIds)
+      self.childIds.splice(idx, 0, newNote.id)
+      return newNote
     },
   }))
 
@@ -58,21 +50,14 @@ const Store = t
       addDisposer(
         self,
         autorun(() => {
-          const snapshot = getSnapshot(self)
-          console.log(`getSnapshot(self)`, snapshot)
-          console.table(snapshot.parentIds)
-          console.table(R.values(snapshot.byId))
+          console.table(getSnapshot(self.root))
         }),
       )
     },
-    addNew() {
-      const newNote = Note.create()
-
+    add() {
+      const newNote = self.root.newAt(0)
       self.byId.put(newNote)
-      const newId = newNote.id
-      self.root.insertChildIdAt(0, newId)
       console.table(`self.root.childIds`, self.root.childIds.toJSON())
-      self.parentIds.set(newId, self.root.id)
     },
   }))
 
@@ -84,7 +69,7 @@ const App = observer(() => (
       <div className="mt3 f4 ttu tracked">Tree Notes</div>
       <div className="mt3 flex">
         <DefaultButton text="delete all" />
-        <DefaultButton className="ml3" text="add" onClick={store.addNew} />
+        <DefaultButton className="ml3" text="add" onClick={store.add} />
       </div>
       <div className="mt3">{store.title}</div>
     </div>
