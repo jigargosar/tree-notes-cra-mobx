@@ -1,6 +1,5 @@
 import React from 'react'
-import { FocusZone } from 'office-ui-fabric-react/lib/FocusZone'
-import { DefaultButton } from 'office-ui-fabric-react/lib/Button'
+import { DefaultButton, FocusZone } from 'office-ui-fabric-react'
 import { observer } from 'mobx-react'
 
 const App = observer(() => (
