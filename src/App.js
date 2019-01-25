@@ -31,15 +31,6 @@ let Note = t
   }))
   .actions(self => ({
     afterAttach() {
-      // addDisposer(
-      //   self,
-      //   reaction(
-      //     () => self.childIds.slice(),
-      //     () => {
-      //       getParentOfType(self, Store).noteChildIdsChanged(self)
-      //     },
-      //   ),
-      // )
       addDisposer(
         self,
         onPatch(self, ({ path }) => {
