@@ -36,8 +36,11 @@ const Store = t
   })
   .views(self => {
     return {
+      get(id) {
+        return self.byId.get(id)
+      },
       get root() {
-        return self.byId.get(ROOT_NOTE_ID)
+        return self.get(ROOT_NOTE_ID)
       },
     }
   })
@@ -63,7 +66,6 @@ const Store = t
     add() {
       const newNote = self.root.newAt(0)
       self.byId.put(newNote)
-      console.table(`self.root.childIds`, self.root.childIds.toJSON())
     },
   }))
 
