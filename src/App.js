@@ -3,6 +3,7 @@ import { DefaultButton, FocusZone } from 'office-ui-fabric-react'
 import { observer } from 'mobx-react'
 import {
   addDisposer,
+  addMiddleware,
   getParentOfType,
   getSnapshot,
   onPatch,
@@ -12,6 +13,7 @@ import * as faker from 'faker'
 import * as nanoid from 'nanoid'
 import { autorun } from 'mobx'
 import * as R from 'ramda'
+import { actionLogger } from 'mst-middlewares'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
@@ -76,7 +78,7 @@ const Store = t
       addDisposer(
         self,
         autorun(() => {
-          console.group('Store Updated')
+          console.groupCollapsed('Store Updated')
           console.log('Root ChildIds:', self.root.childCount)
           console.table(getSnapshot(self.root.childIds))
           const allNotes = R.values(getSnapshot(self.byId))
@@ -101,7 +103,9 @@ const Store = t
   }))
 
 const store = Store.create()
+
 window.store = store
+addMiddleware(store, actionLogger)
 
 const App = observer(() => (
   <FocusZone isCircularNavigation={true}>
