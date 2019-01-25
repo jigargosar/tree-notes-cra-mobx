@@ -1,10 +1,15 @@
 import React from 'react'
 import { DefaultButton, FocusZone } from 'office-ui-fabric-react'
 import { observer } from 'mobx-react'
-import { addDisposer, getSnapshot, types as t } from 'mobx-state-tree'
+import {
+  addDisposer,
+  getParentOfType,
+  getSnapshot,
+  types as t,
+} from 'mobx-state-tree'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
-import { autorun } from 'mobx'
+import { autorun, reaction } from 'mobx'
 import * as R from 'ramda'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
@@ -24,6 +29,17 @@ let Note = t
     },
   }))
   .actions(self => ({
+    afterAttach() {
+      addDisposer(
+        self,
+        reaction(
+          () => self.childIds.slice(),
+          () => {
+            getParentOfType(self, Store).noteChildIdsChanged(self)
+          },
+        ),
+      )
+    },
     newAt(idx = 0) {
       const newNote = Note.create()
       self.childIds.splice(idx, 0, newNote.id)
@@ -57,7 +73,6 @@ const Store = t
         })
         self.byId.put(rootNote)
       }
-
       addDisposer(
         self,
         autorun(() => {
@@ -67,9 +82,17 @@ const Store = t
           const allNotes = R.values(getSnapshot(self.byId))
           console.log('All Notes:', allNotes.length)
           console.table(allNotes)
+          const parentIds = getSnapshot(self.parentIds)
+          console.log('ParentIds:')
+          console.table(parentIds)
           console.groupEnd()
         }),
       )
+    },
+    noteChildIdsChanged(note) {
+      note.childIds.forEach(cid => {
+        self.parentIds.set(cid, note.id)
+      })
     },
     add() {
       const newNote = self.root.newAt(0)
