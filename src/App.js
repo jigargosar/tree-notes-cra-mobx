@@ -5,14 +5,12 @@ import {
   addDisposer,
   addMiddleware,
   getParentOfType,
-  getSnapshot,
   onPatch,
   types as t,
 } from 'mobx-state-tree'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
-import { autorun } from 'mobx'
-import * as R from 'ramda'
+import { autorun, trace } from 'mobx'
 import { actionLogger } from 'mst-middlewares'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
@@ -36,6 +34,7 @@ let Note = t
       addDisposer(
         self,
         onPatch(self, ({ path }) => {
+          trace(self, 'childIds', true)
           if (path.startsWith('/childIds')) {
             getParentOfType(self, Store).noteChildIdsChanged(self)
           }
@@ -78,16 +77,16 @@ const Store = t
       addDisposer(
         self,
         autorun(() => {
-          console.groupCollapsed('Store Updated')
-          console.log('Root ChildIds:', self.root.childCount)
-          console.table(getSnapshot(self.root.childIds))
-          const allNotes = R.values(getSnapshot(self.byId))
-          console.log('All Notes:', allNotes.length)
-          console.table(allNotes)
-          const parentIds = getSnapshot(self.parentIds)
-          console.log('ParentIds:')
-          console.table(parentIds)
-          console.groupEnd()
+          // console.groupCollapsed('Store Updated')
+          // console.log('Root ChildIds:', self.root.childCount)
+          // console.table(getSnapshot(self.root.childIds))
+          // const allNotes = R.values(getSnapshot(self.byId))
+          // console.log('All Notes:', allNotes.length)
+          // console.table(allNotes)
+          // const parentIds = getSnapshot(self.parentIds)
+          // console.log('ParentIds:')
+          // console.table(parentIds)
+          // console.groupEnd()
         }),
       )
     },
