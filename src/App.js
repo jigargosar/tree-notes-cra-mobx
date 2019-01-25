@@ -41,15 +41,18 @@ const Store = t
     byId: t.map(Note),
     parentIds: t.map(t.string),
   })
-  .views(self => ({
-    get root() {
-      return Note.create({
-        _id: ROOT_NOTE_ID,
-        title: 'Root Note',
-        childIds: [],
-      })
-    },
-  }))
+  .views(self => {
+    const rootNote = Note.create({
+      _id: ROOT_NOTE_ID,
+      title: 'Root Note',
+      childIds: [],
+    })
+    return {
+      get root() {
+        return rootNote
+      },
+    }
+  })
   .actions(self => ({
     afterCreate() {
       addDisposer(
@@ -68,6 +71,7 @@ const Store = t
       self.byId.put(newNote)
       const newId = newNote.id
       self.root.insertChildIdAt(0, newId)
+      console.table(`self.root.childIds`, self.root.childIds.toJSON())
       self.parentIds.set(newId, self.root.id)
     },
   }))
