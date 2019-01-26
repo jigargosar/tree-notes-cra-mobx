@@ -41,11 +41,11 @@ const nt = observable({
     nt.parentIds.set(newId, pid)
     nt.get(pid).childIds.splice(idx, 0, newId)
   },
-  onAdd() {
-    nt.add()
-  },
+  onAdd: () => nt.add(),
   displayTitle: id => nt.get(id).title,
 })
+
+window.nt = nt
 
 const NoteItem = observer(({ id }) => {
   return (
