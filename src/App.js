@@ -118,11 +118,13 @@ const NoteItem = observer(({ id }) => {
         </div>
       </div>
       {/*  Children */}
-      <div className="ml3">
-        {nt.childIdsOf(id).map(id => (
-          <NoteItem key={id} id={id} nt={nt} />
-        ))}
-      </div>
+      {nt.isExpanded(id) && (
+        <div className="ml3">
+          {nt.childIdsOf(id).map(id => (
+            <NoteItem key={id} id={id} nt={nt} />
+          ))}
+        </div>
+      )}
     </div>
   )
 })
