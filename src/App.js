@@ -39,6 +39,9 @@ const nt = observable({
   get: id => nt.byId.get(id),
   pidOf: id => nt.parentIds.get(id),
   idxOf: id => nt.childIdsOf(nt.pidOf(id)).indexOf(id),
+  childCount: id => nt.childIdsOf(id).length,
+  isExpanded: id => nt.childCount(id) > 0 && !nt.get(id).collapsed,
+  isCollapsed: id => nt.childCount(id) > 0 && nt.get(id).collapsed,
   add({ pid = ROOT_NOTE_ID, idx = 0 }) {
     const newNote = createNewNote()
     const newId = newNote.id
@@ -46,6 +49,8 @@ const nt = observable({
     nt.parentIds.set(newId, pid)
     nt.childIdsOf(pid).splice(idx, 0, newId)
   },
+  collapse: id => (nt.get(id).collapsed = true),
+  expand: id => (nt.get(id).collapsed = false),
   onAdd: () => nt.add({}),
   displayTitle: id => nt.get(id).title,
   persist: () => localStorage.setItem('nt', JSON.stringify(toJS(nt))),
@@ -66,6 +71,18 @@ const nt = observable({
     }
     if (isHotkey('shift+enter', ev)) {
       nt.add({ pid: nt.pidOf(id), idx: nt.idxOf(id) })
+    }
+    if (isHotkey('left', ev)) {
+      if (nt.isExpanded(id)) {
+        nt.collapse(id)
+        ev.preventDefault()
+      }
+    }
+    if (isHotkey('right', ev)) {
+      if (nt.isCollapsed(id)) {
+        nt.expand(id)
+        ev.preventDefault()
+      }
     }
   },
   deleteAll: () => {
