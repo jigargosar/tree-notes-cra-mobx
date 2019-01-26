@@ -39,7 +39,7 @@ const nt = observable({
     const newId = newNote.id
     nt.byId.set(newId, newNote)
     nt.parentIds.set(newId, pid)
-    nt.get(pid).childIds.splice(idx, 0, newId)
+    nt.childIdsOf(pid).splice(idx, 0, newId)
   },
   onAdd: () => nt.add(),
   displayTitle: id => nt.get(id).title,
