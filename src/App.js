@@ -121,15 +121,17 @@ onPatch(store, patch => console.log(patch))
 const rootNote = {
   id: ROOT_NOTE_ID,
   title: 'Root Note',
+  childIds: [],
 }
 
 const App = observer(function AppInner() {
   const nt = useObservable({
     byId: observable.map({ [rootNote.id]: rootNote }),
-    parentIds: { [rootNote.id]: null },
+    parentIds: observable.map({ [rootNote.id]: null }),
     get count() {
       return nt.byId.size
     },
+    get: id => nt.byId.get(id),
     _add({ pid = ROOT_NOTE_ID, idx = 0 } = {}) {
       const newId = newNoteId()
       nt.byId.set(newId, {
@@ -137,8 +139,8 @@ const App = observer(function AppInner() {
         title: newNoteTitle(),
         childIds: [],
       })
-      nt.parentIds[newId] = pid
-      nt.byId[pid].childIds.splice(idx, 0, newId)
+      nt.parentIds.set(newId, pid)
+      nt.get(pid).childIds.splice(idx, 0, newId)
     },
     onAddClicked() {
       nt._add()
