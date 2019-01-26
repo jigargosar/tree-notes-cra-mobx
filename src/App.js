@@ -93,10 +93,3 @@ const App = observer(function AppInner() {
 })
 
 export default App
-
-// spy(event => {
-//   console.log('SPY', event)
-//   if (event.type === 'action') {
-//     console.log(`${event.name} with args: ${event.arguments}`)
-//   }
-// })
