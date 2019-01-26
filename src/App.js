@@ -4,7 +4,6 @@ import { observer, useObservable } from 'mobx-react-lite'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
 import { observable } from 'mobx'
-import * as PropTypes from 'prop-types'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
@@ -55,11 +54,6 @@ const NoteItem = observer(({ nt, id }) => {
     </div>
   )
 })
-
-NoteItem.propTypes = {
-  id: PropTypes.any,
-  nt: PropTypes.any,
-}
 
 const App = observer(function AppInner() {
   const nt = useObservable({
