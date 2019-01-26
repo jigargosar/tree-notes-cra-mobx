@@ -66,6 +66,10 @@ const nt = observable({
       nt.add({ pid: nt.pidOf(id), idx: nt.idxOf(id) })
     }
   },
+  deleteAll: () => {
+    nt.byId = observable.map({ ROOT_NOTE_ID: initialRootNote })
+    nt.parentIds = observable.map({ ROOT_NOTE_ID: null })
+  },
 })
 
 window.nt = nt
@@ -110,7 +114,7 @@ const App = observer(function AppInner() {
       <div className="w-80 center sans-serif">
         <div className="mt3 f4 ttu tracked">Tree Notes</div>
         <div className="mt3 flex items-center">
-          <DefaultButton text="delete all" />
+          <DefaultButton text="delete all" onClick={nt.deleteAll} />
           <DefaultButton className="ml3" text="add" onClick={nt.onAdd} />
         </div>
         <div className="mt3">
