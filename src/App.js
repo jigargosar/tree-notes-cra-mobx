@@ -12,6 +12,7 @@ const initialRootNote = {
   id: ROOT_NOTE_ID,
   title: 'Root Note',
   childIds: [],
+  collapsed: false,
 }
 
 function newNoteId() {
@@ -27,6 +28,7 @@ function createNewNote() {
     id: newNoteId(),
     title: newNoteTitle(),
     childIds: [],
+    collapsed: false,
   }
 }
 
