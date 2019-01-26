@@ -10,9 +10,9 @@ import {
 } from 'mobx-state-tree'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
-import { autorun, trace } from 'mobx'
+import { autorun, observable, trace } from 'mobx'
+
 import { actionLogger } from 'mst-middlewares'
-import * as R from 'ramda'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
@@ -124,22 +124,20 @@ const rootNote = {
 }
 
 const App = observer(function AppInner() {
-  const nc = useObservable({
-    byId: { [rootNote.id]: rootNote },
-    childIds: { [rootNote.id]: [] },
+  const nt = useObservable({
+    byId: observable.map({ [rootNote.id]: rootNote }),
     parentIds: { [rootNote.id]: null },
-    get all() {
-      return R.values(nc.byId)
-    },
     get count() {
-      return nc.all.length
+      return nt.byId.size
     },
     add() {
       const newId = newNoteId()
-      nc.byId[newId] = { id: newId, title: newNoteTitle() }
-      nc.childIds[newId] = []
-      nc.parentIds[newId] = rootNote.id
-      nc.childIds[rootNote.id].unshift(newId)
+      nt.byId.set(newId, {
+        id: newId,
+        title: newNoteTitle(),
+        childIds: [],
+      })
+      nt.parentIds[newId] = rootNote.id
     },
   })
 
@@ -150,11 +148,11 @@ const App = observer(function AppInner() {
         <div className="mt3 flex">
           <DefaultButton text="delete all" />
           <DefaultButton className="ml3" text="add" onClick={store.add} />
-          <DefaultButton className="ml3" text="add" onClick={nc.add} />
+          <DefaultButton className="ml3" text="add" onClick={nt.add} />
         </div>
         <div className="mt3">{store.title}</div>
         <div className="mt3">{store.totalCount}</div>
-        <div className="mt3">{nc.count}</div>
+        <div className="mt3">{nt.count}</div>
       </div>
     </FocusZone>
   )
