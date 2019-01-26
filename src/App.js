@@ -57,15 +57,15 @@ const App = observer(function AppInner() {
     <FocusZone isCircularNavigation={true}>
       <div className="w-80 center sans-serif">
         <div className="mt3 f4 ttu tracked">Tree Notes</div>
-        <div className="mt3 flex">
+        <div className="mt3 flex items-center">
           <DefaultButton text="delete all" />
           <DefaultButton
             className="ml3"
             text="add"
             onClick={nt.onAddClicked}
           />
+          <div className="ml3">{`total: ${nt.count}`}</div>
         </div>
-        <div className="mt3">{nt.count}</div>
         <div className="mt3">
           {nt.rootChildIds.map(id => (
             <div key={id}>
