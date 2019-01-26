@@ -3,7 +3,7 @@ import { DefaultButton, FocusZone } from 'office-ui-fabric-react'
 import { observer } from 'mobx-react-lite'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
-import { observable } from 'mobx'
+import { autorun, observable, toJS } from 'mobx'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
@@ -43,9 +43,28 @@ const nt = observable({
   },
   onAdd: () => nt.add(),
   displayTitle: id => nt.get(id).title,
+  persist: () => localStorage.setItem('nt', JSON.stringify(toJS(nt))),
+  hydrate: () => {
+    const json = JSON.parse(localStorage.getItem('nt'))
+    if (json) {
+      console.log(`loading:`, json)
+      nt.byId.replace(json.byId)
+      nt.parentIds.replace(json.parentIds)
+    }
+  },
 })
 
 window.nt = nt
+
+nt.hydrate()
+
+function hotDispose(disposer) {
+  if (module.hot) {
+    module.hot.dispose(disposer)
+  }
+}
+
+hotDispose(autorun(nt.persist))
 
 const NoteItem = observer(({ id }) => {
   return (
