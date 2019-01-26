@@ -33,8 +33,12 @@ function createNewNote() {
 const NoteItem = observer(({ nt, id }) => {
   return (
     <div>
-      <div>{id}</div>
-      <div>{nt.displayTitle(id)}</div>
+      {/* Title */}
+      <div>
+        <div>{id}</div>
+        <div>{nt.displayTitle(id)}</div>
+      </div>
+      {/*  Children */}
     </div>
   )
 })
