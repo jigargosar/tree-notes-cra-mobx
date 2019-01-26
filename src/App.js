@@ -32,9 +32,13 @@ function createNewNote() {
   }
 }
 
-const nt = observable({
+const initialState = {
   byId: observable.map({ ROOT_NOTE_ID: initialRootNote }),
   parentIds: observable.map({ ROOT_NOTE_ID: null }),
+}
+
+const nt = observable({
+  ...initialState,
   childIdsOf: pid => nt.get(pid).childIds,
   get: id => nt.byId.get(id),
   pidOf: id => nt.parentIds.get(id),
@@ -86,8 +90,8 @@ const nt = observable({
     }
   },
   deleteAll: () => {
-    nt.byId.replace({ ROOT_NOTE_ID: initialRootNote })
-    nt.parentIds.replace({ ROOT_NOTE_ID: null })
+    nt.byId.replace(initialState.byId)
+    nt.parentIds.replace(initialState.parentIds)
   },
 })
 
