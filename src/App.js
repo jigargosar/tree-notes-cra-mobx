@@ -34,14 +34,14 @@ const nt = observable({
   parentIds: observable.map({ ROOT_NOTE_ID: null }),
   childIdsOf: pid => nt.get(pid).childIds,
   get: id => nt.byId.get(id),
-  add({ pid = ROOT_NOTE_ID, idx = 0 } = {}) {
+  add({ pid = ROOT_NOTE_ID, idx = 0 }) {
     const newNote = createNewNote()
     const newId = newNote.id
     nt.byId.set(newId, newNote)
     nt.parentIds.set(newId, pid)
     nt.childIdsOf(pid).splice(idx, 0, newId)
   },
-  onAdd: () => nt.add(),
+  onAdd: () => nt.add({}),
   displayTitle: id => nt.get(id).title,
   persist: () => localStorage.setItem('nt', JSON.stringify(toJS(nt))),
   hydrate: () => {
