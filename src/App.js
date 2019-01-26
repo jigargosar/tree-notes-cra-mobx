@@ -70,18 +70,7 @@ const NoteItem = observer(({ id }) => {
   return (
     <div>
       {/* Title */}
-      <div>
-        <div className="code f6 flex items-center">
-          <div className="code f6">{id.substring(0, 7)}</div>
-          <div className="ml3 code f6">
-            <DefaultButton
-              onClick={() => nt.add({ pid: id, idx: 0 })}
-              text={'Insert Child'}
-            />
-          </div>
-        </div>
-        <div>{nt.displayTitle(id)}</div>
-      </div>
+      <div data-is-focusable="true">{nt.displayTitle(id)}</div>
       {/*  Children */}
       <div className="ml3">
         {nt.childIdsOf(id).map(id => (
