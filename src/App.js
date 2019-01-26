@@ -1,6 +1,6 @@
 import React from 'react'
 import { DefaultButton, FocusZone } from 'office-ui-fabric-react'
-import { observer } from 'mobx-react-lite'
+import { observer, useObservable } from 'mobx-react-lite'
 import {
   addDisposer,
   addMiddleware,
@@ -12,6 +12,7 @@ import * as faker from 'faker'
 import * as nanoid from 'nanoid'
 import { autorun, trace } from 'mobx'
 import { actionLogger } from 'mst-middlewares'
+import * as R from 'ramda'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
@@ -109,8 +110,24 @@ window.store = store
 addMiddleware(store, actionLogger)
 onPatch(store, patch => console.log(patch))
 
+const rootNote = {
+  id: ROOT_NOTE_ID,
+  title: 'Root Note',
+}
+
 const App = observer(function AppInner() {
-  React.useState({})
+  const nc = useObservable({
+    byId: { [rootNote.id]: rootNote },
+    childIds: { [rootNote.id]: [] },
+    parentIds: { [rootNote.id]: null },
+    get all() {
+      return R.values(nc.byId)
+    },
+    get count() {
+      return nc.all.length
+    },
+  })
+
   return (
     <FocusZone isCircularNavigation={true}>
       <div className="w-80 center sans-serif">
@@ -121,6 +138,7 @@ const App = observer(function AppInner() {
         </div>
         <div className="mt3">{store.title}</div>
         <div className="mt3">{store.totalCount}</div>
+        <div className="mt3">{nc.count}</div>
       </div>
     </FocusZone>
   )
