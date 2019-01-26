@@ -139,6 +139,7 @@ const App = observer(function AppInner() {
       nc.byId[newId] = { id: newId, title: newNoteTitle() }
       nc.childIds[newId] = []
       nc.parentIds[newId] = rootNote.id
+      nc.childIds[rootNote.id].unshift(newId)
     },
   })
 
