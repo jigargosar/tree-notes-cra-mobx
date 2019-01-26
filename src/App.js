@@ -91,6 +91,14 @@ const nt = observable({
         ev.preventDefault()
       }
     }
+    if (isHotkey('mod+up', ev)) {
+      nt.move(id, -1)
+      ev.preventDefault()
+    }
+    if (isHotkey('mod+down', ev)) {
+      nt.move(id, 1)
+      ev.preventDefault()
+    }
   },
   deleteAll: () => {
     nt.byId.replace(initialState.byId)
