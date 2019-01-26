@@ -5,6 +5,7 @@ import * as faker from 'faker'
 import * as nanoid from 'nanoid'
 import { autorun, observable, toJS } from 'mobx'
 import isHotkey from 'is-hotkey/src'
+import * as R from 'ramda'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
@@ -33,18 +34,27 @@ const initialState = {
 const nt = observable({
   ...initialState,
   childIdsOf: pid => nt.get(pid).childIds,
+  siblingIdsOf: id => nt.childIdsOf(nt.pidOf(id)),
   get: id => nt.byId.get(id),
+  parentOf: id => nt.byId.get(nt.pidOf(id)),
   pidOf: id => nt.parentIds.get(id),
-  idxOf: id => nt.childIdsOf(nt.pidOf(id)).indexOf(id),
-  childCount: id => nt.childIdsOf(id).length,
-  isExpanded: id => nt.childCount(id) > 0 && !nt.get(id).collapsed,
-  isCollapsed: id => nt.childCount(id) > 0 && nt.get(id).collapsed,
+  idxOf: id => nt.siblingIdsOf(id).indexOf(id),
+  childCountOf: id => nt.childIdsOf(id).length,
+  siblingCountOf: id => nt.siblingIdsOf(id).length,
+  isExpanded: id => nt.childCountOf(id) > 0 && !nt.get(id).collapsed,
+  isCollapsed: id => nt.childCountOf(id) > 0 && nt.get(id).collapsed,
   add({ pid = ROOT_NOTE_ID, idx = 0 }) {
     const newNote = createNewNote()
     const newId = newNote.id
     nt.byId.set(newId, newNote)
     nt.parentIds.set(newId, pid)
     nt.childIdsOf(pid).splice(idx, 0, newId)
+  },
+  move: (id, off) => {
+    const idx = nt.idxOf(id)
+    const newIdx = R.mathMod(idx + off, nt.siblingCountOf(id))
+
+    nt.parentOf(id).childIds = R.move(idx, newIdx, nt.siblingIdsOf(id))
   },
   collapse: id => (nt.get(id).collapsed = true),
   expand: id => (nt.get(id).collapsed = false),
