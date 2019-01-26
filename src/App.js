@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
 import { autorun, observable, toJS } from 'mobx'
+import isHotkey from 'is-hotkey/src'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
@@ -52,6 +53,11 @@ const nt = observable({
       nt.parentIds.replace(json.parentIds)
     }
   },
+  onTitleKeyDown: id => ev => {
+    if (isHotkey('mod+shift+enter', ev)) {
+      nt.add({ pid: id, idx: 0 })
+    }
+  },
 })
 
 window.nt = nt
@@ -72,7 +78,11 @@ const NoteItem = observer(({ id }) => {
       {/* Title */}
       <div className="mt2 flex items-center">
         <div className="ph2">o</div>
-        <div className="ph2 pv1 flex-auto" data-is-focusable="true">
+        <div
+          className="ph2 pv1 flex-auto"
+          data-is-focusable="true"
+          onKeyDown={nt.onTitleKeyDown(id)}
+        >
           {nt.displayTitle(id)}
         </div>
       </div>
