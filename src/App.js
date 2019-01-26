@@ -130,14 +130,18 @@ const App = observer(function AppInner() {
     get count() {
       return nt.byId.size
     },
-    add() {
+    _add({ pid = ROOT_NOTE_ID, idx = 0 } = {}) {
       const newId = newNoteId()
       nt.byId.set(newId, {
         id: newId,
         title: newNoteTitle(),
         childIds: [],
       })
-      nt.parentIds[newId] = rootNote.id
+      nt.parentIds[newId] = pid
+      nt.byId[pid].childIds.splice(idx, 0, newId)
+    },
+    onAddClicked() {
+      nt._add()
     },
   })
 
@@ -148,7 +152,11 @@ const App = observer(function AppInner() {
         <div className="mt3 flex">
           <DefaultButton text="delete all" />
           <DefaultButton className="ml3" text="add" onClick={store.add} />
-          <DefaultButton className="ml3" text="add" onClick={nt.add} />
+          <DefaultButton
+            className="ml3"
+            text="add"
+            onClick={nt.onAddClicked}
+          />
         </div>
         <div className="mt3">{store.title}</div>
         <div className="mt3">{store.totalCount}</div>
