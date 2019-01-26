@@ -7,18 +7,16 @@ import { observable } from 'mobx'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
-function newNoteId() {
-  return `N__${nanoid()}`
-}
-
-function newNoteTitle() {
-  return faker.name.lastName(null)
-}
-
 const initialRootNote = {
   id: ROOT_NOTE_ID,
   title: 'Root Note',
   childIds: [],
+}
+function newNoteId() {
+  return `N__${nanoid()}`
+}
+function newNoteTitle() {
+  return faker.name.lastName(null)
 }
 
 function createNewNote() {
@@ -28,6 +26,30 @@ function createNewNote() {
     childIds: [],
   }
 }
+
+const nt = observable({
+  byId: observable.map({ ROOT_NOTE_ID: initialRootNote }),
+  parentIds: observable.map({ ROOT_NOTE_ID: null }),
+  get count() {
+    return nt.byId.size
+  },
+  get rootChildIds() {
+    return nt.childIdsOf(ROOT_NOTE_ID)
+  },
+  childIdsOf: pid => nt.get(pid).childIds,
+  get: id => nt.byId.get(id),
+  add({ pid = ROOT_NOTE_ID, idx = 0 } = {}) {
+    const newNote = createNewNote()
+    const newId = newNote.id
+    nt.byId.set(newId, newNote)
+    nt.parentIds.set(newId, pid)
+    nt.get(pid).childIds.splice(idx, 0, newId)
+  },
+  onAddClicked() {
+    nt.add()
+  },
+  displayTitle: id => nt.get(id).title,
+})
 
 const NoteItem = observer(({ nt, id }) => {
   return (
@@ -53,29 +75,6 @@ const NoteItem = observer(({ nt, id }) => {
       </div>
     </div>
   )
-})
-const nt = observable({
-  byId: observable.map({ ROOT_NOTE_ID: initialRootNote }),
-  parentIds: observable.map({ ROOT_NOTE_ID: null }),
-  get count() {
-    return nt.byId.size
-  },
-  get rootChildIds() {
-    return nt.childIdsOf(ROOT_NOTE_ID)
-  },
-  childIdsOf: pid => nt.get(pid).childIds,
-  get: id => nt.byId.get(id),
-  add({ pid = ROOT_NOTE_ID, idx = 0 } = {}) {
-    const newNote = createNewNote()
-    const newId = newNote.id
-    nt.byId.set(newId, newNote)
-    nt.parentIds.set(newId, pid)
-    nt.get(pid).childIds.splice(idx, 0, newId)
-  },
-  onAddClicked() {
-    nt.add()
-  },
-  displayTitle: id => nt.get(id).title,
 })
 
 const App = observer(function AppInner() {
