@@ -35,7 +35,7 @@ const NoteItem = observer(({ nt, id }) => {
     <div>
       {/* Title */}
       <div>
-        <div>{id}</div>
+        <div className="code f6">{id.substring(0, 7)}</div>
         <div>{nt.displayTitle(id)}</div>
       </div>
       {/*  Children */}
