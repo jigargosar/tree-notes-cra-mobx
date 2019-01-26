@@ -39,6 +39,11 @@ const NoteItem = observer(({ nt, id }) => {
         <div>{nt.displayTitle(id)}</div>
       </div>
       {/*  Children */}
+      <div>
+        {nt.childIdsOf(id).map(id => (
+          <NoteItem key={id} id={id} nt={nt} />
+        ))}
+      </div>
     </div>
   )
 })
@@ -56,7 +61,10 @@ const App = observer(function AppInner() {
       return nt.byId.size
     },
     get rootChildIds() {
-      return nt.get(ROOT_NOTE_ID).childIds
+      return nt.childIdsOf(ROOT_NOTE_ID)
+    },
+    childIdsOf(pid) {
+      return nt.get(pid).childIds
     },
     get: id => nt.byId.get(id),
     add({ pid = ROOT_NOTE_ID, idx = 0 } = {}) {
