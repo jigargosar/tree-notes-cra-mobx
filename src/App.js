@@ -35,11 +35,19 @@ const NoteItem = observer(({ nt, id }) => {
     <div>
       {/* Title */}
       <div>
-        <div className="code f6">{id.substring(0, 7)}</div>
+        <div className="code f6 flex items-center">
+          <div className="code f6">{id.substring(0, 7)}</div>
+          <div className="ml3 code f6">
+            <DefaultButton
+              onClick={() => nt.add({ pid: id, idx: 0 })}
+              text={'Insert Child'}
+            />
+          </div>
+        </div>
         <div>{nt.displayTitle(id)}</div>
       </div>
       {/*  Children */}
-      <div>
+      <div className="ml3">
         {nt.childIdsOf(id).map(id => (
           <NoteItem key={id} id={id} nt={nt} />
         ))}
