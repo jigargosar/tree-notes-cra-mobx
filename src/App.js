@@ -47,7 +47,7 @@ const nt = observable({
   hydrate: () => {
     const json = JSON.parse(localStorage.getItem('nt'))
     if (json) {
-      console.log(`loading:`, json)
+      console.log(`hydrate:`, json)
       nt.byId.replace(json.byId)
       nt.parentIds.replace(json.parentIds)
     }
