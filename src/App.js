@@ -69,8 +69,8 @@ const nt = observable({
     }
   },
   deleteAll: () => {
-    nt.byId = observable.map({ ROOT_NOTE_ID: initialRootNote })
-    nt.parentIds = observable.map({ ROOT_NOTE_ID: null })
+    nt.byId.replace({ ROOT_NOTE_ID: initialRootNote })
+    nt.parentIds.replace({ ROOT_NOTE_ID: null })
   },
 })
 
