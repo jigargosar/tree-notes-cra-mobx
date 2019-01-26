@@ -8,28 +8,21 @@ import isHotkey from 'is-hotkey/src'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
-const initialRootNote = {
-  id: ROOT_NOTE_ID,
-  title: 'Root Note',
+const newNoteId = () => `N__${nanoid()}`
+
+const newNoteTitle = () => faker.name.lastName(null)
+
+const createNewNote = () => ({
+  id: newNoteId(),
+  title: newNoteTitle(),
   childIds: [],
   collapsed: false,
-}
+})
 
-function newNoteId() {
-  return `N__${nanoid()}`
-}
-
-function newNoteTitle() {
-  return faker.name.lastName(null)
-}
-
-function createNewNote() {
-  return {
-    id: newNoteId(),
-    title: newNoteTitle(),
-    childIds: [],
-    collapsed: false,
-  }
+const initialRootNote = {
+  ...createNewNote(),
+  id: ROOT_NOTE_ID,
+  title: 'Root Note',
 }
 
 const initialState = {
