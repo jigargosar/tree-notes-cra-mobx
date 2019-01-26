@@ -104,8 +104,10 @@ const NoteItem = observer(({ id }) => {
   return (
     <div>
       {/* Title */}
-      <div className="mt2 flex items-center">
-        <div className="ph2">o</div>
+      <div className="flex items-center">
+        <div className="ph2 code">
+          {nt.isCollapsed(id) ? '+' : nt.isExpanded(id) ? '-' : 'o'}
+        </div>
         <div
           className="ph2 pv1 flex-auto"
           data-is-focusable="true"
