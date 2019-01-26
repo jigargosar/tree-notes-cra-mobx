@@ -35,9 +35,6 @@ const nt = observable({
   get count() {
     return nt.byId.size
   },
-  get rootChildIds() {
-    return nt.childIdsOf(ROOT_NOTE_ID)
-  },
   childIdsOf: pid => nt.get(pid).childIds,
   get: id => nt.byId.get(id),
   add({ pid = ROOT_NOTE_ID, idx = 0 } = {}) {
@@ -90,7 +87,7 @@ const App = observer(function AppInner() {
           <div className="ml3">{`total: ${nt.count}`}</div>
         </div>
         <div className="mt3">
-          {nt.rootChildIds.map(id => (
+          {nt.childIdsOf(ROOT_NOTE_ID).map(id => (
             <NoteItem key={id} id={id} />
           ))}
         </div>
