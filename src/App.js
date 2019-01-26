@@ -131,6 +131,9 @@ const App = observer(function AppInner() {
     get count() {
       return nt.byId.size
     },
+    get rootChildIds() {
+      return nt.get(ROOT_NOTE_ID).childIds
+    },
     get: id => nt.byId.get(id),
     _add({ pid = ROOT_NOTE_ID, idx = 0 } = {}) {
       const newId = newNoteId()
@@ -163,6 +166,11 @@ const App = observer(function AppInner() {
         <div className="mt3">{store.title}</div>
         <div className="mt3">{store.totalCount}</div>
         <div className="mt3">{nt.count}</div>
+        <div className="mt3">
+          {nt.rootChildIds.map(id => (
+            <div key={id}>{id}</div>
+          ))}
+        </div>
       </div>
     </FocusZone>
   )
