@@ -56,6 +56,16 @@ const nt = observable({
 
     nt.parentOf(id).childIds = R.move(idx, newIdx, nt.siblingIdsOf(id))
   },
+  nest(id) {
+    const idx = nt.idxOf(id)
+    if (idx > 0) {
+      const oldPid = nt.pidOf(id)
+      const newPid = nt.siblingIdsOf(id)[idx - 1]
+      nt.parentIds.set(id, newPid)
+      nt.childIdsOf(newPid).push(id)
+      nt.childIdsOf(oldPid).splice(idx, 1)
+    }
+  },
   collapse: id => (nt.get(id).collapsed = true),
   expand: id => (nt.get(id).collapsed = false),
   onAdd: () => nt.add({}),
@@ -97,6 +107,10 @@ const nt = observable({
     }
     if (isHotkey('mod+down', ev)) {
       nt.move(id, 1)
+      ev.preventDefault()
+    }
+    if (isHotkey('mod+right', ev)) {
+      nt.nest(id)
       ev.preventDefault()
     }
   },
