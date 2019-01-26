@@ -1,6 +1,6 @@
 import React from 'react'
 import { DefaultButton, FocusZone } from 'office-ui-fabric-react'
-import { observer } from 'mobx-react'
+import { observer } from 'mobx-react-lite'
 import {
   addDisposer,
   addMiddleware,
@@ -62,6 +62,9 @@ const Store = t
       get root() {
         return self.get(ROOT_NOTE_ID)
       },
+      get totalCount() {
+        return self.byId.size
+      },
     }
   })
   .actions(self => ({
@@ -107,6 +110,7 @@ addMiddleware(store, actionLogger)
 onPatch(store, patch => console.log(patch))
 
 const App = observer(function AppInner() {
+  React.useState({})
   return (
     <FocusZone isCircularNavigation={true}>
       <div className="w-80 center sans-serif">
@@ -116,6 +120,7 @@ const App = observer(function AppInner() {
           <DefaultButton className="ml3" text="add" onClick={store.add} />
         </div>
         <div className="mt3">{store.title}</div>
+        <div className="mt3">{store.totalCount}</div>
       </div>
     </FocusZone>
   )
