@@ -32,9 +32,6 @@ function createNewNote() {
 const nt = observable({
   byId: observable.map({ ROOT_NOTE_ID: initialRootNote }),
   parentIds: observable.map({ ROOT_NOTE_ID: null }),
-  get count() {
-    return nt.byId.size
-  },
   childIdsOf: pid => nt.get(pid).childIds,
   get: id => nt.byId.get(id),
   add({ pid = ROOT_NOTE_ID, idx = 0 } = {}) {
@@ -84,7 +81,6 @@ const App = observer(function AppInner() {
         <div className="mt3 flex items-center">
           <DefaultButton text="delete all" />
           <DefaultButton className="ml3" text="add" onClick={nt.onAdd} />
-          <div className="ml3">{`total: ${nt.count}`}</div>
         </div>
         <div className="mt3">
           {nt.childIdsOf(ROOT_NOTE_ID).map(id => (
