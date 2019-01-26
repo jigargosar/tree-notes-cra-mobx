@@ -35,6 +35,8 @@ const nt = observable({
   parentIds: observable.map({ ROOT_NOTE_ID: null }),
   childIdsOf: pid => nt.get(pid).childIds,
   get: id => nt.byId.get(id),
+  pidOf: id => nt.parentIds.get(id),
+  idxOf: id => nt.childIdsOf(nt.pidOf(id)).indexOf(id),
   add({ pid = ROOT_NOTE_ID, idx = 0 }) {
     const newNote = createNewNote()
     const newId = newNote.id
@@ -56,6 +58,9 @@ const nt = observable({
   onTitleKeyDown: id => ev => {
     if (isHotkey('mod+shift+enter', ev)) {
       nt.add({ pid: id, idx: 0 })
+    }
+    if (isHotkey('enter', ev)) {
+      nt.add({ pid: nt.pidOf(id), idx: nt.idxOf(id) + 1 })
     }
   },
 })
