@@ -148,6 +148,7 @@ const App = observer(function AppInner() {
     onAddClicked() {
       nt._add()
     },
+    displayTitle: id => nt.get(id).title,
   })
 
   return (
@@ -168,7 +169,10 @@ const App = observer(function AppInner() {
         <div className="mt3">{nt.count}</div>
         <div className="mt3">
           {nt.rootChildIds.map(id => (
-            <div key={id}>{id}</div>
+            <div key={id}>
+              <div>{id}</div>
+              <div>{nt.displayTitle(id)}</div>
+            </div>
           ))}
         </div>
       </div>
