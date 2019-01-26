@@ -1,6 +1,6 @@
 import React from 'react'
 import { DefaultButton, FocusZone } from 'office-ui-fabric-react'
-import { observer, useObservable } from 'mobx-react-lite'
+import { observer } from 'mobx-react-lite'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
 import { observable } from 'mobx'
@@ -54,34 +54,33 @@ const NoteItem = observer(({ nt, id }) => {
     </div>
   )
 })
+const nt = observable({
+  byId: observable.map({ ROOT_NOTE_ID: initialRootNote }),
+  parentIds: observable.map({ ROOT_NOTE_ID: null }),
+  get count() {
+    return nt.byId.size
+  },
+  get rootChildIds() {
+    return nt.childIdsOf(ROOT_NOTE_ID)
+  },
+  childIdsOf(pid) {
+    return nt.get(pid).childIds
+  },
+  get: id => nt.byId.get(id),
+  add({ pid = ROOT_NOTE_ID, idx = 0 } = {}) {
+    const newNote = createNewNote()
+    const newId = newNote.id
+    nt.byId.set(newId, newNote)
+    nt.parentIds.set(newId, pid)
+    nt.get(pid).childIds.splice(idx, 0, newId)
+  },
+  onAddClicked() {
+    nt.add()
+  },
+  displayTitle: id => nt.get(id).title,
+})
 
 const App = observer(function AppInner() {
-  const nt = useObservable({
-    byId: observable.map({ ROOT_NOTE_ID: initialRootNote }),
-    parentIds: observable.map({ ROOT_NOTE_ID: null }),
-    get count() {
-      return nt.byId.size
-    },
-    get rootChildIds() {
-      return nt.childIdsOf(ROOT_NOTE_ID)
-    },
-    childIdsOf(pid) {
-      return nt.get(pid).childIds
-    },
-    get: id => nt.byId.get(id),
-    add({ pid = ROOT_NOTE_ID, idx = 0 } = {}) {
-      const newNote = createNewNote()
-      const newId = newNote.id
-      nt.byId.set(newId, newNote)
-      nt.parentIds.set(newId, pid)
-      nt.get(pid).childIds.splice(idx, 0, newId)
-    },
-    onAddClicked() {
-      nt.add()
-    },
-    displayTitle: id => nt.get(id).title,
-  })
-
   return (
     <FocusZone isCircularNavigation={true}>
       <div className="w-80 center sans-serif">
