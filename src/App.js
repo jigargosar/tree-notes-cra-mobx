@@ -16,10 +16,18 @@ import * as R from 'ramda'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
+function newNoteId() {
+  return `N__${nanoid()}`
+}
+
+function newNoteTitle() {
+  return faker.name.lastName(null)
+}
+
 let Note = t
   .model('Note', {
-    _id: t.optional(t.identifier, () => `N__${nanoid()}`),
-    title: t.optional(t.string, () => faker.name.lastName(null)),
+    _id: t.optional(t.identifier, newNoteId),
+    title: t.optional(t.string, newNoteTitle),
     childIds: t.array(t.string),
   })
   .views(self => ({
@@ -126,6 +134,12 @@ const App = observer(function AppInner() {
     get count() {
       return nc.all.length
     },
+    add() {
+      const newId = newNoteId()
+      nc.byId[newId] = { id: newId, title: newNoteTitle() }
+      nc.childIds[newId] = []
+      nc.parentIds[newId] = rootNote.id
+    },
   })
 
   return (
@@ -135,6 +149,7 @@ const App = observer(function AppInner() {
         <div className="mt3 flex">
           <DefaultButton text="delete all" />
           <DefaultButton className="ml3" text="add" onClick={store.add} />
+          <DefaultButton className="ml3" text="add" onClick={nc.add} />
         </div>
         <div className="mt3">{store.title}</div>
         <div className="mt3">{store.totalCount}</div>
