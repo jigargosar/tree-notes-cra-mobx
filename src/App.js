@@ -62,6 +62,9 @@ const nt = observable({
     if (isHotkey('enter', ev)) {
       nt.add({ pid: nt.pidOf(id), idx: nt.idxOf(id) + 1 })
     }
+    if (isHotkey('shift+enter', ev)) {
+      nt.add({ pid: nt.pidOf(id), idx: nt.idxOf(id) })
+    }
   },
 })
 
