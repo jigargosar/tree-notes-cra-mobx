@@ -70,7 +70,12 @@ const NoteItem = observer(({ id }) => {
   return (
     <div>
       {/* Title */}
-      <div data-is-focusable="true">{nt.displayTitle(id)}</div>
+      <div className="mt2 flex items-center">
+        <div className="ph2">o</div>
+        <div className="ph2 pv1 flex-auto" data-is-focusable="true">
+          {nt.displayTitle(id)}
+        </div>
+      </div>
       {/*  Children */}
       <div className="ml3">
         {nt.childIdsOf(id).map(id => (
