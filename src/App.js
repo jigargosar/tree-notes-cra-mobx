@@ -4,6 +4,7 @@ import { observer, useObservable } from 'mobx-react-lite'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
 import { observable } from 'mobx'
+import * as PropTypes from 'prop-types'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
@@ -27,6 +28,20 @@ function createNewNote() {
     title: newNoteTitle(),
     childIds: [],
   }
+}
+
+const NoteItem = observer(({ nt, id }) => {
+  return (
+    <div>
+      <div>{id}</div>
+      <div>{nt.displayTitle(id)}</div>
+    </div>
+  )
+})
+
+NoteItem.propTypes = {
+  id: PropTypes.any,
+  nt: PropTypes.any,
 }
 
 const App = observer(function AppInner() {
@@ -68,10 +83,7 @@ const App = observer(function AppInner() {
         </div>
         <div className="mt3">
           {nt.rootChildIds.map(id => (
-            <div key={id}>
-              <div>{id}</div>
-              <div>{nt.displayTitle(id)}</div>
-            </div>
+            <NoteItem key={id} id={id} nt={nt} />
           ))}
         </div>
       </div>
