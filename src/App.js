@@ -118,16 +118,24 @@ window.store = store
 addMiddleware(store, actionLogger)
 onPatch(store, patch => console.log(patch))
 
-const rootNote = {
+const initialRootNote = {
   id: ROOT_NOTE_ID,
   title: 'Root Note',
   childIds: [],
 }
 
+function createNewNote() {
+  return {
+    id: newNoteId(),
+    title: newNoteTitle(),
+    childIds: [],
+  }
+}
+
 const App = observer(function AppInner() {
   const nt = useObservable({
-    byId: observable.map({ [rootNote.id]: rootNote }),
-    parentIds: observable.map({ [rootNote.id]: null }),
+    byId: observable.map({ ROOT_NOTE_ID: initialRootNote }),
+    parentIds: observable.map({ ROOT_NOTE_ID: null }),
     get count() {
       return nt.byId.size
     },
@@ -135,18 +143,15 @@ const App = observer(function AppInner() {
       return nt.get(ROOT_NOTE_ID).childIds
     },
     get: id => nt.byId.get(id),
-    _add({ pid = ROOT_NOTE_ID, idx = 0 } = {}) {
-      const newId = newNoteId()
-      nt.byId.set(newId, {
-        id: newId,
-        title: newNoteTitle(),
-        childIds: [],
-      })
+    add({ pid = ROOT_NOTE_ID, idx = 0 } = {}) {
+      const newNote = createNewNote()
+      const newId = newNote.id
+      nt.byId.set(newId, newNote)
       nt.parentIds.set(newId, pid)
       nt.get(pid).childIds.splice(idx, 0, newId)
     },
     onAddClicked() {
-      nt._add()
+      nt.add()
     },
     displayTitle: id => nt.get(id).title,
   })
