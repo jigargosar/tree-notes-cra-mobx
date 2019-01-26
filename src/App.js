@@ -12,9 +12,11 @@ const initialRootNote = {
   title: 'Root Note',
   childIds: [],
 }
+
 function newNoteId() {
   return `N__${nanoid()}`
 }
+
 function newNoteTitle() {
   return faker.name.lastName(null)
 }
@@ -45,13 +47,13 @@ const nt = observable({
     nt.parentIds.set(newId, pid)
     nt.get(pid).childIds.splice(idx, 0, newId)
   },
-  onAddClicked() {
+  onAdd() {
     nt.add()
   },
   displayTitle: id => nt.get(id).title,
 })
 
-const NoteItem = observer(({ nt, id }) => {
+const NoteItem = observer(({ id }) => {
   return (
     <div>
       {/* Title */}
@@ -84,16 +86,12 @@ const App = observer(function AppInner() {
         <div className="mt3 f4 ttu tracked">Tree Notes</div>
         <div className="mt3 flex items-center">
           <DefaultButton text="delete all" />
-          <DefaultButton
-            className="ml3"
-            text="add"
-            onClick={nt.onAddClicked}
-          />
+          <DefaultButton className="ml3" text="add" onClick={nt.onAdd} />
           <div className="ml3">{`total: ${nt.count}`}</div>
         </div>
         <div className="mt3">
           {nt.rootChildIds.map(id => (
-            <NoteItem key={id} id={id} nt={nt} />
+            <NoteItem key={id} id={id} />
           ))}
         </div>
       </div>
