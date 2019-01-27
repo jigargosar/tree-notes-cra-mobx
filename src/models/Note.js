@@ -67,7 +67,7 @@ export const nt = extendObservable(createInitialNoteTreeState(), {
       return null
     }
   },
-  getSelectedId(): ?string {
+  getSelectedId() {
     if (this._selectedId) {
       return this._selectedId
     } else if (this.childCountOf(ROOT_NOTE_ID) > 0) {
