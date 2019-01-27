@@ -224,7 +224,7 @@ const nt = extendObservable(createInitialState(), {
       if (note.isExpanded) {
         ev.preventDefault()
         note.collapse()
-      } else if (pid !== ROOT_NOTE_ID) {
+      } else if (!parent.isRoot) {
         ev.preventDefault()
         parent.focusTitle()
       }
