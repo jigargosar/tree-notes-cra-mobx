@@ -6,39 +6,12 @@ import {
   TextField,
 } from 'office-ui-fabric-react'
 import { observer } from 'mobx-react-lite'
-import * as faker from 'faker'
-import * as nanoid from 'nanoid'
 import { autorun, observable, toJS } from 'mobx'
-import isHotkey from 'is-hotkey/src'
+import isHotKey from 'is-hotkey'
 import * as R from 'ramda'
+import { createInitialState, createNewNote } from './models/Note'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
-
-const newNoteId = () => `N__${nanoid()}`
-
-const newNoteTitle = () => faker.name.lastName(null)
-const newNoteText = () => faker.lorem.paragraphs()
-
-const createNewNote = () => ({
-  id: newNoteId(),
-  title: newNoteTitle(),
-  text: newNoteText(),
-  childIds: [],
-  collapsed: false,
-})
-
-const initialRootNote = {
-  ...createNewNote(),
-  id: ROOT_NOTE_ID,
-  title: 'Root Note',
-}
-
-const createInitialState = () => ({
-  byId: observable.map({ ROOT_NOTE_ID: initialRootNote }),
-  parentIds: observable.map({ ROOT_NOTE_ID: null }),
-  textInputValue: '',
-  _selectedId: null,
-})
 
 const nt = observable({
   ...createInitialState(),
@@ -151,16 +124,16 @@ const nt = observable({
   },
   onTitleKeyDown: id => ev => {
     const pid = nt.pidOf(id)
-    if (isHotkey('mod+shift+enter', ev)) {
+    if (isHotKey('mod+shift+enter', ev)) {
       ev.preventDefault()
       nt.addAndFocus({ pid: id, idx: 0 })
-    } else if (isHotkey('mod+enter', ev)) {
+    } else if (isHotKey('mod+enter', ev)) {
       ev.preventDefault()
       nt.addAndFocus({ pid: pid, idx: nt.idxOf(id) + 1 })
-    } else if (isHotkey('shift+enter', ev)) {
+    } else if (isHotKey('shift+enter', ev)) {
       ev.preventDefault()
       nt.addAndFocus({ pid: pid, idx: nt.idxOf(id) })
-    } else if (isHotkey('left', ev)) {
+    } else if (isHotKey('left', ev)) {
       if (nt.isExpanded(id)) {
         nt.collapse(id)
         ev.preventDefault()
@@ -168,21 +141,21 @@ const nt = observable({
         nt.focus(pid)
         ev.preventDefault()
       }
-    } else if (isHotkey('right', ev)) {
+    } else if (isHotKey('right', ev)) {
       if (nt.isCollapsed(id)) {
         ev.preventDefault()
         nt.expand(id)
       }
-    } else if (isHotkey('mod+up', ev)) {
+    } else if (isHotKey('mod+up', ev)) {
       ev.preventDefault()
       nt.rollAndFocus(id, -1)
-    } else if (isHotkey('mod+down', ev)) {
+    } else if (isHotKey('mod+down', ev)) {
       ev.preventDefault()
       nt.rollAndFocus(id, 1)
-    } else if (isHotkey('mod+right', ev)) {
+    } else if (isHotKey('mod+right', ev)) {
       ev.preventDefault()
       nt.nestAndFocus(id)
-    } else if (isHotkey('mod+left', ev)) {
+    } else if (isHotKey('mod+left', ev)) {
       ev.preventDefault()
       nt.unnestAndFocus(id)
     }
