@@ -95,15 +95,19 @@ const nt = observable({
     if (isHotkey('mod+shift+enter', ev)) {
       nt.add({ pid: id, idx: 0 })
     }
+    const pid = nt.pidOf(id)
     if (isHotkey('enter', ev)) {
-      nt.add({ pid: nt.pidOf(id), idx: nt.idxOf(id) + 1 })
+      nt.add({ pid: pid, idx: nt.idxOf(id) + 1 })
     }
     if (isHotkey('shift+enter', ev)) {
-      nt.add({ pid: nt.pidOf(id), idx: nt.idxOf(id) })
+      nt.add({ pid: pid, idx: nt.idxOf(id) })
     }
     if (isHotkey('left', ev)) {
       if (nt.isExpanded(id)) {
         nt.collapse(id)
+        ev.preventDefault()
+      } else if (pid !== ROOT_NOTE_ID) {
+        nt.focus(pid)
         ev.preventDefault()
       }
     }
