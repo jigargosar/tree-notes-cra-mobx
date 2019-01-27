@@ -34,6 +34,7 @@ const initialRootNote = {
 const createInitialState = () => ({
   byId: observable.map({ ROOT_NOTE_ID: initialRootNote }),
   parentIds: observable.map({ ROOT_NOTE_ID: null }),
+  textInputValue: '',
 })
 
 const nt = observable({
@@ -87,6 +88,7 @@ const nt = observable({
   collapse: id => (nt.get(id).collapsed = true),
   expand: id => (nt.get(id).collapsed = false),
   onAdd: () => nt.addAndFocus({}),
+  onTextInputChange: ev => (nt.textInputValue = ev.target.value),
   displayTitle: id => nt.get(id).title,
   persist: () => localStorage.setItem('nt', JSON.stringify(toJS(nt))),
   hydrate: () => {
@@ -213,7 +215,7 @@ const RootTree = observer(() => (
 const App = observer(() => {
   React.useEffect(() => {
     nt.initFocus()
-  })
+  }, [])
 
   return (
     <FocusTrapZone>
@@ -238,6 +240,8 @@ const App = observer(() => {
                 multiline
                 autoAdjustHeight
                 resizable={false}
+                value={nt.textInputValue}
+                onChange={nt.onTextInputChange}
               />
             </div>
           </div>
