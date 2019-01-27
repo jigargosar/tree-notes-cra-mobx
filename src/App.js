@@ -132,7 +132,7 @@ const nt = extendObservable(createInitialState(), {
     nt.byId.set(newId, newNote)
     nt.parentIds.set(newId, pid)
     nt.childIdsOf(pid).splice(idx, 0, newId)
-    nt.focus(newId)
+    newNote.focusTitle()
   },
   rollAndFocus: (id, off) => {
     const idx = nt.idxOf(id)
