@@ -27,18 +27,22 @@ const createNewNote = () => ({
   collapsed: false,
 })
 
-const initialRootNote = {
-  ...createNewNote(),
-  id: ROOT_NOTE_ID,
-  title: 'Root Note',
+function createInitialState() {
+  const state = {
+    byId: observable.map(),
+    parentIds: observable.map(),
+    textInputValue: '',
+    _selectedId: null,
+  }
+  const initialRootNote = {
+    ...createNewNote(),
+    id: ROOT_NOTE_ID,
+    title: 'Root Note',
+  }
+  state.byId.set(ROOT_NOTE_ID, initialRootNote)
+  state.parentIds.set(ROOT_NOTE_ID, null)
+  return state
 }
-
-const createInitialState = () => ({
-  byId: observable.map({ ROOT_NOTE_ID: initialRootNote }),
-  parentIds: observable.map({ ROOT_NOTE_ID: null }),
-  textInputValue: '',
-  _selectedId: null,
-})
 
 const nt = observable({
   ...createInitialState(),
