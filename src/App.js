@@ -222,11 +222,11 @@ const nt = extendObservable(createInitialState(), {
       nt.addAndFocus({ pid: pid, idx: nt.idxOf(id) })
     } else if (isHotkey('left', ev)) {
       if (note.isExpanded) {
+        ev.preventDefault()
         note.collapse()
-        ev.preventDefault()
       } else if (pid !== ROOT_NOTE_ID) {
-        parent.focusTitle()
         ev.preventDefault()
+        parent.focusTitle()
       }
     } else if (isHotkey('right', ev)) {
       if (nt.isCollapsed(id)) {
