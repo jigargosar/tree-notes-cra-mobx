@@ -98,6 +98,11 @@ const nt = observable({
     }
   },
   titleDomIdOf: id => `note-title--${id}`,
+  initFocus: () => {
+    if (nt.childCountOf(ROOT_NOTE_ID) > 0) {
+      nt.focus(nt.childIdsOf(ROOT_NOTE_ID)[0])
+    }
+  },
   focus(id) {
     const domId = nt.titleDomIdOf(id)
     console.log(`Will focus domId`, domId)
@@ -206,17 +211,12 @@ const RootTree = observer(() => (
 ))
 
 const App = observer(() => {
-  const trap = React.useRef()
-
   React.useEffect(() => {
-    trap.current.focus()
+    nt.initFocus()
   })
 
   return (
-    <FocusTrapZone
-      componentRef={trap}
-      focusPreviouslyFocusedInnerElement={true}
-    >
+    <FocusTrapZone>
       <div className="w-80 center sans-serif">
         <div className="mt3 f4 ttu tracked">Tree Notes</div>
         <div className="mt3 flex items-center">
