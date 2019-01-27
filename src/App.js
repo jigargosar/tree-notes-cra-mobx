@@ -103,16 +103,16 @@ const nt = extendObservable(createInitialState(), {
       return null
     }
   },
-  getSelected() {
+  get selected() {
     const selectedId = nt.selectedId
     return selectedId ? nt.get(selectedId) : null
   },
   getTextInputValue: () => {
-    const selected = nt.getSelected()
+    const selected = nt.selected
     return selected ? selected.text : null
   },
   onTextInputChange: ev => {
-    const selected = nt.getSelected()
+    const selected = nt.selected
     if (selected) {
       selected.text = ev.target.value
     }
@@ -335,7 +335,7 @@ const App = observer(() => {
                 multiline
                 autoAdjustHeight
                 resizable={false}
-                disabled={!nt.getSelected()}
+                disabled={!nt.selected}
                 value={nt.getTextInputValue()}
                 onChange={nt.onTextInputChange}
               />
