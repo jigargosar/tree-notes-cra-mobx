@@ -267,12 +267,13 @@ function hotDispose(disposer) {
 hotDispose(autorun(nt.persist))
 
 const NoteItem = observer(({ id }) => {
+  const note = nt.get(id)
   return (
     <div>
       {/* Title */}
       <div className="flex items-center">
         <div className="ph2 code">
-          {nt.isCollapsed(id) ? '+' : nt.isExpanded(id) ? '-' : 'o'}
+          {note.isCollapsed ? '+' : note.isExpanded ? '-' : 'o'}
         </div>
         <div
           id={nt.titleDomIdOf(id)}
@@ -284,7 +285,7 @@ const NoteItem = observer(({ id }) => {
           tabIndex={-1}
           onFocus={nt.onTitleFocus(id)}
         >
-          {nt.displayTitle(id)}
+          {note.displayTitle}
         </div>
       </div>
       {/*  Children */}
