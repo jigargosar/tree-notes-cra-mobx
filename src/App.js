@@ -6,7 +6,7 @@ import {
   TextField,
 } from 'office-ui-fabric-react'
 import { observer } from 'mobx-react-lite'
-import { autorun, observable, toJS } from 'mobx'
+import { autorun, extendObservable, toJS } from 'mobx'
 import isHotKey from 'is-hotkey'
 import * as R from 'ramda'
 import {
@@ -15,17 +15,16 @@ import {
   ROOT_NOTE_ID,
 } from './models/Note'
 
-const nt = observable({
-  ...createInitialNoteTreeState(),
-  // get selectedId() {
-  //   if (this._selectedId) {
-  //     return this._selectedId
-  //   } else if (this.childCountOf(ROOT_NOTE_ID) > 0) {
-  //     return this.childIdsOf(ROOT_NOTE_ID)[0]
-  //   } else {
-  //     return null
-  //   }
-  // },
+const nt = extendObservable(createInitialNoteTreeState(), {
+  get selectedId() {
+    if (this._selectedId) {
+      return this._selectedId
+    } else if (this.childCountOf(ROOT_NOTE_ID) > 0) {
+      return this.childIdsOf(ROOT_NOTE_ID)[0]
+    } else {
+      return null
+    }
+  },
   getSelectedId() {
     if (nt._selectedId) {
       return nt._selectedId
