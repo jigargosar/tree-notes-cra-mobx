@@ -229,9 +229,9 @@ const nt = extendObservable(createInitialState(), {
         parent.focusTitle()
       }
     } else if (isHotkey('right', ev)) {
-      if (nt.isCollapsed(id)) {
+      if (note.isCollapsed) {
         ev.preventDefault()
-        nt.expand(id)
+        note.expand()
       }
     } else if (isHotkey('mod+up', ev)) {
       ev.preventDefault()
