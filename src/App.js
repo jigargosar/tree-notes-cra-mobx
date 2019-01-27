@@ -80,12 +80,13 @@ function createNote({
 }
 
 function createInitialState() {
-  const state = {
+  const state = observable.object({
     byId: observable.map(),
     parentIds: observable.map(),
     textInputValue: '',
     _selectedId: null,
-  }
+  })
+
   const root = createNote({ id: ROOT_NOTE_ID, title: 'Root Note' })
   state.byId.set(ROOT_NOTE_ID, root)
   state.parentIds.set(ROOT_NOTE_ID, null)
@@ -93,6 +94,15 @@ function createInitialState() {
 }
 
 const nt = extendObservable(createInitialState(), {
+  get selectedId() {
+    if (nt._selectedId) {
+      return nt._selectedId
+    } else if (nt.childCountOf(ROOT_NOTE_ID) > 0) {
+      return nt.childIdsOf(ROOT_NOTE_ID)[0]
+    } else {
+      return null
+    }
+  },
   getSelectedId() {
     if (nt._selectedId) {
       return nt._selectedId
@@ -276,7 +286,7 @@ const NoteItem = observer(({ id }) => {
         <div
           id={nt.titleDomIdOf(id)}
           className={`mr2 ph2 pv1 flex-auto ${
-            nt.getSelectedId() === id ? 'bg-light-blue' : ''
+            nt.selectedId === id ? 'bg-light-blue' : ''
           }`}
           data-is-focusable="true"
           onKeyDown={nt.onTitleKeyDown(id)}
