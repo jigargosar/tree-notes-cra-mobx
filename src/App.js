@@ -9,9 +9,11 @@ import { observer } from 'mobx-react-lite'
 import { autorun, observable, toJS } from 'mobx'
 import isHotKey from 'is-hotkey'
 import * as R from 'ramda'
-import { createInitialState, createNewNote } from './models/Note'
-
-const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
+import {
+  createInitialState,
+  createNewNote,
+  ROOT_NOTE_ID,
+} from './models/Note'
 
 const nt = observable({
   ...createInitialState(),

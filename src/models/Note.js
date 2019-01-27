@@ -4,7 +4,7 @@ import * as nanoid from 'nanoid'
 import * as faker from 'faker'
 import { observable, ObservableMap } from 'mobx'
 
-const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
+export const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
 const newNoteId = () => `N__${nanoid()}`
 
