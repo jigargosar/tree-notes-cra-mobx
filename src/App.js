@@ -35,10 +35,22 @@ const createInitialState = () => ({
   byId: observable.map({ ROOT_NOTE_ID: initialRootNote }),
   parentIds: observable.map({ ROOT_NOTE_ID: null }),
   textInputValue: '',
+  _selectedId: null,
 })
 
 const nt = observable({
   ...createInitialState(),
+  getSelectedId() {
+    if (nt._selectedId) {
+      return nt._selectedId
+    } else if (nt.childCountOf(ROOT_NOTE_ID) > 0) {
+      return nt.childIdsOf(ROOT_NOTE_ID)[0]
+    }
+  },
+  getSelected() {
+    const selectedId = nt.getSelectedId()
+    return selectedId ? nt.get(nt.getSelectedId) : null
+  },
   childIdsOf: pid => nt.get(pid).childIds,
   siblingIdsOf: id => nt.childIdsOf(nt.pidOf(id)),
   get: id => nt.byId.get(id),
@@ -94,16 +106,19 @@ const nt = observable({
   hydrate: () => {
     const json = JSON.parse(localStorage.getItem('nt'))
     if (json) {
+      const { byId, parentIds, textInputValue, _selectedId } = json
       console.log(`hydrate:`, json)
-      nt.byId.replace(json.byId)
-      nt.parentIds.replace(json.parentIds)
-      nt.textInputValue = json.textInputValue
+      nt.byId.replace(byId)
+      nt.parentIds.replace(parentIds)
+      nt.textInputValue = textInputValue
+      nt._selectedId = _selectedId
     }
   },
   titleDomIdOf: id => `note-title--${id}`,
   initFocus: () => {
-    if (nt.childCountOf(ROOT_NOTE_ID) > 0) {
-      nt.focus(nt.childIdsOf(ROOT_NOTE_ID)[0])
+    const selectedId = nt.getSelectedId()
+    if (selectedId) {
+      nt.focus(selectedId)
     }
   },
   focus(id) {
@@ -157,9 +172,17 @@ const nt = observable({
     }
   },
   deleteAll: () => {
-    const { byId, parentIds } = createInitialState()
+    const {
+      byId,
+      parentIds,
+      textInputValue,
+      _selectedId,
+    } = createInitialState()
+
     nt.byId.replace(byId)
     nt.parentIds.replace(parentIds)
+    nt.textInputValue = textInputValue
+    nt._selectedId = _selectedId
   },
 })
 
