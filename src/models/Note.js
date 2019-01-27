@@ -27,14 +27,14 @@ export const createNewNote = () => ({
   collapsed: false,
 })
 
-type NoteTree = {
+type NoteTreeState = {
   byId: ObservableMap<string, Note>,
   parentIds: ObservableMap<string, ?string>,
   textInputValue: string,
   _selectedId: ?string,
 }
 
-export function createInitialNoteTreeState(): NoteTree {
+export function createInitialNoteTreeState(): NoteTreeState {
   const initialRootNote: Note = {
     ...createNewNote(),
     id: ROOT_NOTE_ID,
