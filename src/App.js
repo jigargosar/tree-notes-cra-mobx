@@ -83,7 +83,6 @@ function createInitialState() {
   const state = observable.object({
     byId: observable.map(),
     parentIds: observable.map(),
-    textInputValue: '',
     _selectedId: null,
   })
 
@@ -107,9 +106,9 @@ const nt = extendObservable(createInitialState(), {
     const selectedId = nt.selectedId
     return selectedId ? nt.get(selectedId) : null
   },
-  getTextInputValue: () => {
+  get textInputValue() {
     const selected = nt.selected
-    return selected ? selected.text : null
+    return selected ? selected.text : ''
   },
   onTextInputChange: ev => {
     const selected = nt.selected
@@ -171,11 +170,10 @@ const nt = extendObservable(createInitialState(), {
   hydrate: () => {
     const json = JSON.parse(localStorage.getItem('nt'))
     if (json) {
-      const { byId, parentIds, textInputValue, _selectedId } = json
+      const { byId, parentIds, _selectedId } = json
       console.log(`hydrate:`, json)
       nt.byId.replace(R.mapObjIndexed(createNote)(byId))
       nt.parentIds.replace(parentIds)
-      nt.textInputValue = textInputValue
       nt._selectedId = _selectedId
     }
   },
@@ -240,16 +238,10 @@ const nt = extendObservable(createInitialState(), {
     }
   },
   deleteAll: () => {
-    const {
-      byId,
-      parentIds,
-      textInputValue,
-      _selectedId,
-    } = createInitialState()
+    const { byId, parentIds, _selectedId } = createInitialState()
 
     nt.byId.replace(byId)
     nt.parentIds.replace(parentIds)
-    nt.textInputValue = textInputValue
     nt._selectedId = _selectedId
   },
 })
@@ -336,7 +328,7 @@ const App = observer(() => {
                 autoAdjustHeight
                 resizable={false}
                 disabled={!nt.selected}
-                value={nt.getTextInputValue()}
+                value={nt.textInputValue}
                 onChange={nt.onTextInputChange}
               />
             </div>
