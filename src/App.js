@@ -138,8 +138,8 @@ const nt = extendObservable(createInitialState(), {
     const parent = nt.get(pid)
     const newNote = parent.createNewNoteAt(idx)
     const newId = newNote.id
-    nt.byId.set(newId, newNote)
-    nt.parentIds.set(newId, pid)
+    this.byId.set(newId, newNote)
+    this.parentIds.set(newId, pid)
     newNote.focusTitle()
   },
   rollAndFocus: (id, off) => {
