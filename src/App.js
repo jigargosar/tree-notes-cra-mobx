@@ -57,6 +57,13 @@ const nt = observable({
 
     nt.parentOf(id).childIds = R.move(idx, newIdx, nt.siblingIdsOf(id))
   },
+  moveAndFocus: ({ id, pid, idx }) => {
+    const oldIdx = nt.idxOf(id)
+    const oldPid = nt.pidOf(id)
+    nt.childIdsOf(oldPid).splice(oldIdx, 1)
+    nt.parentIds.set(id, pid)
+    nt.childIdsOf(pid).splice(idx, 0, id)
+  },
   nest(id) {
     const idx = nt.idxOf(id)
     if (idx > 0) {
