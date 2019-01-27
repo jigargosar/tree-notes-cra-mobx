@@ -10,13 +10,13 @@ import { autorun, observable, toJS } from 'mobx'
 import isHotKey from 'is-hotkey'
 import * as R from 'ramda'
 import {
-  createInitialState,
+  createInitialNoteTreeState,
   createNewNote,
   ROOT_NOTE_ID,
 } from './models/Note'
 
 const nt = observable({
-  ...createInitialState(),
+  ...createInitialNoteTreeState(),
   getSelectedId() {
     if (nt._selectedId) {
       return nt._selectedId
@@ -168,7 +168,7 @@ const nt = observable({
       parentIds,
       textInputValue,
       _selectedId,
-    } = createInitialState()
+    } = createInitialNoteTreeState()
 
     nt.byId.replace(byId)
     nt.parentIds.replace(parentIds)

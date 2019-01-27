@@ -34,7 +34,7 @@ type NoteTree = {
   _selectedId: ?string,
 }
 
-export function createInitialState(): NoteTree {
+export function createInitialNoteTreeState(): NoteTree {
   const initialRootNote: Note = {
     ...createNewNote(),
     id: ROOT_NOTE_ID,
