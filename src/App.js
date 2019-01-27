@@ -209,7 +209,6 @@ const App = observer(() => {
   const trap = React.useRef()
 
   React.useLayoutEffect(() => {
-    debugger
     trap.current.focus()
   })
 
