@@ -205,35 +205,47 @@ const RootTree = observer(() => (
   </div>
 ))
 
-const App = observer(() => (
-  <FocusTrapZone>
-    <div className="w-80 center sans-serif">
-      <div className="mt3 f4 ttu tracked">Tree Notes</div>
-      <div className="mt3 flex items-center">
-        <FocusZone isCircularNavigation={true}>
-          <DefaultButton text="delete all" onClick={nt.deleteAll} />
-          <DefaultButton className="ml3" text="add" onClick={nt.onAdd} />
-        </FocusZone>
-      </div>
-      <div className="mt3">
-        <div className="flex">
-          <div className="w-50">
-            <FocusZone isCircularNavigation={true}>
-              <RootTree />
-            </FocusZone>
-          </div>
-          <div className="w-50">
-            <TextField
-              // label="Non-resizable"
-              multiline
-              autoAdjustHeight
-              resizable={false}
-            />
+const App = observer(() => {
+  const trap = React.useRef()
+
+  React.useLayoutEffect(() => {
+    debugger
+    trap.current.focus()
+  })
+
+  return (
+    <FocusTrapZone
+      componentRef={trap}
+      focusPreviouslyFocusedInnerElement={true}
+    >
+      <div className="w-80 center sans-serif">
+        <div className="mt3 f4 ttu tracked">Tree Notes</div>
+        <div className="mt3 flex items-center">
+          <FocusZone isCircularNavigation={true}>
+            <DefaultButton text="delete all" onClick={nt.deleteAll} />
+            <DefaultButton className="ml3" text="add" onClick={nt.onAdd} />
+          </FocusZone>
+        </div>
+        <div className="mt3">
+          <div className="flex">
+            <div className="w-50">
+              <FocusZone isCircularNavigation={true}>
+                <RootTree />
+              </FocusZone>
+            </div>
+            <div className="w-50">
+              <TextField
+                // label="Non-resizable"
+                multiline
+                autoAdjustHeight
+                resizable={false}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </FocusTrapZone>
-))
+    </FocusTrapZone>
+  )
+})
 
 export default App
