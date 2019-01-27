@@ -58,7 +58,7 @@ export function createInitialNoteTreeState(): NoteTreeState {
 }
 
 const nt = extendObservable(createInitialNoteTreeState(), {
-  get selectedId() {
+  get selectedId(): ?string {
     if (this._selectedId) {
       return this._selectedId
     } else if (this.childCountOf(ROOT_NOTE_ID) > 0) {
@@ -67,7 +67,7 @@ const nt = extendObservable(createInitialNoteTreeState(), {
       return null
     }
   },
-  getSelectedId() {
+  getSelectedId(): ?string {
     if (this._selectedId) {
       return this._selectedId
     } else if (this.childCountOf(ROOT_NOTE_ID) > 0) {
@@ -80,7 +80,7 @@ const nt = extendObservable(createInitialNoteTreeState(), {
     const selectedId = this.getSelectedId()
     return selectedId ? this.get(selectedId) : null
   },
-  getTextInputValue: function() {
+  getTextInputValue() {
     const selected = this.getSelected()
     return selected ? selected.text : null
   },
