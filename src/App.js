@@ -46,6 +46,12 @@ function createNewNote({ id = newNoteId(), title = newNoteTitle() } = {}) {
     get isCollapsed() {
       return this.hasChildren && this.collapsed
     },
+    expand() {
+      this.collapsed = false
+    },
+    collapse() {
+      this.collapsed = true
+    },
   })
 }
 
