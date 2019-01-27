@@ -19,13 +19,19 @@ const newNoteId = () => `N__${nanoid()}`
 const newNoteTitle = () => faker.name.lastName(null)
 const newNoteText = () => faker.lorem.paragraphs()
 
-function createNewNote({ id = newNoteId(), title = newNoteTitle() } = {}) {
+function createNote({
+  id = newNoteId(),
+  title = newNoteTitle(),
+  text = newNoteText(),
+  childIds = [],
+  collapsed = false,
+} = {}) {
   const state = observable.object({
-    id: id,
-    title: title,
-    text: newNoteText(),
-    childIds: [],
-    collapsed: false,
+    id,
+    title,
+    text,
+    childIds,
+    collapsed,
   })
   return extendObservable(state, {
     get childCt() {
@@ -80,14 +86,13 @@ function createInitialState() {
     textInputValue: '',
     _selectedId: null,
   }
-  const root = createNewNote({ id: ROOT_NOTE_ID, title: 'Root Note' })
+  const root = createNote({ id: ROOT_NOTE_ID, title: 'Root Note' })
   state.byId.set(ROOT_NOTE_ID, root)
   state.parentIds.set(ROOT_NOTE_ID, null)
   return state
 }
 
-const nt = observable({
-  ...createInitialState(),
+const nt = extendObservable(createInitialState(), {
   getSelectedId() {
     if (nt._selectedId) {
       return nt._selectedId
@@ -122,7 +127,7 @@ const nt = observable({
   isExpanded: id => nt.childCountOf(id) > 0 && !nt.get(id).collapsed,
   isCollapsed: id => nt.childCountOf(id) > 0 && nt.get(id).collapsed,
   addAndFocus({ pid = ROOT_NOTE_ID, idx = 0 }) {
-    const newNote = createNewNote()
+    const newNote = createNote()
     const newId = newNote.id
     nt.byId.set(newId, newNote)
     nt.parentIds.set(newId, pid)
@@ -167,7 +172,7 @@ const nt = observable({
     if (json) {
       const { byId, parentIds, textInputValue, _selectedId } = json
       console.log(`hydrate:`, json)
-      nt.byId.replace(byId)
+      nt.byId.replace(R.mapObjIndexed(createNote)(byId))
       nt.parentIds.replace(parentIds)
       nt.textInputValue = textInputValue
       nt._selectedId = _selectedId
