@@ -1,5 +1,9 @@
 import React from 'react'
-import { DefaultButton, FocusZone } from 'office-ui-fabric-react'
+import {
+  DefaultButton,
+  FocusZone,
+  TextField,
+} from 'office-ui-fabric-react'
 import { observer } from 'mobx-react-lite'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
@@ -201,23 +205,32 @@ const RootTree = observer(() => (
 ))
 
 const App = observer(() => (
-  <FocusZone isCircularNavigation={true}>
-    <div className="w-80 center sans-serif">
-      <div className="mt3 f4 ttu tracked">Tree Notes</div>
-      <div className="mt3 flex items-center">
+  <div className="w-80 center sans-serif">
+    <div className="mt3 f4 ttu tracked">Tree Notes</div>
+    <div className="mt3 flex items-center">
+      <FocusZone isCircularNavigation={true}>
         <DefaultButton text="delete all" onClick={nt.deleteAll} />
         <DefaultButton className="ml3" text="add" onClick={nt.onAdd} />
-      </div>
-      <div className="mt3">
-        <div className="flex">
-          <div className="w-50">
+      </FocusZone>
+    </div>
+    <div className="mt3">
+      <div className="flex">
+        <div className="w-50">
+          <FocusZone isCircularNavigation={true}>
             <RootTree />
-          </div>
-          <div className="w-50">Editor</div>
+          </FocusZone>
+        </div>
+        <div className="w-50">
+          <TextField
+            // label="Non-resizable"
+            multiline
+            autoAdjustHeight
+            resizable={false}
+          />
         </div>
       </div>
     </div>
-  </FocusZone>
+  </div>
 ))
 
 export default App
