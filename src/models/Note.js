@@ -1,11 +1,22 @@
 // @flow
-import { ObservableMap } from 'mobx'
+import { observable, ObservableMap } from 'mobx'
 
-type NoteTreeState = {
-  byId: ObservableMap<string, Note>,
-  parentIds: ObservableMap<string, ?string>,
-  textInputValue: string,
-  _selectedId: ?string,
+type NoteState = {
+  id: string,
+  title: string,
+  text: string,
+  childIds: string[],
+  collapsed: boolean,
 }
 
-export function createNoteTreeState() {}
+type NoteTreeState = {
+  byId: ObservableMap<string, NoteState>,
+  parentIds: ObservableMap<string, ?string>,
+}
+
+export function createNoteTreeState(): NoteTreeState {
+  return {
+    byId: observable.map(),
+    parentIds: observable.map(),
+  }
+}
