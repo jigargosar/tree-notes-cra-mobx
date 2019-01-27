@@ -208,7 +208,9 @@ const nt = extendObservable(createInitialState(), {
     nt._selectedId = id
   },
   onTitleKeyDown: id => ev => {
+    const note = nt.get(id)
     const pid = nt.pidOf(id)
+    const parent = nt.parentOf(id)
     if (isHotkey('mod+shift+enter', ev)) {
       ev.preventDefault()
       nt.addAndFocus({ pid: id, idx: 0 })
@@ -219,11 +221,11 @@ const nt = extendObservable(createInitialState(), {
       ev.preventDefault()
       nt.addAndFocus({ pid: pid, idx: nt.idxOf(id) })
     } else if (isHotkey('left', ev)) {
-      if (nt.isExpanded(id)) {
-        nt.collapse(id)
+      if (note.isExpanded) {
+        note.collapse()
         ev.preventDefault()
       } else if (pid !== ROOT_NOTE_ID) {
-        nt.focus(pid)
+        parent.focusTitle()
         ev.preventDefault()
       }
     } else if (isHotkey('right', ev)) {
