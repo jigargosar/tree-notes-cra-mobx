@@ -41,9 +41,13 @@ type NoteTree = {
 }
 
 export const createInitialState: () => NoteTree = () => {
+  const byId: ObservableMap<string, Note> = observable.map({
+    ROOT_NOTE_ID: initialRootNote,
+  })
+  const parentIds = observable.map({ ROOT_NOTE_ID: null })
   return {
-    byId: observable.map({ ROOT_NOTE_ID: initialRootNote }),
-    parentIds: observable.map({ ROOT_NOTE_ID: null }),
+    byId,
+    parentIds,
     textInputValue: '',
     _selectedId: null,
   }
