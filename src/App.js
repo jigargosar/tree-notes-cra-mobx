@@ -19,9 +19,12 @@ const newNoteId = () => `N__${nanoid()}`
 const newNoteTitle = () => faker.name.lastName(null)
 const newNoteText = () => faker.lorem.paragraphs()
 
-const createNewNote = () => ({
-  id: newNoteId(),
-  title: newNoteTitle(),
+const createNewNote = ({
+  id = newNoteId(),
+  title = newNoteTitle(),
+} = {}) => ({
+  id: id,
+  title: title,
   text: newNoteText(),
   childIds: [],
   collapsed: false,
@@ -34,12 +37,8 @@ function createInitialState() {
     textInputValue: '',
     _selectedId: null,
   }
-  const initialRootNote = {
-    ...createNewNote(),
-    id: ROOT_NOTE_ID,
-    title: 'Root Note',
-  }
-  state.byId.set(ROOT_NOTE_ID, initialRootNote)
+  const root = createNewNote({ id: ROOT_NOTE_ID, title: 'Root Note' })
+  state.byId.set(ROOT_NOTE_ID, root)
   state.parentIds.set(ROOT_NOTE_ID, null)
   return state
 }
