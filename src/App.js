@@ -79,6 +79,18 @@ const nt = observable({
       nt.parentIds.replace(json.parentIds)
     }
   },
+  idToDomId: id => `note-title--${id}`,
+  focus(id) {
+    const domId = nt.idToDomId(id)
+    requestAnimationFrame(() => {
+      const el = document.getElementById(domId)
+      if (el) {
+        el.focus()
+      } else {
+        console.error(`Focus: domId=${domId} not found`)
+      }
+    })
+  },
   onTitleKeyDown: id => ev => {
     if (isHotkey('mod+shift+enter', ev)) {
       nt.add({ pid: id, idx: 0 })
