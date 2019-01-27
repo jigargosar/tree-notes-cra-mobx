@@ -292,7 +292,7 @@ const NoteItem = observer(({ id }) => {
       {note.isExpanded && (
         <div className="ml3">
           {note.childIds.map(id => (
-            <NoteItem key={id} id={id} nt={nt} />
+            <NoteItem key={id} id={id} />
           ))}
         </div>
       )}
