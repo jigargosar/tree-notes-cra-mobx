@@ -101,6 +101,9 @@ function createInitialState() {
 }
 
 const nt = extendObservable(createInitialState(), {
+  get rootNote() {
+    return this.get(ROOT_NOTE_ID)
+  },
   get selectedId() {
     if (nt._selectedId) {
       return nt._selectedId
@@ -304,13 +307,15 @@ const NoteItem = observer(({ id }) => {
   )
 })
 
-const RootTree = observer(() => (
-  <div>
-    {nt.childIdsOf(ROOT_NOTE_ID).map(id => (
-      <NoteItem key={id} id={id} />
-    ))}
-  </div>
-))
+const RootTree = observer(() => {
+  return (
+    <div>
+      {nt.rootNote.childIds.map(id => (
+        <NoteItem key={id} id={id} />
+      ))}
+    </div>
+  )
+})
 
 const App = observer(() => {
   React.useEffect(() => {
