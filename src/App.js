@@ -268,6 +268,10 @@ hotDispose(autorun(nt.persist))
 
 const NoteItem = observer(({ id }) => {
   const note = nt.get(id)
+  const isSelected = nt.selectedId === id
+  const onTitleKeyDown = nt.onTitleKeyDown(id)
+  const onTitleFocus = nt.onTitleFocus(id)
+
   return (
     <div>
       {/* Title */}
@@ -276,14 +280,14 @@ const NoteItem = observer(({ id }) => {
           {note.isCollapsed ? '+' : note.isExpanded ? '-' : 'o'}
         </div>
         <div
-          id={nt.titleDomIdOf(id)}
+          id={note.titleDomId}
           className={`mr2 ph2 pv1 flex-auto ${
-            nt.selectedId === id ? 'bg-light-blue' : ''
+            isSelected ? 'bg-light-blue' : ''
           }`}
           data-is-focusable="true"
-          onKeyDown={nt.onTitleKeyDown(id)}
+          onKeyDown={onTitleKeyDown}
           tabIndex={-1}
-          onFocus={nt.onTitleFocus(id)}
+          onFocus={onTitleFocus}
         >
           {note.displayTitle}
         </div>
