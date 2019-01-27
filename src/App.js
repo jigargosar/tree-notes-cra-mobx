@@ -79,6 +79,11 @@ function createNote({
     insertChildIdAt(idx, newId) {
       this.childIds.splice(idx, 0, newId)
     },
+    createNewNoteAt(idx) {
+      const newNote = createNote()
+      this.childIds.splice(idx, 0, newNote.id)
+      return newNote
+    },
   })
 }
 
@@ -131,12 +136,10 @@ const nt = extendObservable(createInitialState(), {
   isCollapsed: id => nt.childCountOf(id) > 0 && nt.get(id).collapsed,
   addAndFocus({ pid = ROOT_NOTE_ID, idx = 0 }) {
     const parent = nt.get(pid)
-    const newNote = createNote()
+    const newNote = parent.createNewNoteAt(idx)
     const newId = newNote.id
     nt.byId.set(newId, newNote)
     nt.parentIds.set(newId, pid)
-    nt.childIdsOf(pid).splice(idx, 0, newId)
-    parent.insertChildIdAt(idx, newId)
     newNote.focusTitle()
   },
   rollAndFocus: (id, off) => {
