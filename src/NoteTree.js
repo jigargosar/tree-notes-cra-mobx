@@ -13,7 +13,7 @@ const newNoteId = () => `N__${nanoid()}`
 const newNoteTitle = () => faker.name.lastName(null)
 const newNoteText = () => faker.lorem.paragraphs()
 
-type Note = {
+type NoteTree = {
   id: string,
   title: string,
   text: string,
@@ -30,20 +30,20 @@ export const createNewNote = () => ({
 })
 
 type NoteTreeState = {
-  byId: ObservableMap<string, Note>,
+  byId: ObservableMap<string, NoteTree>,
   parentIds: ObservableMap<string, ?string>,
   textInputValue: string,
   _selectedId: ?string,
 }
 
 export function createInitialNoteTreeState(): NoteTreeState {
-  const initialRootNote: Note = {
+  const initialRootNote: NoteTree = {
     ...createNewNote(),
     id: ROOT_NOTE_ID,
     title: 'Root Note',
   }
 
-  const byId: ObservableMap<string, Note> = observable.map({
+  const byId: ObservableMap<string, NoteTree> = observable.map({
     ROOT_NOTE_ID: initialRootNote,
   })
   const parentIds: ObservableMap<string, ?string> = observable.map({

@@ -7,7 +7,7 @@ import {
 } from 'office-ui-fabric-react'
 import { observer } from 'mobx-react-lite'
 import { autorun } from 'mobx'
-import { nt, ROOT_NOTE_ID } from './models/Note'
+import { nt, ROOT_NOTE_ID } from './NoteTree'
 
 window.nt = nt
 
