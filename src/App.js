@@ -209,7 +209,12 @@ const App = observer(() => (
         <DefaultButton className="ml3" text="add" onClick={nt.onAdd} />
       </div>
       <div className="mt3">
-        <RootTree />
+        <div className="flex">
+          <div className="w-50">
+            <RootTree />
+          </div>
+          <div className="w-50">Editor</div>
+        </div>
       </div>
     </div>
   </FocusZone>
