@@ -133,6 +133,9 @@ const nt = observable({
       }
     })
   },
+  onTitleFocus: id => () => {
+    nt._selectedId = id
+  },
   onTitleKeyDown: id => ev => {
     const pid = nt.pidOf(id)
     if (isHotkey('mod+shift+enter', ev)) {
@@ -212,6 +215,7 @@ const NoteItem = observer(({ id }) => {
           data-is-focusable="true"
           onKeyDown={nt.onTitleKeyDown(id)}
           tabIndex={-1}
+          onFocus={nt.onTitleFocus(id)}
         >
           {nt.displayTitle(id)}
         </div>
