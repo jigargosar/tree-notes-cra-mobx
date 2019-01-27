@@ -135,8 +135,6 @@ const nt = extendObservable(createInitialState(), {
   idxOf: id => nt.siblingIdsOf(id).indexOf(id),
   childCountOf: id => nt.childIdsOf(id).length,
   siblingCountOf: id => nt.siblingIdsOf(id).length,
-  isExpanded: id => nt.childCountOf(id) > 0 && !nt.get(id).collapsed,
-  isCollapsed: id => nt.childCountOf(id) > 0 && nt.get(id).collapsed,
   addAndFocus({ pid = ROOT_NOTE_ID, idx = 0 }) {
     const parent = nt.get(pid)
     const newNote = parent.createNewNoteAt(idx)
