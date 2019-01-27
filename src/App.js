@@ -58,13 +58,14 @@ const nt = observable({
     nt.parentOf(id).childIds = R.move(idx, newIdx, nt.siblingIdsOf(id))
     nt.focus(id)
   },
-  // moveAndFocus: ({ id, pid, idx }) => {
-  //   const oldIdx = nt.idxOf(id)
-  //   const oldPid = nt.pidOf(id)
-  //   nt.childIdsOf(oldPid).splice(oldIdx, 1)
-  //   nt.parentIds.set(id, pid)
-  //   nt.childIdsOf(pid).splice(idx, 0, id)
-  // },
+  moveAndFocus: ({ id, pid, idx }) => {
+    const oldIdx = nt.idxOf(id)
+    const oldPid = nt.pidOf(id)
+    nt.childIdsOf(oldPid).splice(oldIdx, 1)
+    nt.parentIds.set(id, pid)
+    nt.childIdsOf(pid).splice(idx, 0, id)
+    nt.focus(id)
+  },
   nestAndFocus(id) {
     const idx = nt.idxOf(id)
     if (idx > 0) {
@@ -74,6 +75,12 @@ const nt = observable({
       nt.childIdsOf(newPid).push(id)
       nt.childIdsOf(oldPid).splice(idx, 1)
       nt.focus(id)
+    }
+  },
+  unnestAndFocus(id) {
+    const pid = nt.pidOf(id)
+    if (pid !== ROOT_NOTE_ID) {
+      nt.moveAndFocus({ id, pid: nt.pidOf(pid), idx: nt.idxOf(pid) + 1 })
     }
   },
   collapse: id => (nt.get(id).collapsed = true),
@@ -135,6 +142,9 @@ const nt = observable({
     } else if (isHotkey('mod+right', ev)) {
       ev.preventDefault()
       nt.nestAndFocus(id)
+    } else if (isHotkey('mod+left', ev)) {
+      ev.preventDefault()
+      nt.unnestAndFocus(id)
     }
   },
   deleteAll: () => {
