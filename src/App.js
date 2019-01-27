@@ -79,9 +79,9 @@ const nt = observable({
       nt.parentIds.replace(json.parentIds)
     }
   },
-  idToDomId: id => `note-title--${id}`,
+  titleDomIdOf: id => `note-title--${id}`,
   focus(id) {
-    const domId = nt.idToDomId(id)
+    const domId = nt.titleDomIdOf(id)
     requestAnimationFrame(() => {
       const el = document.getElementById(domId)
       if (el) {
@@ -153,6 +153,7 @@ const NoteItem = observer(({ id }) => {
           {nt.isCollapsed(id) ? '+' : nt.isExpanded(id) ? '-' : 'o'}
         </div>
         <div
+          id={nt.titleDomIdOf(id)}
           className="ph2 pv1 flex-auto"
           data-is-focusable="true"
           onKeyDown={nt.onTitleKeyDown(id)}
@@ -180,14 +181,6 @@ const RootTree = observer(() => (
   </div>
 ))
 
-const FabricRootTree = observer(() => (
-  <div>
-    {nt.childIdsOf(ROOT_NOTE_ID).map(id => (
-      <NoteItem key={id} id={id} />
-    ))}
-  </div>
-))
-
 const App = observer(() => (
   <FocusZone isCircularNavigation={true}>
     <div className="w-80 center sans-serif">
@@ -197,7 +190,7 @@ const App = observer(() => (
         <DefaultButton className="ml3" text="add" onClick={nt.onAdd} />
       </div>
       <div className="mt3">
-        <FabricRootTree />
+        <RootTree />
       </div>
     </div>
   </FocusZone>
