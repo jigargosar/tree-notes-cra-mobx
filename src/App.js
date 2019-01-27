@@ -47,11 +47,23 @@ const nt = observable({
       return nt._selectedId
     } else if (nt.childCountOf(ROOT_NOTE_ID) > 0) {
       return nt.childIdsOf(ROOT_NOTE_ID)[0]
+    } else {
+      return null
     }
   },
   getSelected() {
     const selectedId = nt.getSelectedId()
-    return selectedId ? nt.get(nt.getSelectedId) : null
+    return selectedId ? nt.get(selectedId) : null
+  },
+  getTextInputValue: () => {
+    const selected = nt.getSelected()
+    return selected ? selected.text : null
+  },
+  onTextInputChange: ev => {
+    const selected = nt.getSelected()
+    if (selected) {
+      selected.text = ev.target.value
+    }
   },
   childIdsOf: pid => nt.get(pid).childIds,
   siblingIdsOf: id => nt.childIdsOf(nt.pidOf(id)),
@@ -102,7 +114,6 @@ const nt = observable({
   collapse: id => (nt.get(id).collapsed = true),
   expand: id => (nt.get(id).collapsed = false),
   onAdd: () => nt.addAndFocus({}),
-  onTextInputChange: ev => (nt.textInputValue = ev.target.value),
   displayTitle: id => nt.get(id).title,
   persist: () => localStorage.setItem('nt', JSON.stringify(toJS(nt))),
   hydrate: () => {
@@ -270,7 +281,8 @@ const App = observer(() => {
                 multiline
                 autoAdjustHeight
                 resizable={false}
-                value={nt.textInputValue}
+                disabled={!nt.getSelected()}
+                value={nt.getTextInputValue()}
                 onChange={nt.onTextInputChange}
               />
             </div>
