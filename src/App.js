@@ -46,6 +46,24 @@ function createNewNote({ id = newNoteId(), title = newNoteTitle() } = {}) {
     get isCollapsed() {
       return this.hasChildren && this.collapsed
     },
+    get displayTitle() {
+      return this.title
+    },
+    get titleDomId() {
+      return `note-title--${this.id}`
+    },
+    focusTitle() {
+      const domId = this.titleDomId
+      console.log(`Will focus domId`, domId)
+      requestAnimationFrame(() => {
+        const el = document.getElementById(domId)
+        if (el) {
+          el.focus()
+        } else {
+          console.error(`Focus: domId=${domId} not found`)
+        }
+      })
+    },
     expand() {
       this.collapsed = false
     },
