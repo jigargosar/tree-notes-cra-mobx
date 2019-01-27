@@ -17,10 +17,12 @@ const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 const newNoteId = () => `N__${nanoid()}`
 
 const newNoteTitle = () => faker.name.lastName(null)
+const newNoteText = () => faker.lorem.paragraphs()
 
 const createNewNote = () => ({
   id: newNoteId(),
   title: newNoteTitle(),
+  text: newNoteText(),
   childIds: [],
   collapsed: false,
 })
