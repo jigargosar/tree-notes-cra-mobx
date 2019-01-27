@@ -170,8 +170,6 @@ const nt = extendObservable(createInitialState(), {
       nt.moveAndFocus({ id, pid: nt.pidOf(pid), idx: nt.idxOf(pid) + 1 })
     }
   },
-  collapse: id => (nt.get(id).collapsed = true),
-  expand: id => (nt.get(id).collapsed = false),
   onAdd: () => nt.addAndFocus({}),
   displayTitle: id => nt.get(id).title,
   persist: () => localStorage.setItem('nt', JSON.stringify(toJS(nt))),
