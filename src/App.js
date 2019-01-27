@@ -224,7 +224,9 @@ const NoteItem = observer(({ id }) => {
         </div>
         <div
           id={nt.titleDomIdOf(id)}
-          className="ph2 pv1 flex-auto"
+          className={`mr2 ph2 pv1 flex-auto ${
+            nt.getSelectedId() === id ? 'bg-light-blue' : ''
+          }`}
           data-is-focusable="true"
           onKeyDown={nt.onTitleKeyDown(id)}
           tabIndex={-1}
