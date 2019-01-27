@@ -120,7 +120,7 @@ const nt = observable({
     if (isHotkey('mod+shift+enter', ev)) {
       ev.preventDefault()
       nt.addAndFocus({ pid: id, idx: 0 })
-    } else if (isHotkey('enter', ev)) {
+    } else if (isHotkey('mod+enter', ev)) {
       ev.preventDefault()
       nt.addAndFocus({ pid: pid, idx: nt.idxOf(id) + 1 })
     } else if (isHotkey('shift+enter', ev)) {
