@@ -17,6 +17,15 @@ import {
 
 const nt = observable({
   ...createInitialNoteTreeState(),
+  // get selectedId() {
+  //   if (this._selectedId) {
+  //     return this._selectedId
+  //   } else if (this.childCountOf(ROOT_NOTE_ID) > 0) {
+  //     return this.childIdsOf(ROOT_NOTE_ID)[0]
+  //   } else {
+  //     return null
+  //   }
+  // },
   getSelectedId() {
     if (nt._selectedId) {
       return nt._selectedId
@@ -40,13 +49,19 @@ const nt = observable({
       selected.text = ev.target.value
     }
   },
-  childIdsOf: pid => nt.get(pid).childIds,
+  childIdsOf(pid) {
+    return this.get(pid).childIds
+  },
   siblingIdsOf: id => nt.childIdsOf(nt.pidOf(id)),
-  get: id => nt.byId.get(id),
+  get(id) {
+    return this.byId.get(id)
+  },
   parentOf: id => nt.byId.get(nt.pidOf(id)),
   pidOf: id => nt.parentIds.get(id),
   idxOf: id => nt.siblingIdsOf(id).indexOf(id),
-  childCountOf: id => nt.childIdsOf(id).length,
+  childCountOf(id) {
+    return this.childIdsOf(id).length
+  },
   siblingCountOf: id => nt.siblingIdsOf(id).length,
   isExpanded: id => nt.childCountOf(id) > 0 && !nt.get(id).collapsed,
   isCollapsed: id => nt.childCountOf(id) > 0 && nt.get(id).collapsed,
