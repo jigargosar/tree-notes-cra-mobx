@@ -168,21 +168,19 @@ const RootTree = observer(() => (
   </div>
 ))
 
-const App = observer(function AppInner() {
-  return (
-    <FocusZone isCircularNavigation={true}>
-      <div className="w-80 center sans-serif">
-        <div className="mt3 f4 ttu tracked">Tree Notes</div>
-        <div className="mt3 flex items-center">
-          <DefaultButton text="delete all" onClick={nt.deleteAll} />
-          <DefaultButton className="ml3" text="add" onClick={nt.onAdd} />
-        </div>
-        <div className="mt3">
-          <RootTree />
-        </div>
+const App = observer(() => (
+  <FocusZone isCircularNavigation={true}>
+    <div className="w-80 center sans-serif">
+      <div className="mt3 f4 ttu tracked">Tree Notes</div>
+      <div className="mt3 flex items-center">
+        <DefaultButton text="delete all" onClick={nt.deleteAll} />
+        <DefaultButton className="ml3" text="add" onClick={nt.onAdd} />
       </div>
-    </FocusZone>
-  )
-})
+      <div className="mt3">
+        <RootTree />
+      </div>
+    </div>
+  </FocusZone>
+))
 
 export default App
