@@ -168,6 +168,14 @@ const RootTree = observer(() => (
   </div>
 ))
 
+const FabricRootTree = observer(() => (
+  <div>
+    {nt.childIdsOf(ROOT_NOTE_ID).map(id => (
+      <NoteItem key={id} id={id} />
+    ))}
+  </div>
+))
+
 const App = observer(() => (
   <FocusZone isCircularNavigation={true}>
     <div className="w-80 center sans-serif">
@@ -177,7 +185,7 @@ const App = observer(() => (
         <DefaultButton className="ml3" text="add" onClick={nt.onAdd} />
       </div>
       <div className="mt3">
-        <RootTree />
+        <FabricRootTree />
       </div>
     </div>
   </FocusZone>
