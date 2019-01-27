@@ -208,7 +208,7 @@ const RootTree = observer(() => (
 const App = observer(() => {
   const trap = React.useRef()
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     trap.current.focus()
   })
 
