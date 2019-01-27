@@ -84,7 +84,7 @@ export const nt = extendObservable(createInitialNoteTreeState(), {
     const selected = this.getSelected()
     return selected ? selected.text : null
   },
-  onTextInputChange: function(ev: { target: { value: string } }) {
+  onTextInputChange(ev: { target: { value: string } }) {
     const selected = this.getSelected()
     if (selected) {
       selected.text = ev.target.value
@@ -102,7 +102,7 @@ export const nt = extendObservable(createInitialNoteTreeState(), {
   parentOf(id: string) {
     return this.byId.get(this.pidOf(id))
   },
-  pidOf: function(id: string) {
+  pidOf(id: string) {
     return this.parentIds.get(id)
   },
   idxOf(id: string) {
