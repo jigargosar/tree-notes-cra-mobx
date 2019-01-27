@@ -103,17 +103,8 @@ const nt = extendObservable(createInitialState(), {
       return null
     }
   },
-  getSelectedId() {
-    if (nt._selectedId) {
-      return nt._selectedId
-    } else if (nt.childCountOf(ROOT_NOTE_ID) > 0) {
-      return nt.childIdsOf(ROOT_NOTE_ID)[0]
-    } else {
-      return null
-    }
-  },
   getSelected() {
-    const selectedId = nt.getSelectedId()
+    const selectedId = nt.selectedId
     return selectedId ? nt.get(selectedId) : null
   },
   getTextInputValue: () => {
@@ -190,7 +181,7 @@ const nt = extendObservable(createInitialState(), {
   },
   titleDomIdOf: id => `note-title--${id}`,
   initFocus: () => {
-    const selectedId = nt.getSelectedId()
+    const selectedId = nt.selectedId
     if (selectedId) {
       nt.focus(selectedId)
     }
