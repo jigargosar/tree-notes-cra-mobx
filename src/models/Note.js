@@ -57,7 +57,7 @@ export function createInitialNoteTreeState(): NoteTreeState {
   }
 }
 
-const nt = extendObservable(createInitialNoteTreeState(), {
+export const nt = extendObservable(createInitialNoteTreeState(), {
   get selectedId(): ?string {
     if (this._selectedId) {
       return this._selectedId
@@ -84,43 +84,49 @@ const nt = extendObservable(createInitialNoteTreeState(), {
     const selected = this.getSelected()
     return selected ? selected.text : null
   },
-  onTextInputChange: function(ev) {
+  onTextInputChange: function(ev: { target: { value: string } }) {
     const selected = this.getSelected()
     if (selected) {
       selected.text = ev.target.value
     }
   },
-  childIdsOf(pid) {
+  childIdsOf(pid: string) {
     return this.get(pid).childIds
   },
-  siblingIdsOf(id) {
+  siblingIdsOf(id: string) {
     return this.childIdsOf(this.pidOf(id))
   },
-  get(id) {
+  get(id: string) {
     return id ? this.byId.get(id) : null
   },
-  parentOf(id) {
+  parentOf(id: string) {
     return this.byId.get(this.pidOf(id))
   },
-  pidOf: function(id) {
+  pidOf: function(id: string) {
     return this.parentIds.get(id)
   },
-  idxOf(id) {
+  idxOf(id: string) {
     return this.siblingIdsOf(id).indexOf(id)
   },
-  childCountOf(id) {
+  childCountOf(id: string) {
     return this.childIdsOf(id).length
   },
-  siblingCountOf(id) {
+  siblingCountOf(id: string) {
     return this.siblingIdsOf(id).length
   },
-  isExpanded(id) {
+  isExpanded(id: string) {
     return this.childCountOf(id) > 0 && !this.get(id).collapsed
   },
-  isCollapsed(id) {
+  isCollapsed(id: string) {
     return this.childCountOf(id) > 0 && this.get(id).collapsed
   },
-  addAndFocus({ pid = ROOT_NOTE_ID, idx = 0 }) {
+  addAndFocus({
+    pid = ROOT_NOTE_ID,
+    idx = 0,
+  }: {
+    pid: string,
+    idx: number,
+  }) {
     const newNote = createNewNote()
     const newId = newNote.id
     this.byId.set(newId, newNote)
@@ -128,14 +134,22 @@ const nt = extendObservable(createInitialNoteTreeState(), {
     this.childIdsOf(pid).splice(idx, 0, newId)
     this.focus(newId)
   },
-  rollAndFocus(id, off) {
+  rollAndFocus(id: string, off: number) {
     const idx = this.idxOf(id)
     const newIdx = R.mathMod(idx + off, this.siblingCountOf(id))
 
     this.parentOf(id).childIds = R.move(idx, newIdx, this.siblingIdsOf(id))
     this.focus(id)
   },
-  moveAndFocus({ id, pid, idx }) {
+  moveAndFocus({
+    id,
+    pid,
+    idx,
+  }: {
+    id: string,
+    pid: string,
+    idx: number,
+  }) {
     const oldIdx = this.idxOf(id)
     const oldPid = this.pidOf(id)
     this.childIdsOf(oldPid).splice(oldIdx, 1)
@@ -143,7 +157,7 @@ const nt = extendObservable(createInitialNoteTreeState(), {
     this.childIdsOf(pid).splice(idx, 0, id)
     this.focus(id)
   },
-  nestAndFocus(id) {
+  nestAndFocus(id: string) {
     const idx = this.idxOf(id)
     if (idx > 0) {
       const newPid = this.siblingIdsOf(id)[idx - 1]
@@ -154,7 +168,7 @@ const nt = extendObservable(createInitialNoteTreeState(), {
       })
     }
   },
-  unnestAndFocus(id) {
+  unnestAndFocus(id: string) {
     const pid = this.pidOf(id)
     if (pid !== ROOT_NOTE_ID) {
       this.moveAndFocus({
@@ -164,16 +178,16 @@ const nt = extendObservable(createInitialNoteTreeState(), {
       })
     }
   },
-  collapse(id) {
+  collapse(id: string) {
     return (this.get(id).collapsed = true)
   },
-  expand(id) {
+  expand(id: string) {
     return (this.get(id).collapsed = false)
   },
   onAdd() {
     return this.addAndFocus({})
   },
-  displayTitle(id) {
+  displayTitle(id: string) {
     return this.get(id).title
   },
   persist() {
@@ -190,7 +204,7 @@ const nt = extendObservable(createInitialNoteTreeState(), {
       this._selectedId = _selectedId
     }
   },
-  titleDomIdOf(id) {
+  titleDomIdOf(id: string) {
     return `note-title--${id}`
   },
   initFocus() {
@@ -199,7 +213,7 @@ const nt = extendObservable(createInitialNoteTreeState(), {
       this.focus(selectedId)
     }
   },
-  focus(id) {
+  focus(id: string) {
     const domId = this.titleDomIdOf(id)
     console.log(`Will focus domId`, domId)
     requestAnimationFrame(() => {
@@ -211,13 +225,13 @@ const nt = extendObservable(createInitialNoteTreeState(), {
       }
     })
   },
-  onTitleFocus(id) {
+  onTitleFocus(id: string) {
     return () => {
       this._selectedId = id
     }
   },
-  onTitleKeyDown(id) {
-    return ev => {
+  onTitleKeyDown(id: string) {
+    return (ev: any) => {
       const pid = this.pidOf(id)
       if (isHotKey('mod+shift+enter', ev)) {
         ev.preventDefault()
