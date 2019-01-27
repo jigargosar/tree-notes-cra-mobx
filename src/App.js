@@ -26,13 +26,13 @@ const initialRootNote = {
   title: 'Root Note',
 }
 
-const initialState = {
+const createInitialState = () => ({
   byId: observable.map({ ROOT_NOTE_ID: initialRootNote }),
   parentIds: observable.map({ ROOT_NOTE_ID: null }),
-}
+})
 
 const nt = observable({
-  ...initialState,
+  ...createInitialState(),
   childIdsOf: pid => nt.get(pid).childIds,
   siblingIdsOf: id => nt.childIdsOf(nt.pidOf(id)),
   get: id => nt.byId.get(id),
@@ -51,20 +51,21 @@ const nt = observable({
     nt.childIdsOf(pid).splice(idx, 0, newId)
     nt.focus(newId)
   },
-  move: (id, off) => {
+  rollAndFocus: (id, off) => {
     const idx = nt.idxOf(id)
     const newIdx = R.mathMod(idx + off, nt.siblingCountOf(id))
 
     nt.parentOf(id).childIds = R.move(idx, newIdx, nt.siblingIdsOf(id))
+    nt.focus(id)
   },
-  moveAndFocus: ({ id, pid, idx }) => {
-    const oldIdx = nt.idxOf(id)
-    const oldPid = nt.pidOf(id)
-    nt.childIdsOf(oldPid).splice(oldIdx, 1)
-    nt.parentIds.set(id, pid)
-    nt.childIdsOf(pid).splice(idx, 0, id)
-  },
-  nest(id) {
+  // moveAndFocus: ({ id, pid, idx }) => {
+  //   const oldIdx = nt.idxOf(id)
+  //   const oldPid = nt.pidOf(id)
+  //   nt.childIdsOf(oldPid).splice(oldIdx, 1)
+  //   nt.parentIds.set(id, pid)
+  //   nt.childIdsOf(pid).splice(idx, 0, id)
+  // },
+  nestAndFocus(id) {
     const idx = nt.idxOf(id)
     if (idx > 0) {
       const oldPid = nt.pidOf(id)
@@ -72,6 +73,7 @@ const nt = observable({
       nt.parentIds.set(id, newPid)
       nt.childIdsOf(newPid).push(id)
       nt.childIdsOf(oldPid).splice(idx, 1)
+      nt.focus(id)
     }
   },
   collapse: id => (nt.get(id).collapsed = true),
@@ -101,13 +103,16 @@ const nt = observable({
   },
   onTitleKeyDown: id => ev => {
     if (isHotkey('mod+shift+enter', ev)) {
+      ev.preventDefault()
       nt.addAndFocus({ pid: id, idx: 0 })
     }
     const pid = nt.pidOf(id)
     if (isHotkey('enter', ev)) {
+      ev.preventDefault()
       nt.addAndFocus({ pid: pid, idx: nt.idxOf(id) + 1 })
     }
     if (isHotkey('shift+enter', ev)) {
+      ev.preventDefault()
       nt.addAndFocus({ pid: pid, idx: nt.idxOf(id) })
     }
     if (isHotkey('left', ev)) {
@@ -121,26 +126,27 @@ const nt = observable({
     }
     if (isHotkey('right', ev)) {
       if (nt.isCollapsed(id)) {
-        nt.expand(id)
         ev.preventDefault()
+        nt.expand(id)
       }
     }
     if (isHotkey('mod+up', ev)) {
-      nt.move(id, -1)
       ev.preventDefault()
+      nt.rollAndFocus(id, -1)
     }
     if (isHotkey('mod+down', ev)) {
-      nt.move(id, 1)
       ev.preventDefault()
+      nt.rollAndFocus(id, 1)
     }
     if (isHotkey('mod+right', ev)) {
-      nt.nest(id)
       ev.preventDefault()
+      nt.nestAndFocus(id)
     }
   },
   deleteAll: () => {
-    nt.byId.replace(initialState.byId)
-    nt.parentIds.replace(initialState.parentIds)
+    const { byId, parentIds } = createInitialState()
+    nt.byId.replace(byId)
+    nt.parentIds.replace(parentIds)
   },
 })
 
