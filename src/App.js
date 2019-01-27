@@ -8,7 +8,7 @@ import {
 import { observer } from 'mobx-react-lite'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
-import { autorun, observable, toJS } from 'mobx'
+import { autorun, extendObservable, observable, toJS } from 'mobx'
 import isHotkey from 'is-hotkey/src'
 import * as R from 'ramda'
 
@@ -20,12 +20,32 @@ const newNoteTitle = () => faker.name.lastName(null)
 const newNoteText = () => faker.lorem.paragraphs()
 
 function createNewNote({ id = newNoteId(), title = newNoteTitle() } = {}) {
-  return observable.object({
+  const state = observable.object({
     id: id,
     title: title,
     text: newNoteText(),
     childIds: [],
     collapsed: false,
+  })
+  return extendObservable(state, {
+    get childCt() {
+      return this.childIds.length
+    },
+    get isLeaf() {
+      return this.childCt === 0
+    },
+    get hasChildren() {
+      return this.childCt > 0
+    },
+    get isRoot() {
+      return this.id === ROOT_NOTE_ID
+    },
+    get isExpanded() {
+      return this.hasChildren && !this.collapsed
+    },
+    get isCollapsed() {
+      return this.hasChildren && this.collapsed
+    },
   })
 }
 
