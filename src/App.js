@@ -69,12 +69,8 @@ const nt = observable({
   nestAndFocus(id) {
     const idx = nt.idxOf(id)
     if (idx > 0) {
-      const oldPid = nt.pidOf(id)
       const newPid = nt.siblingIdsOf(id)[idx - 1]
-      nt.parentIds.set(id, newPid)
-      nt.childIdsOf(newPid).push(id)
-      nt.childIdsOf(oldPid).splice(idx, 1)
-      nt.focus(id)
+      nt.moveAndFocus({ id, pid: newPid, idx: nt.childCountOf(newPid) })
     }
   },
   unnestAndFocus(id) {
