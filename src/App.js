@@ -92,6 +92,7 @@ const nt = observable({
   titleDomIdOf: id => `note-title--${id}`,
   focus(id) {
     const domId = nt.titleDomIdOf(id)
+    console.log(`Will focus domId`, domId)
     requestAnimationFrame(() => {
       const el = document.getElementById(domId)
       if (el) {
@@ -102,20 +103,17 @@ const nt = observable({
     })
   },
   onTitleKeyDown: id => ev => {
+    const pid = nt.pidOf(id)
     if (isHotkey('mod+shift+enter', ev)) {
       ev.preventDefault()
       nt.addAndFocus({ pid: id, idx: 0 })
-    }
-    const pid = nt.pidOf(id)
-    if (isHotkey('enter', ev)) {
+    } else if (isHotkey('enter', ev)) {
       ev.preventDefault()
       nt.addAndFocus({ pid: pid, idx: nt.idxOf(id) + 1 })
-    }
-    if (isHotkey('shift+enter', ev)) {
+    } else if (isHotkey('shift+enter', ev)) {
       ev.preventDefault()
       nt.addAndFocus({ pid: pid, idx: nt.idxOf(id) })
-    }
-    if (isHotkey('left', ev)) {
+    } else if (isHotkey('left', ev)) {
       if (nt.isExpanded(id)) {
         nt.collapse(id)
         ev.preventDefault()
@@ -123,22 +121,18 @@ const nt = observable({
         nt.focus(pid)
         ev.preventDefault()
       }
-    }
-    if (isHotkey('right', ev)) {
+    } else if (isHotkey('right', ev)) {
       if (nt.isCollapsed(id)) {
         ev.preventDefault()
         nt.expand(id)
       }
-    }
-    if (isHotkey('mod+up', ev)) {
+    } else if (isHotkey('mod+up', ev)) {
       ev.preventDefault()
       nt.rollAndFocus(id, -1)
-    }
-    if (isHotkey('mod+down', ev)) {
+    } else if (isHotkey('mod+down', ev)) {
       ev.preventDefault()
       nt.rollAndFocus(id, 1)
-    }
-    if (isHotkey('mod+right', ev)) {
+    } else if (isHotkey('mod+right', ev)) {
       ev.preventDefault()
       nt.nestAndFocus(id)
     }
@@ -175,6 +169,7 @@ const NoteItem = observer(({ id }) => {
           className="ph2 pv1 flex-auto"
           data-is-focusable="true"
           onKeyDown={nt.onTitleKeyDown(id)}
+          tabIndex={-1}
         >
           {nt.displayTitle(id)}
         </div>
