@@ -97,6 +97,7 @@ const nt = observable({
       console.log(`hydrate:`, json)
       nt.byId.replace(json.byId)
       nt.parentIds.replace(json.parentIds)
+      nt.textInputValue = json.textInputValue
     }
   },
   titleDomIdOf: id => `note-title--${id}`,
