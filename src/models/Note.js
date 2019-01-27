@@ -27,12 +27,6 @@ export const createNewNote = () => ({
   collapsed: false,
 })
 
-const initialRootNote: Note = {
-  ...createNewNote(),
-  id: ROOT_NOTE_ID,
-  title: 'Root Note',
-}
-
 type NoteTree = {
   byId: ObservableMap<string, Note>,
   parentIds: ObservableMap<string, ?string>,
@@ -40,11 +34,19 @@ type NoteTree = {
   _selectedId: ?string,
 }
 
-export const createInitialState: () => NoteTree = () => {
+export function createInitialState(): NoteTree {
+  const initialRootNote: Note = {
+    ...createNewNote(),
+    id: ROOT_NOTE_ID,
+    title: 'Root Note',
+  }
+
   const byId: ObservableMap<string, Note> = observable.map({
     ROOT_NOTE_ID: initialRootNote,
   })
-  const parentIds = observable.map({ ROOT_NOTE_ID: null })
+  const parentIds: ObservableMap<string, ?string> = observable.map({
+    ROOT_NOTE_ID: null,
+  })
   return {
     byId,
     parentIds,
