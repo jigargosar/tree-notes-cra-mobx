@@ -160,6 +160,14 @@ const NoteItem = observer(({ id }) => {
   )
 })
 
+const RootTree = observer(() => (
+  <div>
+    {nt.childIdsOf(ROOT_NOTE_ID).map(id => (
+      <NoteItem key={id} id={id} />
+    ))}
+  </div>
+))
+
 const App = observer(function AppInner() {
   return (
     <FocusZone isCircularNavigation={true}>
@@ -170,9 +178,7 @@ const App = observer(function AppInner() {
           <DefaultButton className="ml3" text="add" onClick={nt.onAdd} />
         </div>
         <div className="mt3">
-          {nt.childIdsOf(ROOT_NOTE_ID).map(id => (
-            <NoteItem key={id} id={id} />
-          ))}
+          <RootTree />
         </div>
       </div>
     </FocusZone>
