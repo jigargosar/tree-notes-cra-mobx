@@ -43,12 +43,13 @@ const nt = observable({
   siblingCountOf: id => nt.siblingIdsOf(id).length,
   isExpanded: id => nt.childCountOf(id) > 0 && !nt.get(id).collapsed,
   isCollapsed: id => nt.childCountOf(id) > 0 && nt.get(id).collapsed,
-  add({ pid = ROOT_NOTE_ID, idx = 0 }) {
+  addAndFocus({ pid = ROOT_NOTE_ID, idx = 0 }) {
     const newNote = createNewNote()
     const newId = newNote.id
     nt.byId.set(newId, newNote)
     nt.parentIds.set(newId, pid)
     nt.childIdsOf(pid).splice(idx, 0, newId)
+    nt.focus(newId)
   },
   move: (id, off) => {
     const idx = nt.idxOf(id)
@@ -68,7 +69,7 @@ const nt = observable({
   },
   collapse: id => (nt.get(id).collapsed = true),
   expand: id => (nt.get(id).collapsed = false),
-  onAdd: () => nt.add({}),
+  onAdd: () => nt.addAndFocus({}),
   displayTitle: id => nt.get(id).title,
   persist: () => localStorage.setItem('nt', JSON.stringify(toJS(nt))),
   hydrate: () => {
@@ -93,14 +94,14 @@ const nt = observable({
   },
   onTitleKeyDown: id => ev => {
     if (isHotkey('mod+shift+enter', ev)) {
-      nt.add({ pid: id, idx: 0 })
+      nt.addAndFocus({ pid: id, idx: 0 })
     }
     const pid = nt.pidOf(id)
     if (isHotkey('enter', ev)) {
-      nt.add({ pid: pid, idx: nt.idxOf(id) + 1 })
+      nt.addAndFocus({ pid: pid, idx: nt.idxOf(id) + 1 })
     }
     if (isHotkey('shift+enter', ev)) {
-      nt.add({ pid: pid, idx: nt.idxOf(id) })
+      nt.addAndFocus({ pid: pid, idx: nt.idxOf(id) })
     }
     if (isHotkey('left', ev)) {
       if (nt.isExpanded(id)) {
