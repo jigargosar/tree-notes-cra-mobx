@@ -26,17 +26,20 @@ const newNoteId = () => `N__${nanoid()}`
 const newNoteTitle = () => faker.name.lastName(null)
 const newNoteText = () => faker.lorem.paragraphs()
 
+function isElementFocused(el) {
+  return document.activeElement === el
+}
+
 function focusDomId(domId) {
   validate('S', arguments)
-
-  console.log(`Will focus domId`, domId)
+  console.debug(`Queuing focus for domId`, domId)
   requestAnimationFrame(() => {
     const el = document.getElementById(domId)
-    if (el) {
-      el.focus()
-    } else {
+    if (!el) {
       console.error(`Focus: domId=${domId} not found`)
+      return
     }
+    isElementFocused(el) || el.focus()
   })
 }
 
@@ -266,9 +269,13 @@ function tryFocusSelected() {
 }
 
 hotDispose(
-  reaction(() => nt.selectedId, tryFocusSelected, {
-    fireImmediately: true,
-  }),
+  reaction(
+    () => nt.selectedId && nt.parentOf(nt.selected.id),
+    tryFocusSelected,
+    {
+      fireImmediately: true,
+    },
+  ),
 )
 
 function hotDispose(disposer) {
