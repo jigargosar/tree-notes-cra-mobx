@@ -199,7 +199,7 @@ const nt = extendObservable(createInitialState(), {
     }
   },
   focus(id) {
-    nt.get(id).focusTitle()
+    nt._selectedId = id
   },
   onTitleFocus: id => () => {
     nt._selectedId = id
