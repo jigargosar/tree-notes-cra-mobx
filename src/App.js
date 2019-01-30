@@ -13,7 +13,6 @@ import {
   extendObservable,
   get as mget,
   observable,
-  reaction,
   toJS,
 } from 'mobx'
 
@@ -275,25 +274,19 @@ window.nt = nt
 nt.hydrate()
 hotDispose(autorun(nt.persist))
 
-hotDispose(
-  reaction(
-    () => [nt.selectedId, nt.parentIdOfSelectedId],
-    () => {
-      if (nt.selectedId) {
-        focusDomId(noteIdToNoteTitleDomId(nt.selectedId))
-      }
-    },
-    {
-      fireImmediately: true,
-    },
-  ),
-)
-
 const NoteItem = observer(({ id }) => {
   const note = nt.get(id)
   const isSelected = nt.selectedId === id
   const onTitleKeyDown = nt.onTitleKeyDown(id)
   const onTitleFocus = nt.onTitleFocus(id)
+
+  const titleDomId = noteIdToNoteTitleDomId(note.id)
+
+  React.useEffect(() => {
+    if (isSelected) {
+      focusDomId(titleDomId)
+    }
+  })
 
   return (
     <div>
@@ -303,7 +296,7 @@ const NoteItem = observer(({ id }) => {
           {note.isCollapsed ? '+' : note.isExpanded ? '-' : 'o'}
         </div>
         <div
-          id={noteIdToNoteTitleDomId(note.id)}
+          id={titleDomId}
           className={`mr2 ph2 pv1 flex-auto ${
             isSelected ? 'bg-light-blue' : ''
           }`}
