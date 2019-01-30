@@ -19,11 +19,17 @@ import isHotKey from 'is-hotkey/src'
 import * as R from 'ramda'
 import validate from 'aproba'
 
+function hotDispose(disposer) {
+  if (module.hot) {
+    module.hot.dispose(disposer)
+  }
+}
+
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
 const newNoteId = () => `N__${nanoid()}`
-
 const newNoteTitle = () => faker.name.lastName(null)
+
 const newNoteText = () => faker.lorem.paragraphs()
 
 function isElementFocused(el) {
@@ -263,8 +269,8 @@ const nt = extendObservable(createInitialState(), {
 window.nt = nt
 
 nt.hydrate()
-
 hotDispose(autorun(nt.persist))
+
 hotDispose(
   reaction(
     () => nt.selectedId && nt.parentOf(nt.selected.id),
@@ -278,12 +284,6 @@ hotDispose(
     },
   ),
 )
-
-function hotDispose(disposer) {
-  if (module.hot) {
-    module.hot.dispose(disposer)
-  }
-}
 
 const NoteItem = observer(({ id }) => {
   const note = nt.get(id)
