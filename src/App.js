@@ -265,7 +265,6 @@ window.nt = nt
 nt.hydrate()
 
 hotDispose(autorun(nt.persist))
-
 hotDispose(
   reaction(
     () => nt.selectedId && nt.parentOf(nt.selected.id),
