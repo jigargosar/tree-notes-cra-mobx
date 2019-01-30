@@ -8,7 +8,13 @@ import {
 import { observer, useComputed } from 'mobx-react-lite'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
-import { autorun, extendObservable, observable, toJS } from 'mobx'
+import {
+  autorun,
+  extendObservable,
+  get as mget,
+  observable,
+  toJS,
+} from 'mobx'
 
 import isHotKey from 'is-hotkey/src'
 import * as R from 'ramda'
@@ -81,8 +87,17 @@ function createNote({
     removeChildId(id) {
       this.childIds = R.without(id)(this.childIds)
     },
-    rollChildId(id, off) {
-      const idx = this.childIds.indexOf(id)
+    childIdx(childId) {
+      return this.childIds.indexOf(childId)
+    },
+    offsetChildIdx(childId, offset) {
+      return this.childIdx(childId) + offset
+    },
+    offsetChildId(childId, offset) {
+      return mget(this.childIds, this.offsetChildIdx(childId, offset))
+    },
+    rollChildId(childId, off) {
+      const idx = this.childIdx(childId)
       const newIdx = R.mathMod(idx + off, this.childCt)
 
       this.childIds = R.move(idx, newIdx, this.childIds)
@@ -155,7 +170,9 @@ const nt = extendObservable(createInitialState(), {
     nt.get(pid).insertChildIdAt(idx, id)
   },
   nest(id) {
-    const idx = nt.idxOf(id)
+    const note = this.get(id)
+    const parent = this.parentOf(id)
+    const idx = parent.offsetChildIdx(id, -1)
     if (idx > 0) {
       const newPid = nt.siblingIdsOf(id)[idx - 1]
       nt.moveTo({ id, pid: newPid, idx: nt.childCountOf(newPid) })
