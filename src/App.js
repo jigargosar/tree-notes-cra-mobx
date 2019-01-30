@@ -20,8 +20,8 @@ import * as R from 'ramda'
 import validate from 'aproba'
 
 function hotDispose(disposer) {
-  if (module.hot) {
-    module.hot.dispose(disposer)
+  if (module['hot']) {
+    module['hot'].dispose(disposer)
   }
 }
 
