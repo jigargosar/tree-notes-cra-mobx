@@ -157,12 +157,12 @@ const nt = extendObservable(createInitialState(), {
     this.parentIds.set(newId, pid)
     newNote.focusTitle()
   },
-  rollAndFocus: (id, off) => {
+  rollSelected: (id, off) => {
     const idx = nt.idxOf(id)
     const newIdx = R.mathMod(idx + off, nt.siblingCountOf(id))
 
     nt.parentOf(id).childIds = R.move(idx, newIdx, nt.siblingIdsOf(id))
-    nt.focus(id)
+    nt.setSelected(id)
   },
   moveAndFocus: ({ id, pid, idx }) => {
     const oldIdx = nt.idxOf(id)
@@ -170,7 +170,7 @@ const nt = extendObservable(createInitialState(), {
     nt.childIdsOf(oldPid).splice(oldIdx, 1)
     nt.parentIds.set(id, pid)
     nt.childIdsOf(pid).splice(idx, 0, id)
-    nt.focus(id)
+    nt.setSelected(id)
   },
   nestAndFocus(id) {
     const idx = nt.idxOf(id)
@@ -198,7 +198,7 @@ const nt = extendObservable(createInitialState(), {
       nt._selectedId = _selectedId
     }
   },
-  focus(id) {
+  setSelected(id) {
     nt._selectedId = id
   },
   onTitleFocus: id => () => {
@@ -232,10 +232,10 @@ const nt = extendObservable(createInitialState(), {
       }
     } else if (isHotKey('mod+up', ev)) {
       ev.preventDefault()
-      nt.rollAndFocus(id, -1)
+      nt.rollSelected(id, -1)
     } else if (isHotKey('mod+down', ev)) {
       ev.preventDefault()
-      nt.rollAndFocus(id, 1)
+      nt.rollSelected(id, 1)
     } else if (isHotKey('mod+right', ev)) {
       ev.preventDefault()
       nt.nestAndFocus(id)
