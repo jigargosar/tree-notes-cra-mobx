@@ -185,7 +185,7 @@ const nt = extendObservable(createInitialState(), {
     nt.childIdsOf(pid).splice(idx, 0, id)
     nt.setSelected(id)
   },
-  nestAndFocus(id) {
+  nestAndSelect(id) {
     const idx = nt.idxOf(id)
     if (idx > 0) {
       const newPid = nt.siblingIdsOf(id)[idx - 1]
@@ -251,7 +251,7 @@ const nt = extendObservable(createInitialState(), {
       nt.rollAndSelect(id, 1)
     } else if (isHotKey('mod+right', ev)) {
       ev.preventDefault()
-      nt.nestAndFocus(id)
+      nt.nestAndSelect(id)
     } else if (isHotKey('mod+left', ev)) {
       ev.preventDefault()
       nt.unnestAndFocus(id)
