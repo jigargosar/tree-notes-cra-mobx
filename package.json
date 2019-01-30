@@ -6,6 +6,7 @@
     "aproba": "^2.0.0",
     "faker": "^4.1.0",
     "highland": "^2.13.0",
+    "idx.macro": "^3.0.4",
     "is-hotkey": "^0.1.4",
     "mobx": "^5.9.0",
     "mobx-react": "^5.4.3",
