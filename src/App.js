@@ -9,7 +9,7 @@ import { observer } from 'mobx-react-lite'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
 import { autorun, extendObservable, observable, toJS } from 'mobx'
-import isHotkey from 'is-hotkey/src'
+import isHotKey from 'is-hotkey/src'
 import * as R from 'ramda'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
@@ -197,16 +197,16 @@ const nt = extendObservable(createInitialState(), {
     const note = nt.get(id)
     const pid = nt.pidOf(id)
     const parent = nt.parentOf(id)
-    if (isHotkey('mod+shift+enter', ev)) {
+    if (isHotKey('mod+shift+enter', ev)) {
       ev.preventDefault()
       nt.addAndFocus({ pid: id, idx: 0 })
-    } else if (isHotkey('mod+enter', ev)) {
+    } else if (isHotKey('mod+enter', ev)) {
       ev.preventDefault()
       nt.addAndFocus({ pid: pid, idx: nt.idxOf(id) + 1 })
-    } else if (isHotkey('shift+enter', ev)) {
+    } else if (isHotKey('shift+enter', ev)) {
       ev.preventDefault()
       nt.addAndFocus({ pid: pid, idx: nt.idxOf(id) })
-    } else if (isHotkey('left', ev)) {
+    } else if (isHotKey('left', ev)) {
       if (note.isExpanded) {
         ev.preventDefault()
         note.collapse()
@@ -214,21 +214,21 @@ const nt = extendObservable(createInitialState(), {
         ev.preventDefault()
         parent.focusTitle()
       }
-    } else if (isHotkey('right', ev)) {
+    } else if (isHotKey('right', ev)) {
       if (note.isCollapsed) {
         ev.preventDefault()
         note.expand()
       }
-    } else if (isHotkey('mod+up', ev)) {
+    } else if (isHotKey('mod+up', ev)) {
       ev.preventDefault()
       nt.rollAndFocus(id, -1)
-    } else if (isHotkey('mod+down', ev)) {
+    } else if (isHotKey('mod+down', ev)) {
       ev.preventDefault()
       nt.rollAndFocus(id, 1)
-    } else if (isHotkey('mod+right', ev)) {
+    } else if (isHotKey('mod+right', ev)) {
       ev.preventDefault()
       nt.nestAndFocus(id)
-    } else if (isHotkey('mod+left', ev)) {
+    } else if (isHotKey('mod+left', ev)) {
       ev.preventDefault()
       nt.unnestAndFocus(id)
     }
