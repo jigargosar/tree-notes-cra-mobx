@@ -38,17 +38,17 @@ function isElementFocused(el) {
 
 function focusDomId(domId) {
   validate('S', arguments)
-  console.debug(`Queuing focus for domId`, domId)
+  console.debug(`Focus: queuing focus`, domId)
   requestAnimationFrame(() => {
     const el = document.getElementById(domId)
     if (!el) {
-      console.error(`Focus: domId=${domId} not found`)
+      console.error(`Focus: not found`, domId)
       return
     }
-    if (!isElementFocused(el)) {
-      el.focus()
+    if (isElementFocused(el)) {
+      console.debug('Focus: ignoring focused:', domId)
     } else {
-      console.debug('Ignoring Already Focused:', domId)
+      el.focus()
     }
   })
 }
