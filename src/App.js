@@ -11,10 +11,12 @@ import * as nanoid from 'nanoid'
 import {
   autorun,
   extendObservable,
+  get as mget,
   observable,
   reaction,
   toJS,
 } from 'mobx'
+
 import isHotKey from 'is-hotkey/src'
 import * as R from 'ramda'
 import validate from 'aproba'
@@ -147,6 +149,9 @@ const nt = extendObservable(createInitialState(), {
       return null
     }
   },
+  get parentIdOfSelectedId() {
+    return mget(this.parentIds, this.selectedId)
+  },
   get selected() {
     const selectedId = nt.selectedId
     return selectedId ? nt.get(selectedId) : null
@@ -272,12 +277,7 @@ hotDispose(autorun(nt.persist))
 
 hotDispose(
   reaction(
-    () => {
-      if (nt.selectedId) {
-        return [nt.selectedId, nt.parentOf(nt.selected.id)]
-      }
-      return [nt.selectedId]
-    },
+    () => [nt.selectedId, nt.parentIdOfSelectedId],
     () => {
       if (nt.selectedId) {
         focusDomId(noteIdToNoteTitleDomId(nt.selectedId))
