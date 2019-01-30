@@ -168,22 +168,24 @@ const nt = extendObservable(createInitialState(), {
     nt.parentOf(id).rollChildId(id, off)
     nt.setSelectedId(id)
   },
-  moveTo: ({ id, pid, idx }) => {
+  moveTo: ({ id, parent, idx }) => {
     nt.parentOf(id).removeChildId(id)
-    nt.parentIds.set(id, pid)
-    nt.get(pid).insertChildIdAtAndExpand(idx, id)
+    nt.parentIds.set(id, parent.id)
+    parent.insertChildIdAtAndExpand(idx, id)
   },
   nest(id) {
     const oldParent = this.parentOf(id)
     const newPid = oldParent.offsetChildId(id, -1)
     if (newPid) {
-      nt.moveTo({ id, pid: newPid, idx: nt.childCountOf(newPid) })
+      const newParent = this.get(newPid)
+      nt.moveTo({ id, parent: newParent, idx: newParent.childCt })
     }
   },
   unnest(id) {
     const pid = this.pidOf(id)
     if (pid !== ROOT_NOTE_ID) {
-      this.moveTo({ id, pid: this.pidOf(pid), idx: this.idxOf(pid) + 1 })
+      const newParent = this.parentOf(pid)
+      this.moveTo({ id, parent: newParent, idx: this.idxOf(pid) + 1 })
     }
   },
   onAdd: () => nt.addAndSelect({}),
