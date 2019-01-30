@@ -25,13 +25,6 @@ function hotDispose(disposer) {
   }
 }
 
-const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
-
-const newNoteId = () => `N__${nanoid()}`
-const newNoteTitle = () => faker.name.lastName(null)
-
-const newNoteText = () => faker.lorem.paragraphs()
-
 function isElementFocused(el) {
   return document.activeElement === el
 }
@@ -47,11 +40,18 @@ function focusDomId(domId) {
     }
     if (isElementFocused(el)) {
       console.debug('Focus: ignoring focused:', domId)
-    } else {
-      el.focus()
+      return
     }
+    el.focus()
   })
 }
+
+const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
+const newNoteId = () => `N__${nanoid()}`
+
+const newNoteTitle = () => faker.name.lastName(null)
+
+const newNoteText = () => faker.lorem.paragraphs()
 
 function noteIdToNoteTitleDomId(noteId) {
   validate('S', arguments)
