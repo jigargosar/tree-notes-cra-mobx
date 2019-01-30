@@ -199,7 +199,7 @@ const nt = extendObservable(createInitialState(), {
     }
   },
   initFocus: () => {
-    // nt.selected && nt.selected.focusTitle()
+    nt.selected && nt.selected.focusTitle()
   },
   focus(id) {
     nt.get(id).focusTitle()
@@ -260,12 +260,6 @@ window.nt = nt
 
 nt.hydrate()
 
-function hotDispose(disposer) {
-  if (module.hot) {
-    module.hot.dispose(disposer)
-  }
-}
-
 hotDispose(autorun(nt.persist))
 
 hotDispose(
@@ -279,6 +273,12 @@ hotDispose(
     { fireImmediately: true },
   ),
 )
+
+function hotDispose(disposer) {
+  if (module.hot) {
+    module.hot.dispose(disposer)
+  }
+}
 
 const NoteItem = observer(({ id }) => {
   const note = nt.get(id)
