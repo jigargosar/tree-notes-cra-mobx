@@ -169,14 +169,14 @@ const nt = extendObservable(createInitialState(), {
     const newId = newNote.id
     this.byId.set(newId, newNote)
     this.parentIds.set(newId, pid)
-    focusTitleOfNoteWithId(newId)
+    this.setSelectedId(newId)
   },
   rollAndSelect: (id, off) => {
     const idx = nt.idxOf(id)
     const newIdx = R.mathMod(idx + off, nt.siblingCountOf(id))
 
     nt.parentOf(id).childIds = R.move(idx, newIdx, nt.siblingIdsOf(id))
-    nt.setSelected(id)
+    nt.setSelectedId(id)
   },
   moveTo: ({ id, pid, idx }) => {
     const oldIdx = nt.idxOf(id)
@@ -184,7 +184,7 @@ const nt = extendObservable(createInitialState(), {
     nt.childIdsOf(oldPid).splice(oldIdx, 1)
     nt.parentIds.set(id, pid)
     nt.childIdsOf(pid).splice(idx, 0, id)
-    // nt.setSelected(id)
+    // nt.setSelectedId(id)
   },
   nest(id) {
     const idx = nt.idxOf(id)
@@ -212,7 +212,7 @@ const nt = extendObservable(createInitialState(), {
       nt._selectedId = _selectedId
     }
   },
-  setSelected(id) {
+  setSelectedId(id) {
     nt._selectedId = id
   },
   onTitleFocus: id => () => {
