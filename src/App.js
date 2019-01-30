@@ -177,25 +177,25 @@ const nt = extendObservable(createInitialState(), {
     nt.parentOf(id).childIds = R.move(idx, newIdx, nt.siblingIdsOf(id))
     nt.setSelected(id)
   },
-  moveAndSelect: ({ id, pid, idx }) => {
+  moveTo: ({ id, pid, idx }) => {
     const oldIdx = nt.idxOf(id)
     const oldPid = nt.pidOf(id)
     nt.childIdsOf(oldPid).splice(oldIdx, 1)
     nt.parentIds.set(id, pid)
     nt.childIdsOf(pid).splice(idx, 0, id)
-    nt.setSelected(id)
+    // nt.setSelected(id)
   },
-  nestAndSelect(id) {
+  nest(id) {
     const idx = nt.idxOf(id)
     if (idx > 0) {
       const newPid = nt.siblingIdsOf(id)[idx - 1]
-      nt.moveAndSelect({ id, pid: newPid, idx: nt.childCountOf(newPid) })
+      nt.moveTo({ id, pid: newPid, idx: nt.childCountOf(newPid) })
     }
   },
-  unnestAndFocus(id) {
+  unnest(id) {
     const pid = nt.pidOf(id)
     if (pid !== ROOT_NOTE_ID) {
-      nt.moveAndSelect({ id, pid: nt.pidOf(pid), idx: nt.idxOf(pid) + 1 })
+      nt.moveTo({ id, pid: nt.pidOf(pid), idx: nt.idxOf(pid) + 1 })
     }
   },
   onAdd: () => nt.addAndFocus({}),
@@ -251,10 +251,10 @@ const nt = extendObservable(createInitialState(), {
       nt.rollAndSelect(id, 1)
     } else if (isHotKey('mod+right', ev)) {
       ev.preventDefault()
-      nt.nestAndSelect(id)
+      nt.nest(id)
     } else if (isHotKey('mod+left', ev)) {
       ev.preventDefault()
-      nt.unnestAndFocus(id)
+      nt.unnest(id)
     }
   },
   deleteAll: () => {
