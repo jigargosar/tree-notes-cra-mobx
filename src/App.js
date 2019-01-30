@@ -17,6 +17,7 @@ import {
 } from 'mobx'
 import isHotKey from 'is-hotkey/src'
 import * as R from 'ramda'
+import validate from 'aproba'
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
@@ -26,6 +27,8 @@ const newNoteTitle = () => faker.name.lastName(null)
 const newNoteText = () => faker.lorem.paragraphs()
 
 function focusDomId(domId) {
+  validate('S', arguments)
+
   console.log(`Will focus domId`, domId)
   requestAnimationFrame(() => {
     const el = document.getElementById(domId)
@@ -37,8 +40,9 @@ function focusDomId(domId) {
   })
 }
 
-function getNoteTitleDomId(note) {
-  return `note-title--${note.id}`
+function getNoteTitleDomId(noteId) {
+  validate('S', arguments)
+  return `note-title--${noteId}`
 }
 
 function createNote({
@@ -78,7 +82,7 @@ function createNote({
       return this.title
     },
     get titleDomId() {
-      return getNoteTitleDomId(this)
+      return getNoteTitleDomId(this.id)
     },
     focusTitle() {
       focusDomId(this.titleDomId)
@@ -292,7 +296,7 @@ const NoteItem = observer(({ id }) => {
           {note.isCollapsed ? '+' : note.isExpanded ? '-' : 'o'}
         </div>
         <div
-          id={getNoteTitleDomId(note)}
+          id={getNoteTitleDomId(note.id)}
           className={`mr2 ph2 pv1 flex-auto ${
             isSelected ? 'bg-light-blue' : ''
           }`}
