@@ -177,9 +177,9 @@ const nt = extendObservable(createInitialState(), {
     }
   },
   unnest(id) {
-    const pid = nt.pidOf(id)
+    const pid = this.pidOf(id)
     if (pid !== ROOT_NOTE_ID) {
-      nt.moveTo({ id, pid: nt.pidOf(pid), idx: nt.idxOf(pid) + 1 })
+      this.moveTo({ id, pid: this.pidOf(pid), idx: this.idxOf(pid) + 1 })
     }
   },
   onAdd: () => nt.addAndSelect({}),
