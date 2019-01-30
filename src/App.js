@@ -199,7 +199,6 @@ const nt = extendObservable(createInitialState(), {
     }
   },
   onAdd: () => nt.addAndSelect({}),
-  displayTitle: id => nt.get(id).title,
   persist: () => localStorage.setItem('nt', JSON.stringify(toJS(nt))),
   hydrate: () => {
     const json = JSON.parse(localStorage.getItem('nt'))
