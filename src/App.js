@@ -58,6 +58,10 @@ function noteIdToNoteTitleDomId(noteId) {
   return `note-title--${noteId}`
 }
 
+function focusTitleOfNoteWithId(noteId) {
+  focusDomId(noteIdToNoteTitleDomId(noteId))
+}
+
 function createNote({
   id = newNoteId(),
   title = newNoteTitle(),
@@ -93,9 +97,6 @@ function createNote({
     },
     get displayTitle() {
       return this.title
-    },
-    focusTitle() {
-      focusDomId(noteIdToNoteTitleDomId(this.id))
     },
     expand() {
       this.collapsed = false
@@ -168,7 +169,7 @@ const nt = extendObservable(createInitialState(), {
     const newId = newNote.id
     this.byId.set(newId, newNote)
     this.parentIds.set(newId, pid)
-    newNote.focusTitle()
+    focusTitleOfNoteWithId(newId)
   },
   rollAndSelect: (id, off) => {
     const idx = nt.idxOf(id)
@@ -236,7 +237,7 @@ const nt = extendObservable(createInitialState(), {
         note.collapse()
       } else if (!parent.isRoot) {
         ev.preventDefault()
-        focusDomId(noteIdToNoteTitleDomId(pid))
+        focusTitleOfNoteWithId(pid)
       }
     } else if (isHotKey('right', ev)) {
       if (note.isCollapsed) {
