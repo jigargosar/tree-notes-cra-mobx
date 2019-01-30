@@ -100,8 +100,9 @@ function createNote({
     collapse() {
       this.collapsed = true
     },
-    insertChildIdAt(idx, newId) {
-      this.childIds.splice(idx, 0, newId)
+    insertChildIdAt(idx, childNoteId) {
+      validate('NS', arguments)
+      this.childIds.splice(idx, 0, childNoteId)
     },
     createNewNoteAt(idx) {
       const newNote = createNote()
@@ -180,11 +181,13 @@ const nt = extendObservable(createInitialState(), {
     nt.setSelectedId(id)
   },
   moveTo: ({ id, pid, idx }) => {
-    const oldIdx = nt.idxOf(id)
-    const oldPid = nt.pidOf(id)
-    nt.childIdsOf(oldPid).splice(oldIdx, 1)
+    // const oldIdx = nt.idxOf(id)
+    // const oldPid = nt.pidOf(id)
+    // nt.childIdsOf(oldPid).splice(oldIdx, 1)
+    nt.parentOf(id).removeChildId(id)
     nt.parentIds.set(id, pid)
-    nt.childIdsOf(pid).splice(idx, 0, id)
+    // nt.childIdsOf(pid).splice(idx, 0, id)
+    nt.get(pid).insertChildIdAt(idx, id)
     // nt.setSelectedId(id)
   },
   nest(id) {
