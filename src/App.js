@@ -58,10 +58,6 @@ function noteIdToNoteTitleDomId(noteId) {
   return `note-title--${noteId}`
 }
 
-function focusTitleOfNoteWithId(noteId) {
-  focusDomId(noteIdToNoteTitleDomId(noteId))
-}
-
 function createNote({
   id = newNoteId(),
   title = newNoteTitle(),
