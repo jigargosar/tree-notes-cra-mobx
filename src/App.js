@@ -163,7 +163,7 @@ const nt = extendObservable(createInitialState(), {
   idxOf: id => nt.siblingIdsOf(id).indexOf(id),
   childCountOf: id => nt.childIdsOf(id).length,
   siblingCountOf: id => nt.siblingIdsOf(id).length,
-  addAndFocus({ pid = ROOT_NOTE_ID, idx = 0 }) {
+  addAndSelect({ pid = ROOT_NOTE_ID, idx = 0 }) {
     const parent = nt.get(pid)
     const newNote = parent.createNewNoteAt(idx)
     const newId = newNote.id
@@ -199,7 +199,7 @@ const nt = extendObservable(createInitialState(), {
       nt.moveTo({ id, pid: nt.pidOf(pid), idx: nt.idxOf(pid) + 1 })
     }
   },
-  onAdd: () => nt.addAndFocus({}),
+  onAdd: () => nt.addAndSelect({}),
   displayTitle: id => nt.get(id).title,
   persist: () => localStorage.setItem('nt', JSON.stringify(toJS(nt))),
   hydrate: () => {
@@ -224,20 +224,20 @@ const nt = extendObservable(createInitialState(), {
     const parent = nt.parentOf(id)
     if (isHotKey('mod+shift+enter', ev)) {
       ev.preventDefault()
-      nt.addAndFocus({ pid: id, idx: 0 })
+      nt.addAndSelect({ pid: id, idx: 0 })
     } else if (isHotKey('mod+enter', ev)) {
       ev.preventDefault()
-      nt.addAndFocus({ pid: pid, idx: nt.idxOf(id) + 1 })
+      nt.addAndSelect({ pid: pid, idx: nt.idxOf(id) + 1 })
     } else if (isHotKey('shift+enter', ev)) {
       ev.preventDefault()
-      nt.addAndFocus({ pid: pid, idx: nt.idxOf(id) })
+      nt.addAndSelect({ pid: pid, idx: nt.idxOf(id) })
     } else if (isHotKey('left', ev)) {
       if (note.isExpanded) {
         ev.preventDefault()
         note.collapse()
       } else if (!parent.isRoot) {
         ev.preventDefault()
-        focusTitleOfNoteWithId(pid)
+        this.setSelectedId(pid)
       }
     } else if (isHotKey('right', ev)) {
       if (note.isCollapsed) {
