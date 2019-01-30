@@ -30,34 +30,12 @@ function isElementFocused(el) {
   return document.activeElement === el
 }
 
-function focusDomId(domId) {
-  validate('S', arguments)
-  console.debug(`Focus: queuing focus`, domId)
-  requestAnimationFrame(() => {
-    const el = document.getElementById(domId)
-    if (!el) {
-      console.error(`Focus: not found`, domId)
-      return
-    }
-    if (isElementFocused(el)) {
-      console.debug('Focus: ignoring focused:', domId)
-      return
-    }
-    el.focus()
-  })
-}
-
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 const newNoteId = () => `N__${nanoid()}`
 
 const newNoteTitle = () => faker.name.lastName(null)
 
 const newNoteText = () => faker.lorem.paragraphs()
-
-function noteIdToNoteTitleDomId(noteId) {
-  validate('S', arguments)
-  return `note-title--${noteId}`
-}
 
 function createNote({
   id = newNoteId(),
@@ -280,17 +258,12 @@ const NoteItem = observer(({ id }) => {
   const onTitleKeyDown = nt.onTitleKeyDown(id)
   const onTitleFocus = nt.onTitleFocus(id)
 
-  const titleDomId = noteIdToNoteTitleDomId(note.id)
-
   const titleRef = React.createRef()
 
   React.useEffect(() => {
-    if (
-      isSelected &&
-      titleRef.current &&
-      !isElementFocused(titleRef.current)
-    ) {
-      focusDomId(titleDomId)
+    const el = titleRef.current
+    if (isSelected && el && !isElementFocused(el)) {
+      el.focus()
     }
   }, [isSelected])
 
@@ -303,7 +276,6 @@ const NoteItem = observer(({ id }) => {
         </div>
         <div
           ref={titleRef}
-          id={titleDomId}
           className={`mr2 ph2 pv1 flex-auto ${
             isSelected ? 'bg-light-blue' : ''
           }`}
