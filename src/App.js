@@ -350,7 +350,6 @@ const App = observer(() => {
             </div>
             <div className="w-50">
               <TextField
-                // label="Non-resizable"
                 multiline
                 autoAdjustHeight
                 resizable={false}
