@@ -233,7 +233,7 @@ const nt = extendObservable(createInitialState(), {
         note.collapse()
       } else if (!parent.isRoot) {
         ev.preventDefault()
-        this.setSelectedId(pid)
+        nt.setSelectedId(pid)
       }
     } else if (isHotKey('right', ev)) {
       if (note.isCollapsed) {
