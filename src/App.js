@@ -8,13 +8,7 @@ import {
 import { observer, useComputed } from 'mobx-react-lite'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
-import {
-  autorun,
-  extendObservable,
-  get as mget,
-  observable,
-  toJS,
-} from 'mobx'
+import { autorun, extendObservable, observable, toJS } from 'mobx'
 
 import isHotKey from 'is-hotkey/src'
 import * as R from 'ramda'
@@ -121,9 +115,6 @@ const nt = extendObservable(createInitialState(), {
     } else {
       return null
     }
-  },
-  get parentIdOfSelectedId() {
-    return mget(this.parentIds, this.selectedId)
   },
   get selected() {
     const selectedId = nt.selectedId
