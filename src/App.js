@@ -40,7 +40,7 @@ function focusDomId(domId) {
   })
 }
 
-function getNoteTitleDomId(noteId) {
+function noteIdToNoteTitleDomId(noteId) {
   validate('S', arguments)
   return `note-title--${noteId}`
 }
@@ -82,7 +82,7 @@ function createNote({
       return this.title
     },
     get titleDomId() {
-      return getNoteTitleDomId(this.id)
+      return noteIdToNoteTitleDomId(this.id)
     },
     focusTitle() {
       focusDomId(this.titleDomId)
@@ -276,7 +276,7 @@ hotDispose(
     () => nt.selectedId,
     selectedId => {
       if (selectedId) {
-        focusDomId(getNoteTitleDomId(selectedId))
+        focusDomId(noteIdToNoteTitleDomId(selectedId))
       }
     },
   ),
@@ -296,7 +296,7 @@ const NoteItem = observer(({ id }) => {
           {note.isCollapsed ? '+' : note.isExpanded ? '-' : 'o'}
         </div>
         <div
-          id={getNoteTitleDomId(note.id)}
+          id={noteIdToNoteTitleDomId(note.id)}
           className={`mr2 ph2 pv1 flex-auto ${
             isSelected ? 'bg-light-blue' : ''
           }`}
