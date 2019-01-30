@@ -184,24 +184,11 @@ const nt = extendObservable(createInitialState(), {
       nt._selectedId = _selectedId
     }
   },
-  titleDomIdOf: id => `note-title--${id}`,
   initFocus: () => {
-    const selectedId = nt.selectedId
-    if (selectedId) {
-      nt.focus(selectedId)
-    }
+    nt.selected && nt.selected.focusTitle()
   },
   focus(id) {
-    const domId = nt.titleDomIdOf(id)
-    console.log(`Will focus domId`, domId)
-    requestAnimationFrame(() => {
-      const el = document.getElementById(domId)
-      if (el) {
-        el.focus()
-      } else {
-        console.error(`Focus: domId=${domId} not found`)
-      }
-    })
+    nt.get(id).focusTitle()
   },
   onTitleFocus: id => () => {
     nt._selectedId = id
