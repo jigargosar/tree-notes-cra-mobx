@@ -198,9 +198,6 @@ const nt = extendObservable(createInitialState(), {
       nt._selectedId = _selectedId
     }
   },
-  initFocus: () => {
-    nt.selected && nt.selected.focusTitle()
-  },
   focus(id) {
     nt.get(id).focusTitle()
   },
@@ -262,16 +259,16 @@ nt.hydrate()
 
 hotDispose(autorun(nt.persist))
 
+function tryFocusSelected() {
+  if (nt.selectedId) {
+    focusDomId(noteIdToNoteTitleDomId(nt.selectedId))
+  }
+}
+
 hotDispose(
-  reaction(
-    () => nt.selectedId,
-    selectedId => {
-      if (selectedId) {
-        focusDomId(noteIdToNoteTitleDomId(selectedId))
-      }
-    },
-    { fireImmediately: true },
-  ),
+  reaction(() => nt.selectedId, tryFocusSelected, {
+    fireImmediately: true,
+  }),
 )
 
 function hotDispose(disposer) {
@@ -330,7 +327,7 @@ const RootTree = observer(() => {
 
 const App = observer(() => {
   React.useEffect(() => {
-    nt.initFocus()
+    tryFocusSelected()
   }, [])
 
   return (
