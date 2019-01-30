@@ -19,6 +19,18 @@ const newNoteId = () => `N__${nanoid()}`
 const newNoteTitle = () => faker.name.lastName(null)
 const newNoteText = () => faker.lorem.paragraphs()
 
+function focusDomId(domId) {
+  console.log(`Will focus domId`, domId)
+  requestAnimationFrame(() => {
+    const el = document.getElementById(domId)
+    if (el) {
+      el.focus()
+    } else {
+      console.error(`Focus: domId=${domId} not found`)
+    }
+  })
+}
+
 function createNote({
   id = newNoteId(),
   title = newNoteTitle(),
@@ -59,16 +71,7 @@ function createNote({
       return `note-title--${this.id}`
     },
     focusTitle() {
-      const domId = this.titleDomId
-      console.log(`Will focus domId`, domId)
-      requestAnimationFrame(() => {
-        const el = document.getElementById(domId)
-        if (el) {
-          el.focus()
-        } else {
-          console.error(`Focus: domId=${domId} not found`)
-        }
-      })
+      focusDomId(this.titleDomId)
     },
     expand() {
       this.collapsed = false
