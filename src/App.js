@@ -275,7 +275,7 @@ const NoteItem = observer(({ id }) => {
           {note.isCollapsed ? '+' : note.isExpanded ? '-' : 'o'}
         </div>
         <div
-          id={note.titleDomId}
+          id={getNoteTitleDomId(note)}
           className={`mr2 ph2 pv1 flex-auto ${
             isSelected ? 'bg-light-blue' : ''
           }`}
