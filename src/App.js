@@ -108,6 +108,9 @@ function createNote({
       this.childIds.splice(idx, 0, newNote.id)
       return newNote
     },
+    removeChildId(id) {
+      this.childIds = R.without(id)(this.childIds)
+    },
     rollChildId(id, off) {
       const idx = this.childIds.indexOf(id)
       const newIdx = R.mathMod(idx + off, this.childCt)
