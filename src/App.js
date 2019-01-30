@@ -31,6 +31,10 @@ function focusDomId(domId) {
   })
 }
 
+function getNoteTitleDomId(note) {
+  return `note-title--${note.id}`
+}
+
 function createNote({
   id = newNoteId(),
   title = newNoteTitle(),
@@ -68,7 +72,7 @@ function createNote({
       return this.title
     },
     get titleDomId() {
-      return `note-title--${this.id}`
+      return getNoteTitleDomId(this)
     },
     focusTitle() {
       focusDomId(this.titleDomId)
