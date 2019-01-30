@@ -236,7 +236,7 @@ const nt = extendObservable(createInitialState(), {
         note.collapse()
       } else if (!parent.isRoot) {
         ev.preventDefault()
-        parent.focusTitle()
+        focusDomId(noteIdToNoteTitleDomId(pid))
       }
     } else if (isHotKey('right', ev)) {
       if (note.isCollapsed) {
