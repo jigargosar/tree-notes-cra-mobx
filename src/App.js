@@ -5,7 +5,7 @@ import {
   FocusZone,
   TextField,
 } from 'office-ui-fabric-react'
-import { observer } from 'mobx-react-lite'
+import { observer, useComputed } from 'mobx-react-lite'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
 import {
@@ -24,10 +24,6 @@ function hotDispose(disposer) {
   if (module['hot']) {
     module['hot'].dispose(disposer)
   }
-}
-
-function isElementFocused(el) {
-  return document.activeElement === el
 }
 
 const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
@@ -254,16 +250,19 @@ hotDispose(autorun(nt.persist))
 
 const NoteItem = observer(({ id }) => {
   const note = nt.get(id)
-  const isSelected = nt.selectedId === id
+  const isSelected = useComputed(() => nt.selectedId === id, [id])
   const onTitleKeyDown = nt.onTitleKeyDown(id)
   const onTitleFocus = nt.onTitleFocus(id)
 
   const titleRef = React.createRef()
 
   React.useEffect(() => {
-    const el = titleRef.current
-    if (isSelected && el && !isElementFocused(el)) {
-      el.focus()
+    if (isSelected) {
+      console.log(`titleRef.current`, titleRef.current)
+      const el = titleRef.current
+      if (el && document.activeElement !== el) {
+        el.focus()
+      }
     }
   }, [isSelected])
 
