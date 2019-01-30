@@ -81,11 +81,8 @@ function createNote({
     get displayTitle() {
       return this.title
     },
-    get titleDomId() {
-      return noteIdToNoteTitleDomId(this.id)
-    },
     focusTitle() {
-      focusDomId(this.titleDomId)
+      focusDomId(noteIdToNoteTitleDomId(this.id))
     },
     expand() {
       this.collapsed = false
