@@ -335,10 +335,6 @@ const RootTree = observer(() => {
 })
 
 const App = observer(() => {
-  React.useEffect(() => {
-    // tryFocusSelected()
-  }, [])
-
   return (
     <FocusTrapZone disableFirstFocus={true}>
       <div className="w-80 center sans-serif">
