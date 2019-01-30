@@ -199,7 +199,7 @@ const nt = extendObservable(createInitialState(), {
     }
   },
   initFocus: () => {
-    nt.selected && nt.selected.focusTitle()
+    // nt.selected && nt.selected.focusTitle()
   },
   focus(id) {
     nt.get(id).focusTitle()
@@ -276,6 +276,7 @@ hotDispose(
         focusDomId(noteIdToNoteTitleDomId(selectedId))
       }
     },
+    { fireImmediately: true },
   ),
 )
 
