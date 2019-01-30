@@ -282,11 +282,17 @@ const NoteItem = observer(({ id }) => {
 
   const titleDomId = noteIdToNoteTitleDomId(note.id)
 
+  const titleRef = React.createRef()
+
   React.useEffect(() => {
-    if (isSelected) {
+    if (
+      isSelected &&
+      titleRef.current &&
+      !isElementFocused(titleRef.current)
+    ) {
       focusDomId(titleDomId)
     }
-  })
+  }, [isSelected])
 
   return (
     <div>
@@ -296,6 +302,7 @@ const NoteItem = observer(({ id }) => {
           {note.isCollapsed ? '+' : note.isExpanded ? '-' : 'o'}
         </div>
         <div
+          ref={titleRef}
           id={titleDomId}
           className={`mr2 ph2 pv1 flex-auto ${
             isSelected ? 'bg-light-blue' : ''
