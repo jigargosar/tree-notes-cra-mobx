@@ -108,6 +108,12 @@ function createNote({
       this.childIds.splice(idx, 0, newNote.id)
       return newNote
     },
+    rollChildId(id, off) {
+      const idx = this.childIds.indexOf(id)
+      const newIdx = R.mathMod(idx + off, this.childCt)
+
+      this.childIds = R.move(idx, newIdx, this.childIds)
+    },
   })
 }
 
@@ -168,10 +174,13 @@ const nt = extendObservable(createInitialState(), {
     this.setSelectedId(newId)
   },
   rollAndSelect: (id, off) => {
-    const idx = nt.idxOf(id)
-    const newIdx = R.mathMod(idx + off, nt.siblingCountOf(id))
+    // const idx = nt.idxOf(id)
+    // const newIdx = R.mathMod(idx + off, nt.siblingCountOf(id))
+    //
+    // nt.parentOf(id).childIds = R.move(idx, newIdx, nt.siblingIdsOf(id))
+    // nt.setSelectedId(id)
 
-    nt.parentOf(id).childIds = R.move(idx, newIdx, nt.siblingIdsOf(id))
+    nt.parentOf(id).rollChildId(id, off)
     nt.setSelectedId(id)
   },
   moveTo: ({ id, pid, idx }) => {
@@ -270,7 +279,12 @@ hotDispose(autorun(nt.persist))
 
 hotDispose(
   reaction(
-    () => nt.selectedId && nt.parentOf(nt.selected.id),
+    () => {
+      if (nt.selectedId) {
+        return [nt.selectedId, nt.parentOf(nt.selected.id)]
+      }
+      return [nt.selectedId]
+    },
     () => {
       if (nt.selectedId) {
         focusDomId(noteIdToNoteTitleDomId(nt.selectedId))
