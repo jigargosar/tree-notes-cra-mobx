@@ -266,16 +266,14 @@ nt.hydrate()
 
 hotDispose(autorun(nt.persist))
 
-function tryFocusSelected() {
-  if (nt.selectedId) {
-    focusDomId(noteIdToNoteTitleDomId(nt.selectedId))
-  }
-}
-
 hotDispose(
   reaction(
     () => nt.selectedId && nt.parentOf(nt.selected.id),
-    tryFocusSelected,
+    () => {
+      if (nt.selectedId) {
+        focusDomId(noteIdToNoteTitleDomId(nt.selectedId))
+      }
+    },
     {
       fireImmediately: true,
     },
