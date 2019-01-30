@@ -39,7 +39,11 @@ function focusDomId(domId) {
       console.error(`Focus: domId=${domId} not found`)
       return
     }
-    isElementFocused(el) || el.focus()
+    if (!isElementFocused(el)) {
+      el.focus()
+    } else {
+      console.debug('Ignoring Already Focused:', domId)
+    }
   })
 }
 
@@ -334,11 +338,11 @@ const RootTree = observer(() => {
 
 const App = observer(() => {
   React.useEffect(() => {
-    tryFocusSelected()
+    // tryFocusSelected()
   }, [])
 
   return (
-    <FocusTrapZone>
+    <FocusTrapZone disableFirstFocus={true}>
       <div className="w-80 center sans-serif">
         <div className="mt3 f4 ttu tracked">Tree Notes</div>
         <div className="mt3 flex items-center">
