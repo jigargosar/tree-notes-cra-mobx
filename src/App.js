@@ -258,7 +258,6 @@ const NoteItem = observer(({ id }) => {
 
   React.useEffect(() => {
     if (isSelected) {
-      console.log(`titleRef.current`, titleRef.current)
       const el = titleRef.current
       if (el && document.activeElement !== el) {
         el.focus()
