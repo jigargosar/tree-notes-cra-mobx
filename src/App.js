@@ -170,8 +170,8 @@ const nt = extendObservable(createInitialState(), {
     nt.get(pid).insertChildIdAt(idx, id)
   },
   nest(id) {
-    const parent = this.parentOf(id)
-    const newPid = parent.offsetChildId(id, -1)
+    const oldParent = this.parentOf(id)
+    const newPid = oldParent.offsetChildId(id, -1)
     if (newPid) {
       nt.moveTo({ id, pid: newPid, idx: nt.childCountOf(newPid) })
     }
