@@ -8,7 +8,13 @@ import {
 import { observer } from 'mobx-react-lite'
 import * as faker from 'faker'
 import * as nanoid from 'nanoid'
-import { autorun, extendObservable, observable, toJS } from 'mobx'
+import {
+  autorun,
+  extendObservable,
+  observable,
+  reaction,
+  toJS,
+} from 'mobx'
 import isHotKey from 'is-hotkey/src'
 import * as R from 'ramda'
 
@@ -260,6 +266,17 @@ function hotDispose(disposer) {
 }
 
 hotDispose(autorun(nt.persist))
+
+hotDispose(
+  reaction(
+    () => nt.selectedId,
+    selectedId => {
+      if (selectedId) {
+        focusDomId(getNoteTitleDomId(selectedId))
+      }
+    },
+  ),
+)
 
 const NoteItem = observer(({ id }) => {
   const note = nt.get(id)
