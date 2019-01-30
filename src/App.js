@@ -164,7 +164,6 @@ const nt = extendObservable(createInitialState(), {
   pidOf: id => nt.parentIds.get(id),
   idxOf: id => nt.siblingIdsOf(id).indexOf(id),
   childCountOf: id => nt.childIdsOf(id).length,
-  siblingCountOf: id => nt.siblingIdsOf(id).length,
   addAndSelect({ pid = ROOT_NOTE_ID, idx = 0 }) {
     const parent = nt.get(pid)
     const newNote = parent.createNewNoteAt(idx)
@@ -174,12 +173,6 @@ const nt = extendObservable(createInitialState(), {
     this.setSelectedId(newId)
   },
   rollAndSelect: (id, off) => {
-    // const idx = nt.idxOf(id)
-    // const newIdx = R.mathMod(idx + off, nt.siblingCountOf(id))
-    //
-    // nt.parentOf(id).childIds = R.move(idx, newIdx, nt.siblingIdsOf(id))
-    // nt.setSelectedId(id)
-
     nt.parentOf(id).rollChildId(id, off)
     nt.setSelectedId(id)
   },
