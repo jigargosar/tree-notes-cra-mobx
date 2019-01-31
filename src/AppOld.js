@@ -255,8 +255,6 @@ const nt = extendObservable(createInitialState(), {
   },
 })
 
-window.nt = nt
-
 nt.hydrate()
 hotDispose(autorun(nt.persist))
 
