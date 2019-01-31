@@ -19,11 +19,14 @@ function useCachedState(def, cacheKey) {
   return [state, setState]
 }
 
+function createNewNote() {
+  return { id: newNoteId(), title: newNoteTitle() }
+}
+
 function useNotes() {
   const [notes, setNotes] = useCachedState([], 'notes')
 
-  const addNewNote = () =>
-    setNotes(R.append({ id: newNoteId(), title: newNoteTitle() }))
+  const addNewNote = () => setNotes(R.append(createNewNote()))
 
   return { rootNotes: notes, addNewNote }
 }
