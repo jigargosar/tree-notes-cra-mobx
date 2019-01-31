@@ -9,11 +9,18 @@ const newNoteId = () => `N__${nanoid()}`
 
 const newNoteTitle = () => faker.name.lastName(null)
 
-function useNotes() {
-  const cacheKey = 'notes'
-  const [notes, setNotes] = React.useState(() => getCachedOr([], cacheKey))
+function useCachedState(def, cacheKey) {
+  const [state, setState] = React.useState(() =>
+    getCachedOr(def, cacheKey),
+  )
 
-  React.useEffect(() => cache(cacheKey, notes), [notes])
+  React.useEffect(() => cache(cacheKey, state), [state])
+
+  return [state, setState]
+}
+
+function useNotes() {
+  const [notes, setNotes] = useCachedState([], 'notes')
 
   const addNewNote = () =>
     setNotes(R.append({ id: newNoteId(), title: newNoteTitle() }))
