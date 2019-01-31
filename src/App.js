@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite'
 import * as R from 'ramda'
 import * as nanoid from 'nanoid'
 import * as faker from 'faker'
-import { cache, defaultEmptyTo, getCachedOr } from './utils'
+import { cache, defaultEmptyTo, getCachedOr, removeCached } from './utils'
 
 const newNoteId = () => `N__${nanoid()}`
 
@@ -24,7 +24,9 @@ function createNewNote() {
 }
 
 function useNotes() {
-  const [notes, setNotes] = useCachedState([], 'notes')
+  const cacheKey = 'notes'
+  const [notes, setNotes] = useCachedState([], cacheKey)
+  removeCached(cacheKey)
 
   const addNewNote = React.useCallback(
     () => setNotes(R.append(createNewNote())),

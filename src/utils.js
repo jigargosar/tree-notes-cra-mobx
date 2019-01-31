@@ -13,3 +13,7 @@ export function getCachedOr(def, key) {
 export function cache(key, jsonValue) {
   localStorage.setItem(key, JSON.stringify(jsonValue))
 }
+
+export function removeCached(cacheKey) {
+  localStorage.removeItem(cacheKey)
+}
