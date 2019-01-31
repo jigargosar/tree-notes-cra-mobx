@@ -3,21 +3,13 @@ import { observer } from 'mobx-react-lite'
 import * as R from 'ramda'
 import * as nanoid from 'nanoid'
 import * as faker from 'faker'
-import { defaultEmptyTo } from './utils'
+import { cache, defaultEmptyTo, getCachedOr } from './utils'
 
 const newNoteId = () => `N__${nanoid()}`
 
 const newNoteTitle = () => faker.name.lastName(null)
 
 function useNotes() {
-  function getCachedOr(def, key) {
-    return R.defaultTo(def, JSON.parse(localStorage.getItem(key)))
-  }
-
-  function cache(key, jsonValue) {
-    localStorage.setItem(key, JSON.stringify(jsonValue))
-  }
-
   const cacheKey = 'notes'
   const [notes, setNotes] = React.useState(() => getCachedOr([], cacheKey))
 
