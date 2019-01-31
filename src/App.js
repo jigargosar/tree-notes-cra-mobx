@@ -8,8 +8,19 @@ const newNoteId = () => `N__${nanoid()}`
 
 const newNoteTitle = () => faker.name.lastName(null)
 
+function getCachedNotes() {
+  return R.defaultTo([], JSON.parse(localStorage.getItem('notes')))
+}
+
+function cacheNotes(notes) {
+  localStorage.setItem('notes', JSON.stringify(notes))
+}
+
 const NoteList = observer(() => {
-  const [notes, setNotes] = React.useState(() => [])
+  const [notes, setNotes] = React.useState(getCachedNotes)
+
+  React.useEffect(() => cacheNotes(notes), [notes])
+
   return (
     <div className="">
       <button
