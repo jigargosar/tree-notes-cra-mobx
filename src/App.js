@@ -45,10 +45,20 @@ function useNotes() {
 
   const addNewNote = React.useCallback(() => {
     const n = createNewNote()
-    return setNotes(R.mergeRight({ [n.id]: n }))
+    setNotes(R.mergeRight({ [n.id]: n }))
+    const overRootChildIds = R.over(R.lensPath([ROOT_NOTE_ID, 'childIds']))
+    setNotes(overRootChildIds(R.append(n.id)))
+    setParentIds(R.mergeRight({ [n.id]: ROOT_NOTE_ID }))
   }, [])
 
-  return { rootNotes: R.values(byId), addNewNote }
+  const root = byId[ROOT_NOTE_ID]
+
+  const rootNotes = React.useMemo(
+    () => root.childIds.map(id => byId[id]),
+    [root.childIds],
+  )
+
+  return { rootNotes, addNewNote }
 }
 
 const NoteList = () => {
@@ -58,7 +68,7 @@ const NoteList = () => {
     <div className="">
       <button onClick={notes.addNewNote}>Add Note</button>
       {notes.rootNotes.map(note => (
-        <div className="pv1">
+        <div key={note.id} className="pv1">
           {defaultEmptyTo('no title set')(note.title)}
         </div>
       ))}
