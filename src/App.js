@@ -36,7 +36,7 @@ function useNotes() {
     return { [root.id]: root }
   }, notesKey)
 
-  const [parentIds, setParentIds] = React.useState(() => {
+  const [, setParentIds] = React.useState(() => {
     return R.values(byId).reduce((acc, n) => {
       n.childIds.forEach(cid => (acc[cid] = n.id))
       return acc
