@@ -6,8 +6,8 @@ export const defaultEmptyTo = def =>
     R.when(R.isEmpty, R.always(def)),
   )
 
-export function getCachedOr(def, key) {
-  return R.defaultTo(def, JSON.parse(localStorage.getItem(key)))
+export function getCachedOr(thunk, key) {
+  return R.when(R.isNil)(thunk)(JSON.parse(localStorage.getItem(key)))
 }
 
 export function cache(key, jsonValue) {

@@ -1,5 +1,4 @@
 import React from 'react'
-import { observer } from 'mobx-react-lite'
 import * as R from 'ramda'
 import * as nanoid from 'nanoid'
 import * as faker from 'faker'
@@ -9,9 +8,9 @@ const newNoteId = () => `N__${nanoid()}`
 
 const newNoteTitle = () => faker.name.lastName(null)
 
-function useCachedState(def, cacheKey) {
+function useCachedState(thunk, cacheKey) {
   const [state, setState] = React.useState(() =>
-    getCachedOr(def, cacheKey),
+    getCachedOr(thunk, cacheKey),
   )
 
   React.useEffect(() => cache(cacheKey, state), [state])
@@ -20,23 +19,39 @@ function useCachedState(def, cacheKey) {
 }
 
 function createNewNote() {
-  return { id: newNoteId(), title: newNoteTitle() }
+  return { id: newNoteId(), title: newNoteTitle(), childIds: [] }
+}
+
+const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
+
+function createRootNote() {
+  return { id: ROOT_NOTE_ID, title: 'Root Note Title', childIds: [] }
 }
 
 function useNotes() {
-  const cacheKey = 'notes'
-  // removeCached(cacheKey)
-  const [notes, setNotes] = useCachedState({}, cacheKey)
+  const notesKey = 'notes'
+  // removeCached(notesKey)
+  const [byId, setNotes] = useCachedState(() => {
+    const root = createRootNote()
+    return { [root.id]: root }
+  }, notesKey)
+
+  const [parentIds, setParentIds] = React.useState(() => {
+    return R.values(byId).reduce((acc, n) => {
+      n.childIds.forEach(cid => (acc[cid] = n.id))
+      return acc
+    }, {})
+  })
 
   const addNewNote = React.useCallback(() => {
     const n = createNewNote()
     return setNotes(R.mergeRight({ [n.id]: n }))
   }, [])
 
-  return { rootNotes: R.values(notes), addNewNote }
+  return { rootNotes: R.values(byId), addNewNote }
 }
 
-const NoteList = observer(() => {
+const NoteList = () => {
   const notes = useNotes()
 
   return (
@@ -49,9 +64,9 @@ const NoteList = observer(() => {
       ))}
     </div>
   )
-})
+}
 
-const App = observer(() => {
+const App = () => {
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
@@ -60,6 +75,6 @@ const App = observer(() => {
       </div>
     </div>
   )
-})
+}
 
 export default App
