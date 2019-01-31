@@ -26,6 +26,12 @@ function useNotes() {
   return { rootNotes: notes, addNewNote }
 }
 
+const defaultEmptyTo = def =>
+  R.pipe(
+    R.defaultTo(''),
+    R.when(R.isEmpty, R.always(def)),
+  )
+
 const NoteList = observer(() => {
   const notes = useNotes()
 
@@ -33,7 +39,9 @@ const NoteList = observer(() => {
     <div className="">
       <button onClick={notes.addNewNote}>Add Note</button>
       {notes.rootNotes.map(note => (
-        <div className="pv1">{note.title || 'no title'}</div>
+        <div className="pv1">
+          {defaultEmptyTo('no title set')(note.title)}
+        </div>
       ))}
     </div>
   )
