@@ -23,16 +23,16 @@ function useNotes() {
 
   const addNewNote = () =>
     setNotes(R.append({ id: newNoteId(), title: newNoteTitle() }))
-  return { notes, addNewNote }
+  return { rootNotes: notes, addNewNote }
 }
 
 const NoteList = observer(() => {
-  const { addNewNote, notes } = useNotes()
+  const notes = useNotes()
 
   return (
     <div className="">
-      <button onClick={addNewNote}>Add Note</button>
-      {notes.map(note => (
+      <button onClick={notes.addNewNote}>Add Note</button>
+      {notes.rootNotes.map(note => (
         <div className="pv1">{note.title || 'no title'}</div>
       ))}
     </div>
