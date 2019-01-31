@@ -3,34 +3,31 @@ import { observer } from 'mobx-react-lite'
 import * as R from 'ramda'
 import * as nanoid from 'nanoid'
 import * as faker from 'faker'
+import { defaultEmptyTo } from './utils'
 
 const newNoteId = () => `N__${nanoid()}`
 
 const newNoteTitle = () => faker.name.lastName(null)
 
-function getCachedNotes() {
-  return R.defaultTo([], JSON.parse(localStorage.getItem('notes')))
-}
-
-function cacheNotes(notes) {
-  localStorage.setItem('notes', JSON.stringify(notes))
-}
-
 function useNotes() {
-  const [notes, setNotes] = React.useState(getCachedNotes)
+  function getCachedOr(def, key) {
+    return R.defaultTo(def, JSON.parse(localStorage.getItem(key)))
+  }
 
-  React.useEffect(() => cacheNotes(notes), [notes])
+  function cache(key, jsonValue) {
+    localStorage.setItem(key, JSON.stringify(jsonValue))
+  }
+
+  const cacheKey = 'notes'
+  const [notes, setNotes] = React.useState(() => getCachedOr([], cacheKey))
+
+  React.useEffect(() => cache(cacheKey, notes), [notes])
 
   const addNewNote = () =>
     setNotes(R.append({ id: newNoteId(), title: newNoteTitle() }))
+
   return { rootNotes: notes, addNewNote }
 }
-
-const defaultEmptyTo = def =>
-  R.pipe(
-    R.defaultTo(''),
-    R.when(R.isEmpty, R.always(def)),
-  )
 
 const NoteList = observer(() => {
   const notes = useNotes()
