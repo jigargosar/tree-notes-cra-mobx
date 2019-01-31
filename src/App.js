@@ -16,20 +16,22 @@ function cacheNotes(notes) {
   localStorage.setItem('notes', JSON.stringify(notes))
 }
 
-const NoteList = observer(() => {
+function useNotes() {
   const [notes, setNotes] = React.useState(getCachedNotes)
 
   React.useEffect(() => cacheNotes(notes), [notes])
 
+  const addNewNote = () =>
+    setNotes(R.append({ id: newNoteId(), title: newNoteTitle() }))
+  return { notes, addNewNote }
+}
+
+const NoteList = observer(() => {
+  const { addNewNote, notes } = useNotes()
+
   return (
     <div className="">
-      <button
-        onClick={() =>
-          setNotes(R.append({ id: newNoteId(), title: newNoteTitle() }))
-        }
-      >
-        Add Note
-      </button>
+      <button onClick={addNewNote}>Add Note</button>
       {notes.map(note => (
         <div className="pv1">{note.title || 'no title'}</div>
       ))}
