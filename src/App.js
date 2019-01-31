@@ -26,7 +26,10 @@ function createNewNote() {
 function useNotes() {
   const [notes, setNotes] = useCachedState([], 'notes')
 
-  const addNewNote = () => setNotes(R.append(createNewNote()))
+  const addNewNote = React.useCallback(
+    () => setNotes(R.append(createNewNote())),
+    [],
+  )
 
   return { rootNotes: notes, addNewNote }
 }
