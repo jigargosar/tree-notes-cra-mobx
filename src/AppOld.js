@@ -123,7 +123,7 @@ function createInitialState() {
 }
 
 const nt = extendObservable(createInitialState(), {
-  get rootNote() {
+  get root() {
     return this.get(ROOT_NOTE_ID)
   },
   get selectedId() {
@@ -310,7 +310,7 @@ const NoteItem = observer(({ id }) => {
 const RootTree = observer(() => {
   return (
     <div>
-      {nt.rootNote.childIds.map(id => (
+      {nt.root.childIds.map(id => (
         <NoteItem key={id} id={id} />
       ))}
     </div>
