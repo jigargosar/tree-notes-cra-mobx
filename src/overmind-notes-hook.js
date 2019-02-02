@@ -10,6 +10,10 @@ function insertAt(start, item, arr) {
   arr.splice(start, 0, item)
 }
 
+function appendChildId(cid, parent) {
+  insertAt(parent.childIds.length, cid, parent.childIds)
+}
+
 const overmind = new Overmind(
   {
     state: {
@@ -26,7 +30,7 @@ const overmind = new Overmind(
       }) => {
         const n = createNewNote()
         byId[n.id] = n
-        insertAt(root.childIds.length, n.id, root.childIds)
+        appendChildId(n.id, root)
         parentIds[n.id] = root.id
       },
     },
