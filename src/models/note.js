@@ -29,8 +29,8 @@ export function createInitialNotesByIdState() {
   return { [root.id]: root }
 }
 
-export function noteChildCt(root) {
-  return root.childIds.length
+export function noteChildCt(note) {
+  return note.childIds.length
 }
 
 function insertAt(start, item, arr) {
