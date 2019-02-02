@@ -36,7 +36,7 @@ const NoteItem = React.memo(function NoteItem({
 
   const titleRef = React.createRef()
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const el = titleRef.current
     if (el && isSelected) {
       el.focus()
