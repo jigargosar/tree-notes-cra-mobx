@@ -24,7 +24,7 @@ const overmind = new Overmind(
         root.childIds.map(cid => byId[cid]),
     },
     actions: {
-      onAddNewNote: ({ value: ev, state: { byId, root, parentIds } }) => {
+      onAddNewNote: ({ state: { byId, root, parentIds } }) => {
         const n = createNewNote()
         byId[n.id] = n
         appendChildId(n.id, root)
