@@ -14,9 +14,20 @@ function appendChildId(cid, parent) {
   insertAt(parent.childIds.length, cid, parent.childIds)
 }
 
+class No {
+  constructor() {
+    this.a = 1
+  }
+
+  toString() {
+    return `No(a=${this.a})`
+  }
+}
+
 const overmind = new Overmind(
   {
     state: {
+      no: new No(),
       notes: createInitialNotesByIdState(),
       parentIds: {},
       root: ({ notes: byId }) => byId[ROOT_NOTE_ID],
@@ -38,5 +49,7 @@ const overmind = new Overmind(
   },
   { name: 'Overmind Notes' },
 )
+
+window.ov = overmind
 
 export const useOvermindNotes = createHook(overmind)
