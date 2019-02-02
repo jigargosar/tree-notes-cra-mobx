@@ -67,8 +67,11 @@ function RootTree() {
   const { state } = overmind
   const ref = React.createRef()
   const handleKeyDown = ev => {
+    if (ev.defaultPrevented) {
+      return
+    }
+
     const targetIsFocusable = ev.target.dataset.isFocusable
-    console.log(`ev.target`, targetIsFocusable)
 
     if (targetIsFocusable) {
       const focusables = Array.from(
