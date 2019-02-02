@@ -8,6 +8,15 @@ import {
   createNewNote,
   ROOT_NOTE_ID,
 } from './models/note'
+import * as R from 'ramda'
+
+function getInitialState() {
+  return {
+    byId: createInitialNotesByIdState(),
+    parentIds: {},
+    selectedId: null,
+  }
+}
 
 export const notes = {
   onInitialize: ({ state, effects, actions }) => {
@@ -15,9 +24,7 @@ export const notes = {
     actions.populateParentIds()
   },
   state: {
-    byId: createInitialNotesByIdState(),
-    parentIds: {},
-    selectedId: null,
+    ...getInitialState(),
     root: ({ byId }) => byId[ROOT_NOTE_ID],
     rootChildren: ({ byId, root }) => root.childIds.map(cid => byId[cid]),
     allNotes: ({ byId }) => Object.values(byId),
@@ -55,6 +62,13 @@ export const notes = {
         effects.cacheNotes(byId)
       }),
     ),
+    cacheState: pipe(
+      debounce(1000),
+      action(({ state, effects }) => {
+        const toStaticState = R.pick(R.keys(getInitialState()))
+        effects.cacheState(toStaticState(state))
+      }),
+    ),
     deleteAll: ({ state }) => {
       state.byId = createInitialNotesByIdState()
       state.parentIds = {}
@@ -63,6 +77,12 @@ export const notes = {
   effects: {
     cacheNotes(notes) {
       cache('notes', notes)
+    },
+    cacheState(state) {
+      cache('state', state)
+    },
+    getCachedState() {
+      getCachedOr(createInitialNotesByIdState, 'state')
     },
     getCachedNotes() {
       return getCachedOr(createInitialNotesByIdState, 'notes')
@@ -80,6 +100,7 @@ overmind.addMutationListener(mutation => {
   if (mutation.path.startsWith('byId')) {
     overmind.actions.cacheNotes()
   }
+  overmind.actions.cacheState()
 })
 
 window._on = overmind
