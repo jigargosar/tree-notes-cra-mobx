@@ -317,7 +317,7 @@ const RootTree = observer(() => {
   )
 })
 
-const AppOld = observer(() => {
+const App = observer(() => {
   return (
     <FocusTrapZone disableFirstFocus={true}>
       <div className="w-80 center sans-serif">
@@ -352,4 +352,4 @@ const AppOld = observer(() => {
   )
 })
 
-export default AppOld
+export default App
