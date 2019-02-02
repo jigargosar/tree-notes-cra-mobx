@@ -15,6 +15,10 @@ code {
     monospace;
 }
 
+.us-none {
+  user-select: none;
+}
+
 .bg-dark {
   background-color: #282c34;
 }
@@ -22,6 +26,7 @@ code {
 .color-link-light {
   color: #61dafb;
 }
+
 .color-link {
   color: #007180;
 }
@@ -29,6 +34,7 @@ code {
 .w-fit {
   width: fit-content;
 }
+
 .w-max-content {
   width: max-content;
 }
