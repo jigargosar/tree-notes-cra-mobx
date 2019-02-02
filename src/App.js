@@ -1,12 +1,7 @@
 import React from 'react'
 import * as R from 'ramda'
-import * as nanoid from 'nanoid'
-import * as faker from 'faker'
 import { cache, defaultEmptyTo, getCachedOr } from './utils'
-
-const newNoteId = () => `N__${nanoid()}`
-
-const newNoteTitle = () => faker.name.lastName(null)
+import { createNewNote, createRootNote, ROOT_NOTE_ID } from './models/note'
 
 function useCachedState(thunk, cacheKey) {
   const [state, setState] = React.useState(() =>
@@ -16,16 +11,6 @@ function useCachedState(thunk, cacheKey) {
   React.useEffect(() => cache(cacheKey, state), [state])
 
   return [state, setState]
-}
-
-function createNewNote() {
-  return { id: newNoteId(), title: newNoteTitle(), childIds: [] }
-}
-
-const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
-
-function createRootNote() {
-  return { id: ROOT_NOTE_ID, title: 'Root Note Title', childIds: [] }
 }
 
 function useNotes() {
