@@ -4,9 +4,11 @@ import 'tachyons'
 import './index.css'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
+import Posts from './Posts'
 
 function render() {
   ReactDOM.render(<App />, document.getElementById('root'))
+  ReactDOM.render(<Posts />, document.getElementById('overmindPostsApp'))
 }
 
 render()
