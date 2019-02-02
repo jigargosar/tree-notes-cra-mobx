@@ -10,7 +10,7 @@ import {
 } from './models/note'
 import * as R from 'ramda'
 
-function getInitialState() {
+function createInitialState() {
   return {
     byId: createInitialNotesByIdState(),
     parentIds: {},
@@ -18,15 +18,17 @@ function getInitialState() {
   }
 }
 
+const cacheStateProps = ['byId', 'selectedId']
+const pickCacheStateProps = R.pick(cacheStateProps)
+
 export const notes = {
   onInitialize: ({ state, effects, actions }) => {
-    state.byId = effects.getCachedNotes()
+    Object.assign(state, pickCacheStateProps(effects.getCachedState()))
     actions.populateParentIds()
   },
   state: {
-    ...getInitialState(),
+    ...createInitialState(),
     root: ({ byId }) => byId[ROOT_NOTE_ID],
-    rootChildren: ({ byId, root }) => root.childIds.map(cid => byId[cid]),
     allNotes: ({ byId }) => Object.values(byId),
   },
   actions: {
@@ -56,17 +58,10 @@ export const notes = {
     addNewNote({ state: { selectedId }, actions }) {
       actions.appendNewNoteTo(selectedId || ROOT_NOTE_ID)
     },
-    cacheNotes: pipe(
-      debounce(1000),
-      action(({ state: { byId }, effects }) => {
-        effects.cacheNotes(byId)
-      }),
-    ),
     cacheState: pipe(
       debounce(1000),
       action(({ state, effects }) => {
-        const toStaticState = R.pick(R.keys(getInitialState()))
-        effects.cacheState(toStaticState(state))
+        effects.cacheState(state)
       }),
     ),
     deleteAll: ({ state }) => {
@@ -75,17 +70,14 @@ export const notes = {
     },
   },
   effects: {
-    cacheNotes(notes) {
-      cache('notes', notes)
-    },
     cacheState(state) {
-      cache('state', state)
+      cache('state', pickCacheStateProps(state))
     },
     getCachedState() {
-      getCachedOr(createInitialNotesByIdState, 'state')
-    },
-    getCachedNotes() {
-      return getCachedOr(createInitialNotesByIdState, 'notes')
+      return R.pipe(
+        getCachedOr,
+        pickCacheStateProps,
+      )(createInitialState, 'state')
     },
   },
 }
@@ -97,10 +89,11 @@ const overmind = new Overmind(notes, {
 overmind.addMutationListener(mutation => {
   //console.log(`mutation`, mutation)
 
-  if (mutation.path.startsWith('byId')) {
-    overmind.actions.cacheNotes()
+  const path = mutation.path
+  const isCacheStatePath = R.anyPass(R.map(R.startsWith)(cacheStateProps))
+  if (isCacheStatePath(path)) {
+    overmind.actions.cacheState()
   }
-  overmind.actions.cacheState()
 })
 
 window._on = overmind
