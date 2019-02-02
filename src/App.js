@@ -1,6 +1,22 @@
 import React from 'react'
 import { useOvermind } from './overmind'
 
+function renderNoteItemWithId(overmind) {
+  const { state } = overmind
+  return id => {
+    const note = state.byId[id]
+    return (
+      <NoteItem
+        key={id}
+        id={id}
+        title={note.title}
+        isSelected={state.selectedId === id}
+        childIds={note.childIds}
+      />
+    )
+  }
+}
+
 const NoteItem = React.memo(function NoteItem({
   id,
   title,
@@ -22,22 +38,6 @@ const NoteItem = React.memo(function NoteItem({
     </div>
   )
 })
-
-function renderNoteItemWithId(overmind) {
-  const { state } = overmind
-  return id => {
-    const note = state.byId[id]
-    return (
-      <NoteItem
-        key={id}
-        id={id}
-        title={note.title}
-        isSelected={state.selectedId === id}
-        childIds={note.childIds}
-      />
-    )
-  }
-}
 
 function RootTree() {
   const overmind = useOvermind()
