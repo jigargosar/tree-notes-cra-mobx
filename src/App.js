@@ -33,7 +33,9 @@ const NoteItem = React.memo(function NoteItem({
         <div className="ph2">o</div>
         {/*title*/}
         <div
-          className="flex-auto pv1 ph1"
+          className={`flex-auto pv1 ph1 ${
+            isSelected ? 'bg-light-blue' : ''
+          }`}
           tabIndex={0}
           onFocus={selectNote}
         >
