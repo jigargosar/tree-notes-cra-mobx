@@ -4,8 +4,6 @@ import { useOvermind } from './overmind'
 function App() {
   const { state, actions } = useOvermind()
 
-  console.log(state)
-
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>

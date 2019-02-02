@@ -1,5 +1,6 @@
 import { Overmind } from 'overmind'
 import { createHook } from 'overmind-react'
+import { cache, getCachedOr, removeCached } from './utils'
 
 import {
   appendChildId,
@@ -8,9 +9,10 @@ import {
   ROOT_NOTE_ID,
 } from './models/note'
 
-const effects = {}
-
 export const notes = {
+  onInitialize: ({ state, effects }) => {
+    state.byId = effects.getCachedNotes()
+  },
   state: {
     byId: createInitialNotesByIdState(),
     parentIds: {},
@@ -24,12 +26,33 @@ export const notes = {
       appendChildId(n.id, root)
       parentIds[n.id] = root.id
     },
+    cacheNotes: ({ state: { byId }, effects }) => {
+      effects.cacheNotes(byId)
+    },
   },
-  effects,
+  effects: {
+    cacheNotes(notes) {
+      cache('notes', notes)
+    },
+    getCachedNotes() {
+      return getCachedOr(createInitialNotesByIdState, 'notes')
+    },
+    clearNotesCache() {
+      removeCached('notes')
+    },
+  },
 }
 
 const overmind = new Overmind(notes, {
   name: 'Overmind Notes',
+})
+
+overmind.addMutationListener(mutation => {
+  console.log(`mutation`, mutation)
+
+  if (mutation.path.startsWith('byId')) {
+    overmind.actions.cacheNotes()
+  }
 })
 
 window._on = overmind
