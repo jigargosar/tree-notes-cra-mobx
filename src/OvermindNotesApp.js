@@ -7,7 +7,7 @@ function App() {
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
       <div className="pv3">
-        <button onClick={actions.addNew}>add</button>
+        <button onClick={actions.onAddNewNote}>add</button>
       </div>
       <div className="pv3">
         {state.rootChildren.map(n => (

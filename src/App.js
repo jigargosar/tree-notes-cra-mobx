@@ -48,7 +48,7 @@ function useNotes() {
     [root.childIds],
   )
 
-  return { rootNotes, addNewNote }
+  return { rootNotes, addNewNote: onAddNewNote }
 }
 
 const NoteList = () => {
@@ -56,7 +56,7 @@ const NoteList = () => {
 
   return (
     <div className="">
-      <button onClick={notes.addNewNote}>Add Note</button>
+      <button onClick={notes.onAddNewNote}>Add Note</button>
       {notes.rootNotes.map(note => (
         <div key={note.id} className="pv1">
           {defaultEmptyTo('no title set')(note.title)}
