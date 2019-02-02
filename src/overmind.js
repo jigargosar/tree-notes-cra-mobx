@@ -17,11 +17,15 @@ export const notes = {
   state: {
     byId: createInitialNotesByIdState(),
     parentIds: {},
+    selectedId: null,
     root: ({ byId }) => byId[ROOT_NOTE_ID],
     rootChildren: ({ byId, root }) => root.childIds.map(cid => byId[cid]),
     allNotes: ({ byId }) => Object.values(byId),
   },
   actions: {
+    selectNoteId: ({ value: id, state }) => {
+      state.selectedId = id
+    },
     populateParentIds: ({ state }) => {
       state.parentIds = {}
       const { parentIds, allNotes } = state
