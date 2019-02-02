@@ -13,3 +13,8 @@ export const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 export function createRootNote() {
   return { id: ROOT_NOTE_ID, title: 'Root Note Title', childIds: [] }
 }
+
+export function createInitialNotesByIdState() {
+  const root = createRootNote()
+  return { [root.id]: root }
+}

@@ -1,7 +1,11 @@
 import React from 'react'
 import * as R from 'ramda'
 import { cache, defaultEmptyTo, getCachedOr } from './utils'
-import { createNewNote, createRootNote, ROOT_NOTE_ID } from './models/note'
+import {
+  createInitialNotesByIdState,
+  createNewNote,
+  ROOT_NOTE_ID,
+} from './models/note'
 
 function useCachedState(thunk, cacheKey) {
   const [state, setState] = React.useState(() =>
@@ -15,11 +19,12 @@ function useCachedState(thunk, cacheKey) {
 
 function useNotes() {
   const notesKey = 'notes'
+
   // removeCached(notesKey)
-  const [byId, setNotes] = useCachedState(() => {
-    const root = createRootNote()
-    return { [root.id]: root }
-  }, notesKey)
+  const [byId, setNotes] = useCachedState(
+    createInitialNotesByIdState,
+    notesKey,
+  )
 
   const [, setParentIds] = React.useState(() => {
     return R.values(byId).reduce((acc, n) => {

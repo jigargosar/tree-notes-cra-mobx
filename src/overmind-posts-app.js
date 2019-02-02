@@ -1,7 +1,7 @@
 import { Overmind } from 'overmind'
 import { createConnect } from 'overmind-react'
 
-const overmindPostsApp = new Overmind(
+const overmindPosts = new Overmind(
   {
     state: {
       isLoadingPosts: true,
@@ -31,4 +31,4 @@ const overmindPostsApp = new Overmind(
   { name: 'Overmind Example App Posts' },
 )
 
-export const connectPostsApp = createConnect(overmindPostsApp)
+export const connectPostsApp = createConnect(overmindPosts)
