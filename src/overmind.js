@@ -1,6 +1,6 @@
 import { Overmind } from 'overmind'
 import { createHook } from 'overmind-react'
-import { cache, getCachedOr, removeCached } from './utils'
+import { cache, getCachedOr } from './utils'
 
 import {
   appendChildId,
@@ -29,6 +29,10 @@ export const notes = {
     cacheNotes: ({ state: { byId }, effects }) => {
       effects.cacheNotes(byId)
     },
+    deleteAll: ({ state }) => {
+      state.byId = createInitialNotesByIdState()
+      state.parentIds = {}
+    },
   },
   effects: {
     cacheNotes(notes) {
@@ -36,9 +40,6 @@ export const notes = {
     },
     getCachedNotes() {
       return getCachedOr(createInitialNotesByIdState, 'notes')
-    },
-    clearNotesCache() {
-      removeCached('notes')
     },
   },
 }

@@ -2,13 +2,14 @@ import React from 'react'
 import { useOvermind } from './overmind'
 
 function App() {
-  const { state, actions } = useOvermind()
+  const { state, actions, effects } = useOvermind()
 
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
       <div className="pv3">
         <button onClick={actions.addNewNote}>add</button>
+        <button onClick={actions.deleteAll}>delete all</button>
       </div>
       <div className="pv3">
         {state.rootChildren.map(n => (
