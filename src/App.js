@@ -1,12 +1,35 @@
 import React from 'react'
 import { useOvermind } from './overmind'
 
-function NoteItem({ note }) {
-  return <div className="pv1 ph1">{note.title}</div>
+function NoteItem({ id }) {
+  const {
+    state: { byId },
+  } = useOvermind()
+
+  const note = byId[id]
+
+  return (
+    <div className="pv1 ph1" tabIndex={0}>
+      {note.title}
+    </div>
+  )
+}
+
+function RootTree() {
+  const {
+    state: { root },
+  } = useOvermind()
+  return (
+    <div>
+      {root.childIds.map(id => (
+        <NoteItem key={id} id={id} />
+      ))}
+    </div>
+  )
 }
 
 function App() {
-  const { state, actions } = useOvermind()
+  const { actions } = useOvermind()
 
   return (
     <div className="w-80 center sans-serif">
@@ -20,9 +43,7 @@ function App() {
         </button>
       </div>
       <div className="pv3">
-        {state.rootChildren.map(note => (
-          <NoteItem key={note.id} note={note} />
-        ))}
+        <RootTree />
       </div>
     </div>
   )
