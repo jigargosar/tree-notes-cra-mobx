@@ -28,14 +28,13 @@ const NoteItem = React.memo(function NoteItem({
   const overmind = useOvermind()
   const { actions } = overmind
   const selectNote = () => actions.selectNoteId(id)
-  const isLeaf = childIds.length === 0
   const toggleCollapse = () => actions.toggleCollapsed(id)
   return (
     <div>
       {/*header*/}
       <div className="flex items-center">
         <div className="ph2 code" onClick={toggleCollapse}>
-          {isLeaf ? 'o' : isCollapsed ? '+' : '-'}
+          {childIds.length < 1 ? 'o' : isCollapsed ? '+' : '-'}
         </div>
         {/*title*/}
         <div
@@ -48,9 +47,12 @@ const NoteItem = React.memo(function NoteItem({
           {title}
         </div>
       </div>
-      <div className="ml3">
-        {childIds.map(renderNoteItemWithId(overmind))}
-      </div>
+      {/*children*/}
+      {childIds.length > 0 && (
+        <div className="ml3">
+          {childIds.map(renderNoteItemWithId(overmind))}
+        </div>
+      )}
     </div>
   )
 })
