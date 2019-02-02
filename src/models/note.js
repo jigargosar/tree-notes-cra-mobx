@@ -22,3 +22,11 @@ export function createInitialNotesByIdState() {
 export function noteChildCt(root) {
   return root.childIds.length
 }
+
+function insertAt(start, item, arr) {
+  arr.splice(start, 0, item)
+}
+
+export function appendChildId(cid, parent) {
+  insertAt(noteChildCt(parent), cid, parent.childIds)
+}

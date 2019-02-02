@@ -2,18 +2,11 @@ import { Overmind } from 'overmind'
 import { namespaced } from 'overmind/config'
 import { createHook } from 'overmind-react'
 import {
+  appendChildId,
   createInitialNotesByIdState,
   createNewNote,
   ROOT_NOTE_ID,
 } from './models/note'
-
-function insertAt(start, item, arr) {
-  arr.splice(start, 0, item)
-}
-
-function appendChildId(cid, parent) {
-  insertAt(parent.childIds.length, cid, parent.childIds)
-}
 
 const notes = {
   state: {
