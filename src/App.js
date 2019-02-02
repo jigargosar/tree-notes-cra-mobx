@@ -62,37 +62,38 @@ const NoteItem = React.memo(function NoteItem({
   )
 })
 
-function RootTree() {
-  const overmind = useOvermind()
-  const { state } = overmind
-  const ref = React.createRef()
-  const handleKeyDown = ev => {
-    if (ev.defaultPrevented) {
-      return
-    }
+const handleRootTreeKeyDown = (overmind, ref) => ev => {
+  if (ev.defaultPrevented) {
+    return
+  }
 
-    const targetIsFocusable = ev.target.dataset.isFocusable
+  const targetIsFocusable = ev.target.dataset.isFocusable
 
-    if (targetIsFocusable) {
-      const focusables = Array.from(
-        ref.current.querySelectorAll('[data-is-focusable=true]').values(),
-      )
+  if (targetIsFocusable) {
+    const focusables = Array.from(
+      ref.current.querySelectorAll('[data-is-focusable=true]').values(),
+    )
 
-      const idx = focusables.indexOf(ev.target)
-      if (isHotkey(['up', 'left'])(ev)) {
-        const newIdx = R.mathMod(idx - 1)(focusables.length)
-        focusables[newIdx].focus()
-        ev.preventDefault()
-      } else if (isHotkey(['down', 'right'])(ev)) {
-        const newIdx = R.mathMod(idx + 1)(focusables.length)
-        focusables[newIdx].focus()
-        ev.preventDefault()
-      }
+    const idx = focusables.indexOf(ev.target)
+    if (isHotkey(['up', 'left'])(ev)) {
+      const newIdx = R.mathMod(idx - 1)(focusables.length)
+      focusables[newIdx].focus()
+      ev.preventDefault()
+    } else if (isHotkey(['down', 'right'])(ev)) {
+      const newIdx = R.mathMod(idx + 1)(focusables.length)
+      focusables[newIdx].focus()
+      ev.preventDefault()
     }
   }
+}
+
+function RootTree() {
+  const overmind = useOvermind()
+  const ref = React.createRef()
+  const root = overmind.state.root
   return (
-    <div ref={ref} onKeyDown={handleKeyDown}>
-      {state.root.childIds.map(renderNoteItemWithId(overmind))}
+    <div ref={ref} onKeyDown={handleRootTreeKeyDown(overmind, ref)}>
+      {root.childIds.map(renderNoteItemWithId(overmind))}
     </div>
   )
 }
