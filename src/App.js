@@ -1,10 +1,7 @@
 import React from 'react'
 import { useOvermind } from './overmind'
 
-const NoteItem = React.memo(({ note, isSelected }) => {
-  const {
-    actions: { selectNoteId },
-  } = useOvermind()
+const NoteItem = React.memo(({ note, isSelected, selectNoteId }) => {
   const selectNote = React.useCallback(() => {
     return selectNoteId(note.id)
   })
@@ -17,7 +14,7 @@ const NoteItem = React.memo(({ note, isSelected }) => {
 })
 
 function RootTree() {
-  const { state } = useOvermind()
+  const { state, actions } = useOvermind()
   return (
     <div>
       {state.root.childIds.map(id => (
@@ -26,6 +23,7 @@ function RootTree() {
           id={id}
           note={state.byId[id]}
           isSelected={state.selectedId === id}
+          selectNoteId={actions.selectNoteId}
         />
       ))}
     </div>
