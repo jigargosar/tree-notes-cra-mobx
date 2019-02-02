@@ -28,12 +28,13 @@ const NoteItem = React.memo(function NoteItem({
   const overmind = useOvermind()
   const { actions } = overmind
   const selectNote = () => actions.selectNoteId(id)
+  const isLeaf = childIds.length === 0
   return (
     <div>
       {/*header*/}
       <div className="flex items-center">
         <div className="ph2 code">
-          {childIds.length === 0 ? 'o' : isCollapsed ? '+' : '-'}
+          {isLeaf ? 'o' : isCollapsed ? '+' : '-'}
         </div>
         {/*title*/}
         <div
