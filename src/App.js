@@ -30,23 +30,26 @@ const NoteItem = React.memo(function NoteItem({
   const overmind = useOvermind()
   const { actions } = overmind
   const selectNote = () => actions.selectNoteId(id)
-  const toggleCollapse = () => actions.toggleCollapsed(id)
   const isLeaf = childIds.length === 0
   const showChildren = !(isLeaf || isCollapsed)
 
   const titleRef = React.createRef()
+
+  const toggleCollapse = () => {
+    actions.toggleCollapsed(id)
+  }
 
   React.useLayoutEffect(() => {
     const el = titleRef.current
     if (el && isSelected) {
       el.focus()
     }
-  }, [isSelected, titleRef.current])
+  }, [isSelected, titleRef.current, isCollapsed])
 
   return (
     <div>
       {/*header*/}
-      <div className="flex items-center">
+      <div className="flex items-center" onClick={selectNote}>
         <div
           className={`ph2 code us-none ${isLeaf ? '' : 'pointer'}`}
           onClick={toggleCollapse}
