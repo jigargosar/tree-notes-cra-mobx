@@ -1,7 +1,7 @@
 import React from 'react'
 import { useOvermind } from './overmind'
 
-function NoteItem({ id }) {
+const NoteItem = ({ id }) => {
   const {
     state: { byId },
   } = useOvermind()

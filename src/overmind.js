@@ -63,7 +63,7 @@ const overmind = new Overmind(notes, {
 })
 
 overmind.addMutationListener(mutation => {
-  console.log(`mutation`, mutation)
+  //console.log(`mutation`, mutation)
 
   if (mutation.path.startsWith('byId')) {
     overmind.actions.cacheNotes()
