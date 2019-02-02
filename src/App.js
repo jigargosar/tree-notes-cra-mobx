@@ -2,10 +2,7 @@ import React from 'react'
 import { useOvermind } from './overmind'
 
 function App() {
-  const {
-    state: { notes: state },
-    actions: { notes: actions },
-  } = useOvermind()
+  const { state, actions } = useOvermind()
 
   console.log(state)
 
