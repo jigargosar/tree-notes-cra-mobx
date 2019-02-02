@@ -28,9 +28,17 @@ const NoteItem = React.memo(function NoteItem({
   const selectNote = () => actions.selectNoteId(id)
   return (
     <div>
-      {/*title*/}
-      <div className="pv1 ph1" tabIndex={0} onFocus={selectNote}>
-        {title}
+      {/*header*/}
+      <div className="flex items-center">
+        <div className="ph2">o</div>
+        {/*title*/}
+        <div
+          className="flex-auto pv1 ph1"
+          tabIndex={0}
+          onFocus={selectNote}
+        >
+          {title}
+        </div>
       </div>
       <div className="ml3">
         {childIds.map(renderNoteItemWithId(overmind))}
