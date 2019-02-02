@@ -1,7 +1,7 @@
 import React from 'react'
 import { useOvermind } from './overmind'
 import * as R from 'ramda'
-import isHotkey from 'is-hotkey/src'
+import isHotKey from 'is-hotkey'
 
 function renderNoteItemWithId(overmind) {
   const { state } = overmind
@@ -90,11 +90,11 @@ const handleRootTreeKeyDown = (overmind, ref) => ev => {
     )
 
     const idx = focusables.indexOf(ev.target)
-    if (isHotkey(['up', 'left'])(ev)) {
+    if (isHotKey(['up', 'left'])(ev)) {
       const newIdx = R.mathMod(idx - 1)(focusables.length)
       focusables[newIdx].focus()
       ev.preventDefault()
-    } else if (isHotkey(['down', 'right'])(ev)) {
+    } else if (isHotKey(['down', 'right'])(ev)) {
       const newIdx = R.mathMod(idx + 1)(focusables.length)
       focusables[newIdx].focus()
       ev.preventDefault()
