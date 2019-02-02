@@ -18,4 +18,4 @@ render()
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister()
 
-if (module.hot) module.hot.accept('./App', () => render())
+// if (module.hot) module.hot.accept('./App', () => render())
