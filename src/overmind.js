@@ -20,6 +20,7 @@ function createInitialState() {
 
 const cacheStateProps = ['byId', 'selectedId']
 const pickCacheStateProps = R.pick(cacheStateProps)
+const isCacheStatePath = R.anyPass(R.map(R.startsWith)(cacheStateProps))
 
 export const notes = {
   onInitialize: ({ state, effects, actions }) => {
@@ -87,11 +88,7 @@ const overmind = new Overmind(notes, {
 })
 
 overmind.addMutationListener(mutation => {
-  //console.log(`mutation`, mutation)
-
-  const path = mutation.path
-  const isCacheStatePath = R.anyPass(R.map(R.startsWith)(cacheStateProps))
-  if (isCacheStatePath(path)) {
+  if (isCacheStatePath(mutation.path)) {
     overmind.actions.cacheState()
   }
 })
