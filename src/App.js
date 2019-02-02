@@ -48,7 +48,7 @@ const NoteItem = React.memo(function NoteItem({
       {/*header*/}
       <div className="flex items-center">
         <div
-          className={`ph2 code us-none ${isSelected ? 'pointer' : ''}`}
+          className={`ph2 code us-none ${isLeaf ? '' : 'pointer'}`}
           onClick={toggleCollapse}
         >
           {isLeaf ? 'o' : isCollapsed ? '+' : '-'}
