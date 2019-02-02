@@ -12,6 +12,7 @@ function renderNoteItemWithId(overmind) {
         title={note.title}
         isSelected={state.selectedId === id}
         childIds={note.childIds}
+        isCollapsed={note.collapsed}
       />
     )
   }
@@ -22,6 +23,7 @@ const NoteItem = React.memo(function NoteItem({
   title,
   isSelected,
   childIds,
+  isCollapsed,
 }) {
   const overmind = useOvermind()
   const { actions } = overmind
@@ -30,7 +32,9 @@ const NoteItem = React.memo(function NoteItem({
     <div>
       {/*header*/}
       <div className="flex items-center">
-        <div className="ph2">o</div>
+        <div className="ph2 code">
+          {childIds.length === 0 ? 'o' : isCollapsed ? '+' : '-'}
+        </div>
         {/*title*/}
         <div
           className={`flex-auto pv1 ph1 ${

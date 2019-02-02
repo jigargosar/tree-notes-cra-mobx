@@ -5,13 +5,23 @@ const newNoteId = () => `N__${nanoid()}`
 const newNoteTitle = () => faker.name.lastName(null)
 
 export function createNewNote() {
-  return { id: newNoteId(), title: newNoteTitle(), childIds: [] }
+  return {
+    id: newNoteId(),
+    title: newNoteTitle(),
+    childIds: [],
+    collapsed: false,
+  }
 }
 
 export const ROOT_NOTE_ID = 'ROOT_NOTE_ID'
 
 export function createRootNote() {
-  return { id: ROOT_NOTE_ID, title: 'Root Note Title', childIds: [] }
+  return {
+    id: ROOT_NOTE_ID,
+    title: 'Root Note Title',
+    childIds: [],
+    collapsed: false,
+  }
 }
 
 export function createInitialNotesByIdState() {
