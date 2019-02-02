@@ -3,9 +3,12 @@ import { createHook } from 'overmind-react'
 import {
   createInitialNotesByIdState,
   createNewNote,
-  noteChildCt,
   ROOT_NOTE_ID,
 } from './models/note'
+
+function insertAt(start, item, arr) {
+  arr.splice(start, 0, item)
+}
 
 const overmind = new Overmind(
   {
@@ -23,7 +26,7 @@ const overmind = new Overmind(
       }) => {
         const n = createNewNote()
         byId[n.id] = n
-        root.childIds.splice(noteChildCt(root), 0, n.id)
+        insertAt(root.childIds.length, n.id, root.childIds)
         parentIds[n.id] = root.id
       },
     },
