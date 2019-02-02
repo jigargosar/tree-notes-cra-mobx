@@ -1,5 +1,7 @@
 import React from 'react'
 import { useOvermind } from './overmind'
+import * as R from 'ramda'
+import isHotkey from 'is-hotkey/src'
 
 function renderNoteItemWithId(overmind) {
   const { state } = overmind
@@ -44,6 +46,7 @@ const NoteItem = React.memo(function NoteItem({
             isSelected ? 'bg-light-blue' : ''
           }`}
           tabIndex={0}
+          data-is-focusable={true}
           onFocus={selectNote}
         >
           {title}
@@ -62,8 +65,32 @@ const NoteItem = React.memo(function NoteItem({
 function RootTree() {
   const overmind = useOvermind()
   const { state } = overmind
+  const ref = React.createRef()
+  const handleKeyDown = ev => {
+    const targetIsFocusable = ev.target.dataset.isFocusable
+    console.log(`ev.target`, targetIsFocusable)
+
+    if (targetIsFocusable) {
+      const focusables = Array.from(
+        ref.current.querySelectorAll('[data-is-focusable=true]').values(),
+      )
+
+      const idx = focusables.indexOf(ev.target)
+      if (isHotkey('up')(ev)) {
+        const newIdx = R.mathMod(idx - 1)(focusables.length)
+        focusables[newIdx].focus()
+        ev.preventDefault()
+      } else if (isHotkey('down')(ev)) {
+        const newIdx = R.mathMod(idx + 1)(focusables.length)
+        focusables[newIdx].focus()
+        ev.preventDefault()
+      }
+    }
+  }
   return (
-    <div>{state.root.childIds.map(renderNoteItemWithId(overmind))}</div>
+    <div ref={ref} onKeyDown={handleKeyDown}>
+      {state.root.childIds.map(renderNoteItemWithId(overmind))}
+    </div>
   )
 }
 
