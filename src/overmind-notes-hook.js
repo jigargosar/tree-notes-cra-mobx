@@ -16,18 +16,20 @@ const notes = {
     rootChildren: ({ byId, root }) => root.childIds.map(cid => byId[cid]),
   },
   actions: {
-    addNewNote: ({
-      state: {
-        notes: { byId, parentIds, root },
-      },
-    }) => {
-      const n = createNewNote()
-      byId[n.id] = n
-      appendChildId(n.id, root)
-      parentIds[n.id] = root.id
-    },
+    addNewNote,
   },
   effects: {},
+}
+
+function addNewNote({
+  state: {
+    notes: { byId, parentIds, root },
+  },
+}) {
+  const n = createNewNote()
+  byId[n.id] = n
+  appendChildId(n.id, root)
+  parentIds[n.id] = root.id
 }
 
 const overmind = new Overmind(namespaced({ notes }), {
