@@ -18,3 +18,7 @@ export function createInitialNotesByIdState() {
   const root = createRootNote()
   return { [root.id]: root }
 }
+
+export function noteChildCt(root) {
+  return root.childIds.length
+}
