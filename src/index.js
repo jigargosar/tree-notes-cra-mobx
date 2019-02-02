@@ -4,13 +4,12 @@ import 'tachyons'
 import './index.css'
 // import App from './App'
 import * as serviceWorker from './serviceWorker'
-import App from './OvermindNotesApp'
+import App from './App'
 
 // import Posts from './Posts'
 
 function render() {
   ReactDOM.render(<App />, document.getElementById('root'))
-  // ReactDOM.render(<Posts />, document.getElementById('overmindPostsApp'))
 }
 
 render()
@@ -20,4 +19,4 @@ render()
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister()
 
-// if (module.hot) module.hot.accept('./App', () => render())
+if (module.hot) module.hot.accept('./App', () => render())

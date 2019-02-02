@@ -7,6 +7,6 @@ const overmind = new Overmind(namespaced({ notes }), {
   name: 'Overmind Notes',
 })
 
-window.ov = overmind
+window._on = overmind
 
-export const useOvermindNotes = createHook(overmind)
+export const useOvermind = createHook(overmind)

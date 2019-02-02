@@ -6,6 +6,7 @@ import {
 } from './models/note'
 
 const state = {
+  foo: 1,
   byId: createInitialNotesByIdState(),
   parentIds: {},
   root: ({ byId }) => byId[ROOT_NOTE_ID],
