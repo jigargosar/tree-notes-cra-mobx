@@ -7,9 +7,13 @@ function App() {
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
-      <div className="pv3">
-        <button onClick={actions.addNewNote}>add</button>
-        <button onClick={actions.deleteAll}>delete all</button>
+      <div className="pv1">
+        <button className="" onClick={actions.addNewNote}>
+          add
+        </button>
+        <button className="ml3" onClick={actions.deleteAll}>
+          delete all
+        </button>
       </div>
       <div className="pv3">
         {state.rootChildren.map(n => (
