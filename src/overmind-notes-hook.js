@@ -12,22 +12,19 @@ const overmind = new Overmind(
     state: {
       notes: createInitialNotesByIdState(),
       parentIds: {},
-      root: ({ notes }) => notes[ROOT_NOTE_ID],
-      rootChildren: ({ notes, root }) =>
-        root.childIds.map(cid => notes[cid]),
+      root: ({ notes: byId }) => byId[ROOT_NOTE_ID],
+      rootChildren: ({ notes: byId, root }) =>
+        root.childIds.map(cid => byId[cid]),
     },
     actions: {
-      onAddNewNote: ({ value: ev, state }) => {
-        const byId = state.notes
-        // ev.persist()
-        console.log(`value`, ev)
+      onAddNewNote: ({
+        value: ev,
+        state: { notes: byId, root, parentIds },
+      }) => {
         const n = createNewNote()
         byId[n.id] = n
-        const root = state.root
-
         root.childIds.splice(noteChildCt(root), 0, n.id)
-
-        state.parentIds[n.id] = root.id
+        parentIds[n.id] = root.id
       },
     },
     effects: {},
