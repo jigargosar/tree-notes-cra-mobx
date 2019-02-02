@@ -35,11 +35,15 @@ export const notes = {
         })
       })
     },
-    addNewNote({ state: { byId, parentIds, root } }) {
+    appendNewNoteTo({ value: pid, state: { byId, parentIds } }) {
+      const parent = byId[pid]
       const n = createNewNote()
       byId[n.id] = n
-      appendChildId(n.id, root)
-      parentIds[n.id] = root.id
+      appendChildId(n.id, parent)
+      parentIds[n.id] = parent.id
+    },
+    addNewNote({ state: { selectedId }, actions }) {
+      actions.appendNewNoteTo(selectedId || ROOT_NOTE_ID)
     },
     cacheNotes: pipe(
       debounce(1000),
