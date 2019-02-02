@@ -5,13 +5,12 @@ const NoteItem = React.memo(({ note, isSelected }) => {
   const {
     actions: { selectNoteId },
   } = useOvermind()
+  const selectNote = React.useCallback(() => {
+    return selectNoteId(note.id)
+  })
 
   return (
-    <div
-      className="pv1 ph1"
-      tabIndex={0}
-      onFocus={() => selectNoteId(note.id)}
-    >
+    <div className="pv1 ph1" tabIndex={0} onFocus={selectNote}>
       {note.title}
     </div>
   )
