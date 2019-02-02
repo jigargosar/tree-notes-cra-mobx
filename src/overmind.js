@@ -49,12 +49,17 @@ export const notes = {
         })
       })
     },
-    appendNewNoteTo({ value: pid, state: { byId, parentIds } }) {
+    appendNewNoteTo({
+      value: pid,
+      state: { byId, parentIds },
+      actions: { selectNoteId },
+    }) {
       const parent = byId[pid]
       const n = createNewNote()
       byId[n.id] = n
       appendChildId(n.id, parent)
       parentIds[n.id] = parent.id
+      selectNoteId(n.id)
     },
     addNewNote({ state: { selectedId }, actions }) {
       actions.appendNewNoteTo(selectedId || ROOT_NOTE_ID)
@@ -66,8 +71,7 @@ export const notes = {
       }),
     ),
     deleteAll: ({ state }) => {
-      state.byId = createInitialNotesByIdState()
-      state.parentIds = {}
+      Object.assign(state, createInitialState())
     },
   },
   effects: {
