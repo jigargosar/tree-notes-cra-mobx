@@ -36,6 +36,7 @@ const notes = {
   },
   effects: {},
 }
+
 const overmind = new Overmind(namespaced({ notes }), {
   name: 'Overmind Notes',
 })
