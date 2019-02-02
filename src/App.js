@@ -35,16 +35,14 @@ const NoteItem = React.memo(function NoteItem({
 
   const titleRef = React.createRef()
 
-  const toggleCollapse = () => {
-    actions.toggleCollapsed(id)
-  }
+  const toggleCollapse = () => actions.toggleCollapsed(id)
 
   React.useLayoutEffect(() => {
     const el = titleRef.current
     if (el && isSelected) {
       el.focus()
     }
-  }, [isSelected, titleRef.current, isCollapsed])
+  })
 
   return (
     <div>
