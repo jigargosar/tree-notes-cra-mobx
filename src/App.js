@@ -33,9 +33,9 @@ const NoteItem = React.memo(function NoteItem({
   const isLeaf = childIds.length === 0
   const showChildren = !(isLeaf || isCollapsed)
 
-  const titleRef = React.createRef()
-
   const toggleCollapse = () => actions.toggleCollapsed(id)
+
+  const titleRef = React.createRef()
 
   React.useLayoutEffect(() => {
     const el = titleRef.current
