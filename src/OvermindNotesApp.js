@@ -2,7 +2,11 @@ import React from 'react'
 import { useOvermindNotes } from './overmind-notes-hook'
 
 function App() {
-  const { state, actions } = useOvermindNotes()
+  const {
+    state: { notes: state },
+    actions: { notes: actions },
+  } = useOvermindNotes()
+
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
