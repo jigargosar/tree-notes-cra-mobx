@@ -33,6 +33,16 @@ const NoteItem = React.memo(function NoteItem({
   const toggleCollapse = () => actions.toggleCollapsed(id)
   const isLeaf = childIds.length === 0
   const showChildren = !(isLeaf || isCollapsed)
+
+  const titleRef = React.createRef()
+
+  React.useEffect(() => {
+    const el = titleRef.current
+    if (el && isSelected) {
+      el.focus()
+    }
+  }, [isSelected, titleRef.current])
+
   return (
     <div>
       {/*header*/}
@@ -42,6 +52,7 @@ const NoteItem = React.memo(function NoteItem({
         </div>
         {/*title*/}
         <div
+          ref={titleRef}
           className={`flex-auto pv1 ph1 ${
             isSelected ? 'bg-light-blue' : ''
           }`}
