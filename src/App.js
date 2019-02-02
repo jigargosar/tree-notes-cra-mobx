@@ -1,6 +1,10 @@
 import React from 'react'
 import { useOvermind } from './overmind'
 
+function NoteItem({ note }) {
+  return <div className="pv1 ph1">{note.title}</div>
+}
+
 function App() {
   const { state, actions } = useOvermind()
 
@@ -16,10 +20,8 @@ function App() {
         </button>
       </div>
       <div className="pv3">
-        {state.rootChildren.map(n => (
-          <div key={n.id} className="pv1 ph1">
-            {n.title}
-          </div>
+        {state.rootChildren.map(note => (
+          <NoteItem key={note.id} note={note} />
         ))}
       </div>
     </div>
