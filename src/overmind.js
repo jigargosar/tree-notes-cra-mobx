@@ -60,7 +60,7 @@ export const notes = {
       actions.appendNewNoteTo(selectedId || ROOT_NOTE_ID)
     },
     cacheState: pipe(
-      debounce(1000),
+      debounce(300),
       action(({ state, effects }) => {
         effects.cacheState(state)
       }),
