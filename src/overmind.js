@@ -1,4 +1,4 @@
-import { Overmind } from 'overmind'
+import { action, debounce, Overmind, pipe } from 'overmind'
 import { createHook } from 'overmind-react'
 import { cache, getCachedOr } from './utils'
 
@@ -10,25 +10,40 @@ import {
 } from './models/note'
 
 export const notes = {
-  onInitialize: ({ state, effects }) => {
-    state.byId = effects.getCachedNotes()
+  onInitialize: ({ state, effects, actions }) => {
+    const cachedNotes = effects.getCachedNotes()
+    state.byId = cachedNotes
+    actions.populateParentIds()
   },
   state: {
     byId: createInitialNotesByIdState(),
     parentIds: {},
     root: ({ byId }) => byId[ROOT_NOTE_ID],
     rootChildren: ({ byId, root }) => root.childIds.map(cid => byId[cid]),
+    allNotes: ({ byId }) => Object.values(byId),
   },
   actions: {
+    populateParentIds: ({ state }) => {
+      state.parentIds = {}
+      const { parentIds, allNotes } = state
+      allNotes.forEach(n => {
+        n.childIds.forEach(cid => {
+          parentIds[cid] = n.id
+        })
+      })
+    },
     addNewNote({ state: { byId, parentIds, root } }) {
       const n = createNewNote()
       byId[n.id] = n
       appendChildId(n.id, root)
       parentIds[n.id] = root.id
     },
-    cacheNotes: ({ state: { byId }, effects }) => {
-      effects.cacheNotes(byId)
-    },
+    cacheNotes: pipe(
+      debounce(1000),
+      action(({ state: { byId }, effects }) => {
+        effects.cacheNotes(byId)
+      }),
+    ),
     deleteAll: ({ state }) => {
       state.byId = createInitialNotesByIdState()
       state.parentIds = {}

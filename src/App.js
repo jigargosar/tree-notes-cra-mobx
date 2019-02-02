@@ -2,7 +2,7 @@ import React from 'react'
 import { useOvermind } from './overmind'
 
 function App() {
-  const { state, actions, effects } = useOvermind()
+  const { state, actions } = useOvermind()
 
   return (
     <div className="w-80 center sans-serif">
