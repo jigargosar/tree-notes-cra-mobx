@@ -23,6 +23,10 @@ export const notes = {
     allNotes: ({ byId }) => Object.values(byId),
   },
   actions: {
+    toggleCollapsed: ({ value: id, state: { byId } }) => {
+      const note = byId[id]
+      note.collapsed = !note.collapsed
+    },
     selectNoteId: ({ value: id, state }) => {
       state.selectedId = id
     },
