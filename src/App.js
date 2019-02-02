@@ -79,11 +79,11 @@ function RootTree() {
       )
 
       const idx = focusables.indexOf(ev.target)
-      if (isHotkey('up')(ev)) {
+      if (isHotkey(['up', 'left'])(ev)) {
         const newIdx = R.mathMod(idx - 1)(focusables.length)
         focusables[newIdx].focus()
         ev.preventDefault()
-      } else if (isHotkey('down')(ev)) {
+      } else if (isHotkey(['down', 'right'])(ev)) {
         const newIdx = R.mathMod(idx + 1)(focusables.length)
         focusables[newIdx].focus()
         ev.preventDefault()
