@@ -17,17 +17,14 @@ function appendChildId(cid, parent) {
 const overmind = new Overmind(
   {
     state: {
-      notes: createInitialNotesByIdState(),
+      byId: createInitialNotesByIdState(),
       parentIds: {},
-      root: ({ notes: byId }) => byId[ROOT_NOTE_ID],
-      rootChildren: ({ notes: byId, root }) =>
+      root: ({ byId }) => byId[ROOT_NOTE_ID],
+      rootChildren: ({ byId, root }) =>
         root.childIds.map(cid => byId[cid]),
     },
     actions: {
-      onAddNewNote: ({
-        value: ev,
-        state: { notes: byId, root, parentIds },
-      }) => {
+      onAddNewNote: ({ value: ev, state: { byId, root, parentIds } }) => {
         const n = createNewNote()
         byId[n.id] = n
         appendChildId(n.id, root)
