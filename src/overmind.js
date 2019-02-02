@@ -11,8 +11,7 @@ import {
 
 export const notes = {
   onInitialize: ({ state, effects, actions }) => {
-    const cachedNotes = effects.getCachedNotes()
-    state.byId = cachedNotes
+    state.byId = effects.getCachedNotes()
     actions.populateParentIds()
   },
   state: {
