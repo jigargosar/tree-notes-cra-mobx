@@ -16,7 +16,9 @@ const NoteItem = React.memo(function NoteItem({
       <div className="pv1 ph1" tabIndex={0} onFocus={selectNote}>
         {title}
       </div>
-      {childIds.map(renderNoteItemWithId(overmind))}
+      <div className="ml3">
+        {childIds.map(renderNoteItemWithId(overmind))}
+      </div>
     </div>
   )
 })
