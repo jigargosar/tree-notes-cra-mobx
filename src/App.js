@@ -1,26 +1,40 @@
 import React from 'react'
 import { useOvermind } from './overmind'
 
-const NoteItem = React.memo(({ id, title, isSelected }) => {
-  const { actions } = useOvermind()
+const NoteItem = React.memo(function NoteItem({
+  id,
+  title,
+  isSelected,
+  childIds,
+}) {
+  const overmind = useOvermind()
+  const { actions } = overmind
   const selectNote = () => actions.selectNoteId(id)
   return (
-    <div className="pv1 ph1" tabIndex={0} onFocus={selectNote}>
-      {title}
+    <div>
+      {/*title*/}
+      <div className="pv1 ph1" tabIndex={0} onFocus={selectNote}>
+        {title}
+      </div>
+      {childIds.map(renderNoteItemWithId(overmind))}
     </div>
   )
 })
 
 function renderNoteItemWithId(overmind) {
   const { state } = overmind
-  return id => (
-    <NoteItem
-      key={id}
-      id={id}
-      title={state.byId[id].title}
-      isSelected={state.selectedId === id}
-    />
-  )
+  return id => {
+    const note = state.byId[id]
+    return (
+      <NoteItem
+        key={id}
+        id={id}
+        title={note.title}
+        isSelected={state.selectedId === id}
+        childIds={note.childIds}
+      />
+    )
+  }
 }
 
 function RootTree() {
