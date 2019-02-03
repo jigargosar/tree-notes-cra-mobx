@@ -6,8 +6,19 @@ import {
   createNewNote,
   ROOT_NOTE_ID,
 } from './models/note'
-import { autorun, observable, toJS } from 'mobx'
+import { autorun, extendObservable, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
+
+function enhanceNote(note) {
+  return extendObservable(note, {
+    get isLeaf() {
+      return note.childIds.length === 0
+    },
+    toggleCollapse() {
+      this.collapsed = !this.collapsed
+    },
+  })
+}
 
 function createNoteTree() {
   const nt = observable({
@@ -19,7 +30,8 @@ function createNoteTree() {
   function init() {
     const { byId, selectedId } = getCachedOr(() => ({}), 'noteTree')
 
-    nt.byId = byId || createInitialNotesByIdState()
+    const byIdNotes = byId || createInitialNotesByIdState()
+    nt.byId = R.mapObjIndexed(enhanceNote)(byIdNotes)
     nt.selectedId = selectedId || null
 
     autorun(() => {
@@ -54,7 +66,49 @@ const nt = createNoteTree()
 
 const NoteItem = observer(({ id }) => {
   const note = nt.get(id)
-  return <div className="">{note.title}</div>
+
+  const titleRef = React.createRef()
+
+  React.useLayoutEffect(() => {
+    const el = titleRef.current
+    if (el && note.isSelected) {
+      el.focus()
+    }
+  })
+
+  return (
+    <div>
+      {/*header*/}
+      <div className="flex items-center" onClick={note.setSelected}>
+        <div
+          className={`ph2 code us-none ${note.isLeaf ? '' : 'pointer'}`}
+          onClick={note.toggleCollapse}
+        >
+          {note.isLeaf ? 'o' : note.collapsed ? '+' : '-'}
+        </div>
+        {/*title*/}
+        <div
+          ref={titleRef}
+          className={`flex-auto pv1 ph1 ${
+            note.isSelected ? 'bg-light-blue' : ''
+          }`}
+          tabIndex={0}
+          data-is-focusable={true}
+          onFocus={note.setSelected}
+        >
+          {note.title}
+        </div>
+      </div>
+      {/*children*/}
+      {note.showChildren && (
+        <div className="ml3">
+          {note.childIds.map(id => (
+            <NoteItem key={id} id={id} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
 })
 
 const RootTree = observer(() => {
