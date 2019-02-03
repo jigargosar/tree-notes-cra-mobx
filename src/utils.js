@@ -23,3 +23,14 @@ export const isFunction = R.is(Function)
 
 export const tapValidate = rawSchemas =>
   R.tap(id => validate(rawSchemas, [id]))
+
+export function idProp(item) {
+  return tapValidate('S')(item.id)
+}
+
+export function toIdLookup(initialList) {
+  return initialList.reduce((acc, item) => {
+    acc[idProp(item)] = item
+    return acc
+  }, {})
+}

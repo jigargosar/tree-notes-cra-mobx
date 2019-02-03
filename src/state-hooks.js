@@ -1,20 +1,13 @@
 import * as R from 'ramda'
 import validate from 'aproba'
 import { useSetState } from 'react-use'
-import { tapValidate } from './utils'
+import { toIdLookup } from './utils'
 import { useEffect, useRef } from 'react'
 
 export function useLookup(initialList) {
   validate('A', arguments)
-
-  function getId(item) {
-    return tapValidate('S')(item.id)
-  }
   const [state, setState] = useSetState(() => {
-    return initialList.reduce((acc, item) => {
-      acc[getId(item)] = item
-      return acc
-    }, {})
+    return toIdLookup(initialList)
   })
 
   const set = (k, v) => setState(R.mergeLeft({ [k]: v }))

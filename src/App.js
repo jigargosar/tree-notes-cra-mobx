@@ -3,7 +3,7 @@ import { useOvermind } from './overmind'
 import * as R from 'ramda'
 import isHotKey from 'is-hotkey'
 import { useLookup } from './state-hooks'
-import { createNewNote } from './models/note'
+import { createRootNote } from './models/note'
 import { useLocalStorage } from 'react-use'
 
 function renderNoteItemWithId(overmind) {
@@ -116,18 +116,24 @@ function RootTree() {
   )
 }
 
-function getInitialNotes() {
-  return R.times(createNewNote)(10)
+function useNoteTree() {
+  const [cachedNL, persistNL] = useLocalStorage('notes', [
+    createRootNote(),
+  ])
+
+  const nl = useLookup(cachedNL)
+
+  useEffect(() => persistNL(nl.values()), [nl.state])
+
+  const addNew = () => {}
+
+  return Object.freeze({ nl, add: addNew })
 }
 
 function App() {
   const { actions } = useOvermind()
 
-  const [cachedNL, persistNL] = useLocalStorage('notes', getInitialNotes())
-
-  const nl = useLookup(cachedNL)
-
-  useEffect(() => persistNL(nl.values()), [nl.state])
+  const { nl } = useNoteTree()
 
   return (
     <div className="w-80 center sans-serif">
