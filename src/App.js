@@ -140,7 +140,7 @@ function App() {
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Use Tree Notes</div>
-      <button className="" onClick={actions.addNewNote}>
+      <button className="" onClick={nt.addNew}>
         add
       </button>
       <div className="pv3">
