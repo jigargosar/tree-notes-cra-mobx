@@ -10,6 +10,14 @@ import { autorun, extendObservable, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
 
 const enhanceNote = R.curry(function enhanceNote(tree, note) {
+  function toggleCollapse() {
+    note.collapsed = !note.collapsed
+  }
+
+  function setSelected() {
+    tree.setSelectedId(note.id)
+  }
+
   return extendObservable(note, {
     get isLeaf() {
       return note.childIds.length === 0
@@ -17,18 +25,14 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
     get hasChildren() {
       return !this.isLeaf
     },
-    toggleCollapse() {
-      this.collapsed = !this.collapsed
-    },
     get showChildren() {
       return this.hasChildren && !this.collapsed
     },
     get isSelected() {
       return tree.selectedId === note.id
     },
-    setSelected() {
-      tree.setSelected
-    },
+    toggleCollapse,
+    setSelected,
   })
 })
 
@@ -39,21 +43,23 @@ function createNoteTree() {
     selectedId: null,
   })
 
+  const api = { add, get, addAfter, setSelectedId, currentRoot }
+
   init()
 
-  const root = get(ROOT_NOTE_ID)
-
-  const api = { add, get, root, addAfter, setSelected }
+  function currentRoot() {
+    return get(ROOT_NOTE_ID)
+  }
 
   function createEnhancedNote() {
-    return enhanceNote(createNewNote(), api)
+    return enhanceNote(api, createNewNote())
   }
 
   function init() {
     const { byId, selectedId } = getCachedOr(() => ({}), 'noteTree')
 
     const byIdNotes = byId || createInitialNotesByIdState()
-    tree.byId = R.mapObjIndexed(enhanceNote(tree))(byIdNotes)
+    tree.byId = R.mapObjIndexed(enhanceNote(api))(byIdNotes)
     tree.selectedId = selectedId || null
 
     autorun(() => {
@@ -61,8 +67,8 @@ function createNoteTree() {
     })
   }
 
-  function setSelected(n) {
-    tree.selectedId = n.id
+  function setSelectedId(id) {
+    tree.selectedId = id
   }
 
   function get(id) {
@@ -146,7 +152,7 @@ const NoteItem = observer(({ id }) => {
 const RootTree = observer(() => {
   return (
     <div className="">
-      {nt.root.childIds.map(id => (
+      {nt.currentRoot().childIds.map(id => (
         <NoteItem key={id} id={id} />
       ))}
     </div>
