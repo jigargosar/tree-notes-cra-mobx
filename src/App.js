@@ -16,7 +16,7 @@ function createNoteTree() {
     selectedId: null,
   })
 
-  const init = () => {
+  function init() {
     const { byId, selectedId } = getCachedOr(() => ({}), 'noteTree')
 
     nt.byId = byId || createInitialNotesByIdState()
@@ -25,6 +25,10 @@ function createNoteTree() {
     autorun(() => {
       cache('noteTree', toJS(nt))
     })
+  }
+
+  function get(id) {
+    return nt.byId[id]
   }
 
   function add() {
@@ -36,18 +40,31 @@ function createNoteTree() {
     nt.byId[n.id] = n
     nt.parentIds[n.id] = pid
     nt.selectedId = n.id
-    nt.byId[pid].childIds.push(n.id)
+    get(pid).childIds.push(n.id)
   }
 
   init()
 
-  return { add }
+  const root = get(ROOT_NOTE_ID)
+
+  return { add, get, root }
 }
 
 const nt = createNoteTree()
 
+const NoteItem = observer(({ id }) => {
+  const note = nt.get(id)
+  return <div className="">{note.title}</div>
+})
+
 const RootTree = observer(() => {
-  return <div className="">RT</div>
+  return (
+    <div className="">
+      {nt.root.childIds.map(id => (
+        <NoteItem key={id} id={id} />
+      ))}
+    </div>
+  )
 })
 
 const App = observer(() => {
