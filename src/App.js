@@ -123,11 +123,11 @@ function getInitialNotes() {
 function App() {
   const { actions } = useOvermind()
 
-  const [cachedNL, cacheNL] = useLocalStorage('notes', getInitialNotes())
+  const [cachedNL, persistNL] = useLocalStorage('notes', getInitialNotes())
 
-  const nl = useLookup(cachedNL)
+  const nl = useLookup(cachedNL, { hook: [cachedNL, persistNL] })
 
-  useEffect(() => cacheNL(nl.values()), [nl.state])
+  useEffect(() => persistNL(nl.values()), [nl.state])
 
   return (
     <div className="w-80 center sans-serif">
