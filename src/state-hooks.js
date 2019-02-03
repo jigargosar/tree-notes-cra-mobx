@@ -4,18 +4,15 @@ import { useSetState } from 'react-use'
 import { isFunction } from './utils'
 import { useEffect, useRef } from 'react'
 
-export function useLookup(initialList = [], options = {}) {
+export function useLookup(initialList = []) {
   if (isFunction(initialList)) {
     initialList = initialList()
   }
 
-  validate('AO', [initialList, options])
+  validate('A', [initialList])
 
   function getId(item) {
-    validate('O', [item])
-    const id = (R.prop('getId')(options) || R.prop('id'))(item)
-    validate('S', [id])
-    return id
+    return R.tap(id => validate('S', [id]))(item.id)
   }
   const [state, setState] = useSetState(() => {
     return initialList.reduce((acc, item) => {
