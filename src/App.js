@@ -9,7 +9,7 @@ import {
 import { autorun, extendObservable, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
 
-function enhanceNote(note) {
+const enhanceNote = R.curry(function enhanceNote(tree, note) {
   return extendObservable(note, {
     get isLeaf() {
       return note.childIds.length === 0
@@ -23,15 +23,14 @@ function enhanceNote(note) {
     get showChildren() {
       return this.hasChildren && !this.collapsed
     },
+    get isSelected() {
+      return tree.selectedId === note.id
+    },
   })
-}
-
-function createEnhancedNote() {
-  return enhanceNote(createNewNote())
-}
+})
 
 function createNoteTree() {
-  const nt = observable({
+  const tree = observable({
     byId: {},
     parentIds: {},
     selectedId: null,
@@ -41,16 +40,20 @@ function createNoteTree() {
     const { byId, selectedId } = getCachedOr(() => ({}), 'noteTree')
 
     const byIdNotes = byId || createInitialNotesByIdState()
-    nt.byId = R.mapObjIndexed(enhanceNote)(byIdNotes)
-    nt.selectedId = selectedId || null
+    tree.byId = R.mapObjIndexed(enhanceNote(tree))(byIdNotes)
+    tree.selectedId = selectedId || null
 
     autorun(() => {
-      cache('noteTree', toJS(nt))
+      cache('noteTree', toJS(tree))
     })
   }
 
+  function createEnhancedNote() {
+    return enhanceNote(createNewNote(), tree)
+  }
+
   function get(id) {
-    return nt.byId[id]
+    return tree.byId[id]
   }
 
   function add() {
@@ -59,17 +62,26 @@ function createNoteTree() {
 
   function addTo(pid) {
     const n = createEnhancedNote()
-    nt.byId[n.id] = n
-    nt.parentIds[n.id] = pid
-    nt.selectedId = n.id
+    tree.byId[n.id] = n
+    tree.parentIds[n.id] = pid
+    tree.selectedId = n.id
     get(pid).childIds.push(n.id)
+  }
+  function addAfter(sid) {
+    const n = createEnhancedNote()
+    tree.byId[n.id] = n
+    const pid = tree.parentIds[sid]
+    tree.parentIds[n.id] = pid
+    tree.selectedId = n.id
+    const childIds = get(pid).childIds
+    childIds.splice(childIds.indexOf(sid), n.id)
   }
 
   init()
 
   const root = get(ROOT_NOTE_ID)
 
-  return { add, get, root }
+  return { add, get, root, addAfter }
 }
 
 const nt = createNoteTree()
