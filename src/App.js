@@ -26,8 +26,7 @@ function useNoteTree() {
     const parent = notes.get(pid)
     const n = createNewNote()
     notes.set(n.id, n)
-    const id = n.id
-    notes.over(parent.id, appendChildId(id))
+    notes.over(parent.id, appendChildId(n.id))
     parentIds.set(n.id, parent.id)
     // selectNoteId(n.id)
   }
