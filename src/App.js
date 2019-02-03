@@ -92,11 +92,9 @@ function useNote(id) {
     get title() {
       return note.title
     },
-
     get childIds() {
       return note.childIds
     },
-
     get isLeaf() {
       return note.childIds.length === 0
     },
