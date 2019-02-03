@@ -20,7 +20,7 @@ function useNoteTree() {
   const notes = useObject(() => toIdLookup(cachedNoteList))
   const [, parentIds] = useMap(() => noteListToPidLookup(cachedNoteList))
 
-  const allNotes = useComputed(() => R.values(notes.state), [notes.state])
+  const allNotes = useComputed(notes.values, [notes.state])
 
   const addNewTo = pid => {
     const parent = notes.get(pid)
