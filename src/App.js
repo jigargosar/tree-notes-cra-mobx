@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useOvermind } from './overmind'
 import * as R from 'ramda'
 import isHotKey from 'is-hotkey'
@@ -122,26 +122,27 @@ function RootTree() {
   )
 }
 
-function renderNoteItemWithId2(
-  id,
-  getNoteById,
-  setSelectedNoteId,
-  selectedId,
-  toggleCollapsed,
-) {
-  const note = getNoteById(id)
+function renderNoteItemWithId2(id, nt) {
+  const note = nt.get(id)
+  const isLeaf = note.childIds.length === 0
+  const showChildren = !(isLeaf || note.collapsed)
   return (
     <NoteItem2
       key={id}
       id={id}
       title={note.title}
-      isSelected={selectedId === id}
+      isSelected={nt.selectedId === id}
       childIds={note.childIds}
       isCollapsed={note.collapsed}
-      setSelectedNoteId={setSelectedNoteId}
-      toggleCollapsed={toggleCollapsed}
-      getNoteById={getNoteById}
-    />
+      setSelectedNoteId={nt.setSelectedNoteId}
+      toggleCollapsed={nt.toggleCollapsed}
+    >
+      {showChildren && (
+        <div className="ml3">
+          {note.childIds.map(id => renderNoteItemWithId2(id, nt))}
+        </div>
+      )}
+    </NoteItem2>
   )
 }
 
@@ -153,11 +154,10 @@ const NoteItem2 = React.memo(function NoteItem({
   isCollapsed,
   setSelectedNoteId,
   toggleCollapsed,
-  getNoteById,
+  children,
 }) {
   const selectNote = () => setSelectedNoteId(id)
   const isLeaf = childIds.length === 0
-  const showChildren = !(isLeaf || isCollapsed)
 
   const toggleCollapse = () => toggleCollapsed(id)
 
@@ -194,19 +194,7 @@ const NoteItem2 = React.memo(function NoteItem({
         </div>
       </div>
       {/*children*/}
-      {showChildren && (
-        <div className="ml3">
-          {childIds.map(id =>
-            renderNoteItemWithId2(
-              id,
-              getNoteById,
-              setSelectedNoteId,
-              'selectedId',
-              toggleCollapsed,
-            ),
-          )}
-        </div>
-      )}
+      {children}
     </div>
   )
 })
@@ -221,7 +209,7 @@ function useNoteTree() {
   )
   const notes = useObject(() => toIdLookup(cachedNoteList))
   const parentIds = useObject(() => noteListToPidLookup(cachedNoteList))
-  const [selectedId, setSelectedId] = useState(() => cachedSelectedId)
+  const [selectedId, setSelectedNoteId] = useState(() => cachedSelectedId)
 
   const root = notes.get(ROOT_NOTE_ID)
 
@@ -230,16 +218,16 @@ function useNoteTree() {
     notes.set(n.id, n)
     notes.over(pid, appendChildId(n.id))
     parentIds.set(n.id, pid)
-    setSelectedId(n.id)
+    setSelectedNoteId(n.id)
   }
   const addNew = () => addNewTo(ROOT_NOTE_ID)
   const appendChildToSelected = () => {
     addNewTo(selectedId || ROOT_NOTE_ID)
   }
 
-  const setSelectedNoteId = setSelectedId
-  const toggleCollapsed = id =>
-    notes.over(id, R.over(R.lensProp('collapsed'), R.not))
+  const toggleCollapsed = useMemo(() => {
+    return id => notes.over(id, R.over(R.lensProp('collapsed'), R.not))
+  }, [notes.state])
 
   useEffect(() => saveNoteList(notes.values()), [notes.state])
 
@@ -261,34 +249,18 @@ function useNoteTree() {
 function App() {
   const { actions } = useOvermind()
 
-  const {
-    root,
-    addNew,
-    appendChildToSelected,
-    get,
-    setSelectedNoteId,
-    toggleCollapsed,
-    selectedId,
-  } = useNoteTree()
+  const nt = useNoteTree()
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Use Tree Notes</div>
-      <button className="" onClick={addNew}>
+      <button className="" onClick={nt.addNew}>
         add
       </button>
-      <button className="" onClick={appendChildToSelected}>
+      <button className="" onClick={nt.appendChildToSelected}>
         add child
       </button>
       <div className="pv3">
-        {root.childIds.map(id =>
-          renderNoteItemWithId2(
-            id,
-            get,
-            setSelectedNoteId,
-            selectedId,
-            toggleCollapsed,
-          ),
-        )}
+        {nt.root.childIds.map(id => renderNoteItemWithId2(id, nt))}
       </div>
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
       <div className="pv1">
