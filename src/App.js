@@ -33,7 +33,7 @@ function useNoteTree() {
     notes.set(n.id, n)
     notes.over(pid, appendChildId(n.id))
     parentIds.set(n.id, pid)
-    // selectNoteId(n.id)
+    setSelectedId(n.id)
   }
   const addNew = () => addNewTo(ROOT_NOTE_ID)
 
