@@ -10,15 +10,7 @@ import { autorun, extendObservable, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
 
 const enhanceNote = R.curry(function enhanceNote(tree, note) {
-  function toggleCollapse() {
-    note.collapsed = !note.collapsed
-  }
-
-  function setSelected() {
-    tree.setSelectedId(note.id)
-  }
-
-  return extendObservable(note, {
+  const enhancedNote = extendObservable(note, {
     get isLeaf() {
       return note.childIds.length === 0
     },
@@ -31,9 +23,17 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
     get isSelected() {
       return tree.selectedId === note.id
     },
-    toggleCollapse,
-    setSelected,
   })
+
+  function toggleCollapse() {
+    note.collapsed = !note.collapsed
+  }
+
+  function setSelected() {
+    tree.setSelectedId(note.id)
+  }
+
+  return extendObservable(enhancedNote, { toggleCollapse, setSelected })
 })
 
 function createNoteTree() {
