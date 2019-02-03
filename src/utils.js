@@ -34,3 +34,7 @@ export function toIdLookup(initialList) {
     return acc
   }, {})
 }
+
+export function appendChildId(id) {
+  return R.over(R.lensProp('childIds'), R.append(id))
+}

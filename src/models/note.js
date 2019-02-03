@@ -33,12 +33,12 @@ export function noteChildCt(note) {
   return note.childIds.length
 }
 
-function insertAt(start, item, arr) {
+function insertAt_(start, item, arr) {
   arr.splice(start, 0, item)
 }
 
-export function appendChildId(cid, parent) {
-  insertAt(noteChildCt(parent), cid, parent.childIds)
+export function appendChildId_(cid, parent) {
+  insertAt_(noteChildCt(parent), cid, parent.childIds)
 }
 
 export function noteListToPidLookup(cachedNL) {

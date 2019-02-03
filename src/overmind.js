@@ -3,7 +3,7 @@ import { createHook } from 'overmind-react'
 import { cache, getCachedOr } from './utils'
 
 import {
-  appendChildId,
+  appendChildId_,
   createInitialNotesByIdState,
   createNewNote,
   ROOT_NOTE_ID,
@@ -57,7 +57,7 @@ export const notes = {
       const parent = byId[pid]
       const n = createNewNote()
       byId[n.id] = n
-      appendChildId(n.id, parent)
+      appendChildId_(n.id, parent)
       parentIds[n.id] = parent.id
       selectNoteId(n.id)
     },

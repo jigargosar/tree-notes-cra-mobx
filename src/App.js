@@ -9,7 +9,7 @@ import {
   ROOT_NOTE_ID,
 } from './models/note'
 import { useLocalStorage, useMap } from 'react-use'
-import { toIdLookup } from './utils'
+import { appendChildId, toIdLookup } from './utils'
 import { useComputed } from 'mobx-react-lite'
 import { useObject } from './state-hooks'
 
@@ -26,7 +26,8 @@ function useNoteTree() {
     const parent = notes.get(pid)
     const n = createNewNote()
     notes.set(n.id, n)
-    notes.over(parent.id, R.over(R.lensProp('childIds'), R.append(n.id)))
+    const id = n.id
+    notes.over(parent.id, appendChildId(id))
     parentIds.set(n.id, parent.id)
     // selectNoteId(n.id)
   }
