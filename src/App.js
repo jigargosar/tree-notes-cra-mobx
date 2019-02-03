@@ -82,6 +82,11 @@ function createNoteTree() {
     get,
     addAfter,
     setSelectedId,
+    deleteAll() {
+      tree.byId = createInitialNotesByIdState()
+      tree.selectedId = null
+      tree.parentIds = {}
+    },
   })
 }
 
