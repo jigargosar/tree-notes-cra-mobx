@@ -26,6 +26,9 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
     get isSelected() {
       return tree.selectedId === note.id
     },
+    setSelected() {
+      tree.setSelected
+    },
   })
 })
 
@@ -35,6 +38,16 @@ function createNoteTree() {
     parentIds: {},
     selectedId: null,
   })
+
+  init()
+
+  const root = get(ROOT_NOTE_ID)
+
+  const api = { add, get, root, addAfter, setSelected }
+
+  function createEnhancedNote() {
+    return enhanceNote(createNewNote(), api)
+  }
 
   function init() {
     const { byId, selectedId } = getCachedOr(() => ({}), 'noteTree')
@@ -48,8 +61,8 @@ function createNoteTree() {
     })
   }
 
-  function createEnhancedNote() {
-    return enhanceNote(createNewNote(), tree)
+  function setSelected(n) {
+    tree.selectedId = n.id
   }
 
   function get(id) {
@@ -67,6 +80,7 @@ function createNoteTree() {
     tree.selectedId = n.id
     get(pid).childIds.push(n.id)
   }
+
   function addAfter(sid) {
     const n = createEnhancedNote()
     tree.byId[n.id] = n
@@ -77,11 +91,7 @@ function createNoteTree() {
     childIds.splice(childIds.indexOf(sid), n.id)
   }
 
-  init()
-
-  const root = get(ROOT_NOTE_ID)
-
-  return { add, get, root, addAfter }
+  return api
 }
 
 const nt = createNoteTree()
