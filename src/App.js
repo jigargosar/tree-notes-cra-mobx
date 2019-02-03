@@ -149,7 +149,7 @@ const NoteItem = observer(function NoteItem({ id }) {
           className={`flex-auto pv1 ph1 ${
             note.isSelected ? 'bg-light-blue' : ''
           }`}
-          tabIndex={0}
+          tabIndex={note.isSelected ? 0 : -1}
           data-is-focusable={true}
           onFocus={note.select}
         >
