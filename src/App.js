@@ -125,7 +125,7 @@ function App() {
 
   const [cachedNL, persistNL] = useLocalStorage('notes', getInitialNotes())
 
-  const nl = useLookup(cachedNL, { hook: [cachedNL, persistNL] })
+  const nl = useLookup(cachedNL)
 
   useEffect(() => persistNL(nl.values()), [nl.state])
 
