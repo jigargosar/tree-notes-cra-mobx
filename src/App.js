@@ -3,7 +3,7 @@ import * as R from 'ramda'
 import { observer } from 'mobx-react-lite'
 import { createInitialNotesByIdState } from './models/note'
 import { autorun } from 'mobx'
-import { cache } from './utils'
+import { cache, getCachedOr } from './utils'
 
 class NoteTree {
   byId = createInitialNotesByIdState()
@@ -11,8 +11,14 @@ class NoteTree {
   selectedId = null
 
   constructor() {
+    const cachedTree = getCachedOr(null, 'noteTree')
+    const pickState = R.pick(['byId', 'parentIds', 'selectedId'])
+
+    Object.assign(this, pickState(cachedTree))
+
+    console.log(`cachedTree`, cachedTree)
     autorun(() => {
-      cache('noteTree', R.pick(['byId', 'selectedId'])(this))
+      cache('noteTree', pickState(this))
     })
   }
 }
