@@ -10,7 +10,6 @@ import {
 } from './models/note'
 import { useLocalStorage } from 'react-use'
 import { appendChildId, toIdLookup } from './utils'
-import { useComputed } from 'mobx-react-lite'
 import { useObject } from './state-hooks'
 
 function useNoteTree() {
@@ -25,7 +24,6 @@ function useNoteTree() {
   const parentIds = useObject(() => noteListToPidLookup(cachedNoteList))
   const [selectedId, setSelectedId] = useState(() => cachedSelectedId)
 
-  const allNotes = useComputed(() => notes.values(), [notes.state])
   const root = notes.get(ROOT_NOTE_ID)
 
   const addNewTo = pid => {
@@ -36,10 +34,13 @@ function useNoteTree() {
     setSelectedId(n.id)
   }
   const addNew = () => addNewTo(ROOT_NOTE_ID)
-  useEffect(() => saveNoteList(allNotes), [notes.state])
+
+  useEffect(() => saveNoteList(notes.values()), [notes.state])
+
   useEffect(() => {
     saveSelectedId(selectedId)
   }, [selectedId])
+
   return { root, addNew, get: notes.get }
 }
 
