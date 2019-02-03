@@ -1,9 +1,15 @@
 import React from 'react'
 import * as R from 'ramda'
 import { observer } from 'mobx-react-lite'
-import { createInitialNotesByIdState } from './models/note'
-import { autorun } from 'mobx'
+import {
+  createInitialNotesByIdState,
+  createNewNote,
+  ROOT_NOTE_ID,
+} from './models/note'
+import { autorun, decorate, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
+
+// const pickState = R.pick(['byId', 'parentIds', 'selectedId'])
 
 class NoteTree {
   byId = createInitialNotesByIdState()
@@ -11,17 +17,28 @@ class NoteTree {
   selectedId = null
 
   constructor() {
-    const cachedTree = getCachedOr(null, 'noteTree')
-    const pickState = R.pick(['byId', 'parentIds', 'selectedId'])
+    const cachedTree = getCachedOr(() => ({}), 'noteTree')
 
-    Object.assign(this, pickState(cachedTree))
+    Object.assign(this, cachedTree)
 
-    console.log(`cachedTree`, cachedTree)
     autorun(() => {
-      cache('noteTree', pickState(this))
+      cache('noteTree', toJS(this))
     })
   }
+
+  add = () => {
+    const n = createNewNote()
+    this.byId[n.id] = n
+    this.parentIds[n.id] = ROOT_NOTE_ID
+    this.selectedId = n.id
+  }
 }
+
+decorate(NoteTree, {
+  byId: observable,
+  parentIds: observable,
+  selectedId: observable,
+})
 
 const nt = new NoteTree()
 
@@ -34,7 +51,7 @@ const App = observer(() => {
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
       <div className="pv1">
-        <button className="" onClick={R.identity}>
+        <button className="" onClick={() => nt.add()}>
           add
         </button>
         <button className="ml3" onClick={R.identity}>
