@@ -25,8 +25,9 @@ export function useObject(initial = {}) {
 
   const get = k => state[k]
   const set = (k, v) => setState(R.mergeLeft({ [k]: v }))
+  const over = (k, fn) => setState(R.over(R.lensProp(k), fn))
 
-  return { state, setState, get, set }
+  return { state, setState, get, set, over }
 }
 
 export function usePrevious(value) {
