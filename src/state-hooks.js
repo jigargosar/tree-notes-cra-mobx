@@ -6,9 +6,8 @@ import { useEffect, useRef } from 'react'
 
 export function useLookup(initialList) {
   validate('A', arguments)
-  const [state, setState] = useSetState(() => {
-    return toIdLookup(initialList)
-  })
+
+  const [state, setState] = useSetState(() => toIdLookup(initialList))
 
   const set = (k, v) => setState(R.mergeLeft({ [k]: v }))
   const get = k => state[k]
