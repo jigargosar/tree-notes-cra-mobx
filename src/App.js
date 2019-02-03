@@ -6,20 +6,21 @@ import {
   createNewNote,
   ROOT_NOTE_ID,
 } from './models/note'
-import { autorun, decorate, observable, toJS } from 'mobx'
+import { autorun, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
 
 // const pickState = R.pick(['byId', 'parentIds', 'selectedId'])
 
 class NoteTree {
-  byId = createInitialNotesByIdState()
-  parentIds = {}
-  selectedId = null
+  byId = observable.object({})
+  parentIds = observable.object({})
+  selectedId = observable.ref
 
   constructor() {
-    const cachedTree = getCachedOr(() => ({}), 'noteTree')
+    const { byId, selectedId } = getCachedOr(() => ({}), 'noteTree')
 
-    Object.assign(this, cachedTree)
+    this.byId = byId || createInitialNotesByIdState()
+    this.selectedId = selectedId || null
 
     autorun(() => {
       cache('noteTree', toJS(this))
@@ -34,11 +35,11 @@ class NoteTree {
   }
 }
 
-decorate(NoteTree, {
-  byId: observable,
-  parentIds: observable,
-  selectedId: observable,
-})
+// decorate(NoteTree, {
+//   byId: observable,
+//   parentIds: observable,
+//   selectedId: observable,
+// })
 
 const nt = new NoteTree()
 
