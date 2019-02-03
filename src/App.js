@@ -55,10 +55,10 @@ function createNoteTree() {
   }
 
   function add() {
-    addTo(ROOT_NOTE_ID)
+    appendNewTo(ROOT_NOTE_ID)
   }
 
-  function addTo(pid) {
+  function appendNewTo(pid) {
     const n = createNewNote()
     tree.byId[n.id] = n
     tree.parentIds[n.id] = pid
@@ -66,7 +66,7 @@ function createNoteTree() {
     get(pid).childIds.push(n.id)
   }
 
-  function addAfter(sid) {
+  function addNewAfter(sid) {
     const n = createNewNote()
     tree.byId[n.id] = n
     const pid = tree.parentIds[sid]
@@ -80,7 +80,7 @@ function createNoteTree() {
   return extendObservable(tree, {
     add,
     get,
-    addAfter,
+    addAfter: addNewAfter,
     setSelectedId,
     deleteAll() {
       tree.byId = createInitialNotesByIdState()
