@@ -31,6 +31,17 @@ export function useObject(initial = {}) {
   return { state, setState, get, set, over, values }
 }
 
+export function useString(initial = '') {
+  validate('F|S', arguments)
+
+  const [state, setState] = useState(initial)
+
+  const get = () => state
+  const set = v => setState(v)
+
+  return { state, setState, get, set }
+}
+
 export function usePrevious(value) {
   // The ref object is a generic container whose current property is mutable ...
   // ... and can hold any value, similar to an instance property on a class
