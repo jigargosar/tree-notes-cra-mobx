@@ -14,10 +14,20 @@ function enhanceNote(note) {
     get isLeaf() {
       return note.childIds.length === 0
     },
+    get hasChildren() {
+      return !this.isLeaf
+    },
     toggleCollapse() {
       this.collapsed = !this.collapsed
     },
+    get showChildren() {
+      return this.hasChildren && !this.collapsed
+    },
   })
+}
+
+function createEnhancedNote() {
+  return enhanceNote(createNewNote())
 }
 
 function createNoteTree() {
@@ -48,7 +58,7 @@ function createNoteTree() {
   }
 
   function addTo(pid) {
-    const n = createNewNote()
+    const n = createEnhancedNote()
     nt.byId[n.id] = n
     nt.parentIds[n.id] = pid
     nt.selectedId = n.id
