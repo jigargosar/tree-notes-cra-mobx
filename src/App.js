@@ -38,7 +38,7 @@ const NoteItem = React.memo(function NoteItem({
 }) {
   const overmind = useOvermind()
   const { actions } = overmind
-  const selectNote = () => actions.selectNoteId(id)
+  const selectNote = () => actions.setSelectedNoteId(id)
   const isLeaf = childIds.length === 0
   const showChildren = !(isLeaf || isCollapsed)
 
@@ -122,64 +122,25 @@ function RootTree() {
   )
 }
 
-function useNoteTree() {
-  const [cachedNoteList, saveNoteList] = useLocalStorage('notes', [
-    createRootNote(),
-  ])
-  const [cachedSelectedId, saveSelectedId] = useLocalStorage(
-    'selectedId',
-    null,
-  )
-  const notes = useObject(() => toIdLookup(cachedNoteList))
-  const parentIds = useObject(() => noteListToPidLookup(cachedNoteList))
-  const [selectedId, setSelectedId] = useState(() => cachedSelectedId)
-
-  const root = notes.get(ROOT_NOTE_ID)
-
-  const addNewTo = pid => {
-    const n = createNewNote()
-    notes.set(n.id, n)
-    notes.over(pid, appendChildId(n.id))
-    parentIds.set(n.id, pid)
-    setSelectedId(n.id)
-  }
-  const addNew = () => addNewTo(ROOT_NOTE_ID)
-  const appendChildToSelected = () => {
-    addNewTo(selectedId || ROOT_NOTE_ID)
-  }
-
-  const selectNoteId = setSelectedId
-  const toggleCollapsed = id =>
-    notes.over(id, R.over(R.lensProp('collapsed'), R.not))
-
-  useEffect(() => saveNoteList(notes.values()), [notes.state])
-
-  useEffect(() => {
-    saveSelectedId(selectedId)
-  }, [selectedId])
-
-  return {
-    root,
-    addNew,
-    get: notes.get,
-    appendChildToSelected,
-    selectNoteId,
-    toggleCollapsed,
-    selectedId,
-  }
-}
-
-function renderNoteItemWithId2(id, nt) {
-  const note = nt.get(id)
+function renderNoteItemWithId2(
+  id,
+  getNoteById,
+  setSelectedNoteId,
+  selectedId,
+  toggleCollapsed,
+) {
+  const note = getNoteById(id)
   return (
     <NoteItem2
       key={id}
       id={id}
       title={note.title}
-      isSelected={nt.selectedId === id}
+      isSelected={selectedId === id}
       childIds={note.childIds}
       isCollapsed={note.collapsed}
-      nt={nt}
+      setSelectedNoteId={setSelectedNoteId}
+      toggleCollapsed={toggleCollapsed}
+      getNoteById={getNoteById}
     />
   )
 }
@@ -190,13 +151,15 @@ const NoteItem2 = React.memo(function NoteItem({
   isSelected,
   childIds,
   isCollapsed,
-  nt,
+  setSelectedNoteId,
+  toggleCollapsed,
+  getNoteById,
 }) {
-  const selectNote = () => nt.selectNoteId(id)
+  const selectNote = () => setSelectedNoteId(id)
   const isLeaf = childIds.length === 0
   const showChildren = !(isLeaf || isCollapsed)
 
-  const toggleCollapse = () => nt.toggleCollapsed(id)
+  const toggleCollapse = () => toggleCollapsed(id)
 
   const titleRef = React.createRef()
 
@@ -233,28 +196,99 @@ const NoteItem2 = React.memo(function NoteItem({
       {/*children*/}
       {showChildren && (
         <div className="ml3">
-          {childIds.map(id => renderNoteItemWithId2(id, nt))}
+          {childIds.map(id =>
+            renderNoteItemWithId2(
+              id,
+              getNoteById,
+              setSelectedNoteId,
+              'selectedId',
+              toggleCollapsed,
+            ),
+          )}
         </div>
       )}
     </div>
   )
 })
 
+function useNoteTree() {
+  const [cachedNoteList, saveNoteList] = useLocalStorage('notes', [
+    createRootNote(),
+  ])
+  const [cachedSelectedId, saveSelectedId] = useLocalStorage(
+    'selectedId',
+    null,
+  )
+  const notes = useObject(() => toIdLookup(cachedNoteList))
+  const parentIds = useObject(() => noteListToPidLookup(cachedNoteList))
+  const [selectedId, setSelectedId] = useState(() => cachedSelectedId)
+
+  const root = notes.get(ROOT_NOTE_ID)
+
+  const addNewTo = pid => {
+    const n = createNewNote()
+    notes.set(n.id, n)
+    notes.over(pid, appendChildId(n.id))
+    parentIds.set(n.id, pid)
+    setSelectedId(n.id)
+  }
+  const addNew = () => addNewTo(ROOT_NOTE_ID)
+  const appendChildToSelected = () => {
+    addNewTo(selectedId || ROOT_NOTE_ID)
+  }
+
+  const setSelectedNoteId = setSelectedId
+  const toggleCollapsed = id =>
+    notes.over(id, R.over(R.lensProp('collapsed'), R.not))
+
+  useEffect(() => saveNoteList(notes.values()), [notes.state])
+
+  useEffect(() => {
+    saveSelectedId(selectedId)
+  }, [selectedId])
+
+  return {
+    root,
+    addNew,
+    appendChildToSelected,
+    get: notes.get,
+    setSelectedNoteId,
+    toggleCollapsed,
+    selectedId,
+  }
+}
+
 function App() {
   const { actions } = useOvermind()
 
-  const nt = useNoteTree()
+  const {
+    root,
+    addNew,
+    appendChildToSelected,
+    get,
+    setSelectedNoteId,
+    toggleCollapsed,
+    selectedId,
+  } = useNoteTree()
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Use Tree Notes</div>
-      <button className="" onClick={nt.addNew}>
+      <button className="" onClick={addNew}>
         add
       </button>
-      <button className="" onClick={nt.appendChildToSelected}>
+      <button className="" onClick={appendChildToSelected}>
         add child
       </button>
       <div className="pv3">
-        {nt.root.childIds.map(id => renderNoteItemWithId2(id, nt))}
+        {root.childIds.map(id =>
+          renderNoteItemWithId2(
+            id,
+            get,
+            setSelectedNoteId,
+            selectedId,
+            toggleCollapsed,
+          ),
+        )}
       </div>
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
       <div className="pv1">
