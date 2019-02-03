@@ -2,9 +2,14 @@ import * as R from 'ramda'
 import validate from 'aproba'
 import { useSetState } from 'react-use'
 import { isFunction } from './utils'
+import { useEffect, useRef } from 'react'
 
 export function useLookup(initialList = [], options = {}) {
-  validate('FO|F|AO|A', arguments)
+  if (isFunction(initialList)) {
+    initialList = initialList()
+  }
+
+  validate('AO', [initialList, options])
 
   function getId(item) {
     validate('O', [item])
@@ -12,11 +17,7 @@ export function useLookup(initialList = [], options = {}) {
     validate('S', [id])
     return id
   }
-
   const [state, setState] = useSetState(() => {
-    if (isFunction(initialList)) {
-      initialList = initialList()
-    }
     return initialList.reduce((acc, item) => {
       acc[getId(item)] = item
       return acc
@@ -30,4 +31,18 @@ export function useLookup(initialList = [], options = {}) {
   const values = () => Object.values(state)
 
   return Object.freeze({ setState, state, set, get, has, keys, values })
+}
+
+export function usePrevious(value) {
+  // The ref object is a generic container whose current property is mutable ...
+  // ... and can hold any value, similar to an instance property on a class
+  const ref = useRef(null)
+
+  // Store current value in ref
+  useEffect(() => {
+    ref.current = value
+  }, [value]) // Only re-run if value changes
+
+  // Return previous value (happens before update in useEffect above)
+  return ref.current
 }
