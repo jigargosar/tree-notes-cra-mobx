@@ -27,7 +27,7 @@ import { cache, getCachedOr } from './utils'
 // })
 
 function createNoteTree() {
-  const tree = observable({
+  const tree = observable.object({
     byId: {},
     parentIds: {},
     selectedId: null,
@@ -120,7 +120,7 @@ function useRootNote() {
   return useNote(ROOT_NOTE_ID)
 }
 
-const NoteItem = observer(({ id }) => {
+const NoteItem = observer(function NoteItem({ id }) {
   const note = useNote(id)
 
   const titleRef = React.createRef()
@@ -167,7 +167,7 @@ const NoteItem = observer(({ id }) => {
   )
 })
 
-const RootTree = observer(() => {
+const RootTree = observer(function RootTree() {
   const root = useRootNote()
   return (
     <div className="">
@@ -178,7 +178,7 @@ const RootTree = observer(() => {
   )
 })
 
-const App = observer(() => {
+const App = observer(function App() {
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
