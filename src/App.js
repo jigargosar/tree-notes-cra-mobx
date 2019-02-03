@@ -9,12 +9,10 @@ import {
 import { autorun, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
 
-// const pickState = R.pick(['byId', 'parentIds', 'selectedId'])
-
 class NoteTree {
   byId = observable.object({})
   parentIds = observable.object({})
-  selectedId = observable.ref
+  selectedId = null
 
   constructor() {
     const { byId, selectedId } = getCachedOr(() => ({}), 'noteTree')
