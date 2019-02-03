@@ -9,15 +9,7 @@ import {
 import { autorun, extendObservable, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
 
-const enhanceNote = R.curry(function enhanceNote(tree, note) {
-  function toggleCollapse() {
-    note.collapsed = !note.collapsed
-  }
-
-  function setSelected() {
-    tree.setSelectedId(note.id)
-  }
-
+const enhanceNote = R.curry(function enhanceNote(note) {
   return extendObservable(note, {
     get isLeaf() {
       return note.childIds.length === 0
@@ -28,11 +20,9 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
     get showChildren() {
       return this.hasChildren && !this.collapsed
     },
-    get isSelected() {
-      return tree.selectedId === note.id
+    function() {
+      note.collapsed = !note.collapsed
     },
-    toggleCollapse,
-    setSelected,
   })
 })
 
@@ -43,23 +33,19 @@ function createNoteTree() {
     selectedId: null,
   })
 
-  const api = { add, get, addAfter, setSelectedId, currentRoot }
-
-  init()
-
   function currentRoot() {
     return get(ROOT_NOTE_ID)
   }
 
   function createEnhancedNote() {
-    return enhanceNote(api, createNewNote())
+    return enhanceNote(createNewNote())
   }
 
   function init() {
     const { byId, selectedId } = getCachedOr(() => ({}), 'noteTree')
 
     const byIdNotes = byId || createInitialNotesByIdState()
-    tree.byId = R.mapObjIndexed(enhanceNote(api))(byIdNotes)
+    tree.byId = R.mapObjIndexed(enhanceNote)(byIdNotes)
     tree.selectedId = selectedId || null
 
     autorun(() => {
@@ -97,7 +83,8 @@ function createNoteTree() {
     childIds.splice(childIds.indexOf(sid), n.id)
   }
 
-  return api
+  init()
+  return { add, get, addAfter, setSelectedId, currentRoot }
 }
 
 const nt = createNoteTree()
