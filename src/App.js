@@ -1,6 +1,6 @@
 import React from 'react'
 import * as R from 'ramda'
-import { observer } from 'mobx-react-lite'
+import { observer, useObservable } from 'mobx-react-lite'
 import {
   createInitialNotesByIdState,
   createNewNote,
@@ -9,22 +9,22 @@ import {
 import { autorun, extendObservable, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
 
-const enhanceNote = R.curry(function enhanceNote(note) {
-  return extendObservable(note, {
-    get isLeaf() {
-      return note.childIds.length === 0
-    },
-    get hasChildren() {
-      return !this.isLeaf
-    },
-    get showChildren() {
-      return this.hasChildren && !this.collapsed
-    },
-    function() {
-      note.collapsed = !note.collapsed
-    },
-  })
-})
+// const enhanceNote = R.curry(function enhanceNote(note) {
+//   return extendObservable(note, {
+//     get isLeaf() {
+//       return note.childIds.length === 0
+//     },
+//     get hasChildren() {
+//       return !this.isLeaf
+//     },
+//     get showChildren() {
+//       return this.hasChildren && !this.collapsed
+//     },
+//     function() {
+//       note.collapsed = !note.collapsed
+//     },
+//   })
+// })
 
 function createNoteTree() {
   const tree = observable({
@@ -37,15 +37,11 @@ function createNoteTree() {
     return get(ROOT_NOTE_ID)
   }
 
-  function createEnhancedNote() {
-    return enhanceNote(createNewNote())
-  }
-
   function init() {
     const { byId, selectedId } = getCachedOr(() => ({}), 'noteTree')
 
     const byIdNotes = byId || createInitialNotesByIdState()
-    tree.byId = R.mapObjIndexed(enhanceNote)(byIdNotes)
+    tree.byId = R.mapObjIndexed(R.identity)(byIdNotes)
     tree.selectedId = selectedId || null
 
     autorun(() => {
@@ -66,7 +62,7 @@ function createNoteTree() {
   }
 
   function addTo(pid) {
-    const n = createEnhancedNote()
+    const n = createNewNote()
     tree.byId[n.id] = n
     tree.parentIds[n.id] = pid
     tree.selectedId = n.id
@@ -74,7 +70,7 @@ function createNoteTree() {
   }
 
   function addAfter(sid) {
-    const n = createEnhancedNote()
+    const n = createNewNote()
     tree.byId[n.id] = n
     const pid = tree.parentIds[sid]
     tree.parentIds[n.id] = pid
@@ -89,8 +85,31 @@ function createNoteTree() {
 
 const nt = createNoteTree()
 
-const NoteItem = observer(({ id }) => {
+function useNote(id) {
   const note = nt.get(id)
+  return useObservable(
+    extendObservable(note, {
+      get isLeaf() {
+        return note.childIds.length === 0
+      },
+      get hasChildren() {
+        return !this.isLeaf
+      },
+      get showChildren() {
+        return this.hasChildren && !this.collapsed
+      },
+      toggleCollapse() {
+        note.collapsed = !note.collapsed
+      },
+      select() {
+        nt.setSelectedId(id)
+      },
+    }),
+  )
+}
+
+const NoteItem = observer(({ id }) => {
+  const note = useNote(id)
 
   const titleRef = React.createRef()
 
@@ -104,7 +123,7 @@ const NoteItem = observer(({ id }) => {
   return (
     <div>
       {/*header*/}
-      <div className="flex items-center" onClick={note.setSelected}>
+      <div className="flex items-center" onClick={note.select}>
         <div
           className={`ph2 code us-none ${note.isLeaf ? '' : 'pointer'}`}
           onClick={note.toggleCollapse}
@@ -119,7 +138,7 @@ const NoteItem = observer(({ id }) => {
           }`}
           tabIndex={0}
           data-is-focusable={true}
-          onFocus={note.setSelected}
+          onFocus={note.select}
         >
           {note.title}
         </div>
