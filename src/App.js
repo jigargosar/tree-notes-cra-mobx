@@ -34,6 +34,13 @@ function useNoteTree() {
     setSelectedId(n.id)
   }
   const addNew = () => addNewTo(ROOT_NOTE_ID)
+  const appendChildToSelected = () => {
+    addNewTo(selectedId || ROOT_NOTE_ID)
+  }
+
+  const selectNoteId = setSelectedId
+  const toggleCollapsed = id =>
+    notes.over(id, R.over(R.lensProp('collapsed'), R.not))
 
   useEffect(() => saveNoteList(notes.values()), [notes.state])
 
@@ -41,7 +48,15 @@ function useNoteTree() {
     saveSelectedId(selectedId)
   }, [selectedId])
 
-  return { root, addNew, get: notes.get }
+  return {
+    root,
+    addNew,
+    get: notes.get,
+    appendChildToSelected,
+    selectNoteId,
+    toggleCollapsed,
+    selectedId,
+  }
 }
 
 function renderNoteItemWithId(overmind) {
@@ -154,6 +169,77 @@ function RootTree() {
   )
 }
 
+function renderNoteItemWithId2(id, nt) {
+  const note = nt.get(id)
+  return (
+    <NoteItem2
+      key={id}
+      id={id}
+      title={note.title}
+      isSelected={nt.selectedId === id}
+      childIds={note.childIds}
+      isCollapsed={note.collapsed}
+      nt={nt}
+    />
+  )
+}
+
+const NoteItem2 = React.memo(function NoteItem({
+  id,
+  title,
+  isSelected,
+  childIds,
+  isCollapsed,
+  nt,
+}) {
+  const selectNote = () => nt.selectNoteId(id)
+  const isLeaf = childIds.length === 0
+  const showChildren = !(isLeaf || isCollapsed)
+
+  const toggleCollapse = () => nt.toggleCollapsed(id)
+
+  const titleRef = React.createRef()
+
+  React.useLayoutEffect(() => {
+    const el = titleRef.current
+    if (el && isSelected) {
+      el.focus()
+    }
+  })
+
+  return (
+    <div>
+      {/*header*/}
+      <div className="flex items-center" onClick={selectNote}>
+        <div
+          className={`ph2 code us-none ${isLeaf ? '' : 'pointer'}`}
+          onClick={toggleCollapse}
+        >
+          {isLeaf ? 'o' : isCollapsed ? '+' : '-'}
+        </div>
+        {/*title*/}
+        <div
+          ref={titleRef}
+          className={`flex-auto pv1 ph1 ${
+            isSelected ? 'bg-light-blue' : ''
+          }`}
+          tabIndex={0}
+          data-is-focusable={true}
+          onFocus={selectNote}
+        >
+          {title}
+        </div>
+      </div>
+      {/*children*/}
+      {showChildren && (
+        <div className="ml3">
+          {childIds.map(id => renderNoteItemWithId2(id, nt))}
+        </div>
+      )}
+    </div>
+  )
+})
+
 function App() {
   const { actions } = useOvermind()
 
@@ -164,15 +250,11 @@ function App() {
       <button className="" onClick={nt.addNew}>
         add
       </button>
+      <button className="" onClick={nt.appendChildToSelected}>
+        add child
+      </button>
       <div className="pv3">
-        {nt.root.childIds.map(cid => {
-          const n = nt.get(cid)
-          return (
-            <div key={n.id} className="pv1">
-              {n.title}
-            </div>
-          )
-        })}
+        {nt.root.childIds.map(id => renderNoteItemWithId2(id, nt))}
       </div>
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
       <div className="pv1">
