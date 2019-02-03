@@ -2,9 +2,10 @@ import React, { useEffect } from 'react'
 import { useOvermind } from './overmind'
 import * as R from 'ramda'
 import isHotKey from 'is-hotkey'
-import { useLookup } from './state-hooks'
 import { createRootNote } from './models/note'
-import { useLocalStorage } from 'react-use'
+import { useLocalStorage, useMap } from 'react-use'
+import { toIdLookup } from './utils'
+import { useComputed } from 'mobx-react-lite'
 
 function renderNoteItemWithId(overmind) {
   const { state } = overmind
@@ -120,26 +121,30 @@ function useNoteTree() {
   const [cachedNL, persistNL] = useLocalStorage('notes', [
     createRootNote(),
   ])
+  const [byId, nl] = useMap(() => toIdLookup(cachedNL))
 
-  const nl = useLookup(cachedNL)
+  const allNotes = useComputed(() => R.values(byId), [byId])
 
-  useEffect(() => persistNL(nl.values()), [nl.state])
+  useEffect(() => persistNL(allNotes), [byId])
 
   const addNew = () => {}
 
-  return Object.freeze({ nl, add: addNew })
+  return Object.freeze({ allNotes, addNew })
 }
 
 function App() {
   const { actions } = useOvermind()
 
-  const { nl } = useNoteTree()
+  const nt = useNoteTree()
 
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Use Tree Notes</div>
+      <button className="" onClick={actions.addNewNote}>
+        add
+      </button>
       <div className="pv3">
-        {nl.values().map(n => (
+        {nt.allNotes.map(n => (
           <div key={n.id} className="pv1">
             {n.title}
           </div>
