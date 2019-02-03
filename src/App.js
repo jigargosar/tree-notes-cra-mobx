@@ -158,7 +158,6 @@ function App() {
   const { actions } = useOvermind()
 
   const nt = useNoteTree()
-  console.log('Render App')
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Use Tree Notes</div>
