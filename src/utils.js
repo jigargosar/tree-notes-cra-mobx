@@ -1,4 +1,5 @@
 import * as R from 'ramda'
+import validate from 'aproba'
 
 export const defaultEmptyTo = def =>
   R.pipe(
@@ -19,3 +20,6 @@ export function removeCached(cacheKey) {
 }
 
 export const isFunction = R.is(Function)
+
+export const tapValidate = rawSchemas =>
+  R.tap(id => validate(rawSchemas, [id]))

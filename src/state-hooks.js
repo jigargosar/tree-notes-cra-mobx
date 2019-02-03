@@ -1,10 +1,9 @@
 import * as R from 'ramda'
 import validate from 'aproba'
 import { useSetState } from 'react-use'
-import { isFunction } from './utils'
+import { isFunction, tapValidate } from './utils'
 import { useEffect, useRef } from 'react'
 
-const tapValidate = rawSchemas => R.tap(id => validate(rawSchemas, [id]))
 export function useLookup(initialList = []) {
   if (isFunction(initialList)) {
     initialList = initialList()
