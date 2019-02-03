@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import validate from 'aproba'
 import { useSetState } from 'react-use'
 import { toIdLookup } from './utils'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export function useLookup(initialList) {
   validate('A', arguments)
@@ -16,6 +16,17 @@ export function useLookup(initialList) {
   const values = () => Object.values(state)
 
   return Object.freeze({ setState, state, set, get, has, keys, values })
+}
+
+export function useObject(initial = {}) {
+  validate('F|O', arguments)
+
+  const [state, setState] = useState(initial)
+
+  const get = k => state[k]
+  const set = (k, v) => setState(R.mergeLeft({ [k]: v }))
+
+  return { state, setState, get, set }
 }
 
 export function usePrevious(value) {

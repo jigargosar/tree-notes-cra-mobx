@@ -40,3 +40,13 @@ function insertAt(start, item, arr) {
 export function appendChildId(cid, parent) {
   insertAt(noteChildCt(parent), cid, parent.childIds)
 }
+
+export function noteListToPidLookup(cachedNL) {
+  const parentIdLookup = {}
+  cachedNL.forEach(n => {
+    n.childIds.forEach(cid => {
+      parentIdLookup[cid] = n.id
+    })
+  })
+  return parentIdLookup
+}

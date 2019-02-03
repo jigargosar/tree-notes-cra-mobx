@@ -2,10 +2,44 @@ import React, { useEffect } from 'react'
 import { useOvermind } from './overmind'
 import * as R from 'ramda'
 import isHotKey from 'is-hotkey'
-import { createRootNote } from './models/note'
+import {
+  createNewNote,
+  createRootNote,
+  noteListToPidLookup,
+  ROOT_NOTE_ID,
+} from './models/note'
 import { useLocalStorage, useMap } from 'react-use'
 import { toIdLookup } from './utils'
 import { useComputed } from 'mobx-react-lite'
+import { useObject } from './state-hooks'
+
+function useNoteTree() {
+  const [cachedNoteList, persistNL] = useLocalStorage('notes', [
+    createRootNote(),
+  ])
+  const notes = useObject(() => toIdLookup(cachedNoteList))
+  const [, parentIds] = useMap(() => noteListToPidLookup(cachedNoteList))
+
+  const allNotes = useComputed(() => R.values(notes.state), [notes.state])
+
+  const addNewTo = pid => {
+    const parent = notes.get(pid)
+    const n = createNewNote()
+    notes.set(n.id, n)
+    const newParent = {
+      ...parent,
+      childIds: R.insert(parent.childIds.length, n.id, parent.childIds),
+    }
+    notes.set(parent.id, newParent)
+    parentIds.set(n.id, parent.id)
+    // selectNoteId(n.id)
+  }
+  const addNew = () => addNewTo(ROOT_NOTE_ID)
+
+  useEffect(() => persistNL(allNotes), [allNotes])
+
+  return { allNotes, addNew }
+}
 
 function renderNoteItemWithId(overmind) {
   const { state } = overmind
@@ -115,21 +149,6 @@ function RootTree() {
       {root.childIds.map(renderNoteItemWithId(overmind))}
     </div>
   )
-}
-
-function useNoteTree() {
-  const [cachedNL, persistNL] = useLocalStorage('notes', [
-    createRootNote(),
-  ])
-  const [byId, nl] = useMap(() => toIdLookup(cachedNL))
-
-  const allNotes = useComputed(() => R.values(byId), [byId])
-
-  useEffect(() => persistNL(allNotes), [byId])
-
-  const addNew = () => {}
-
-  return Object.freeze({ allNotes, addNew })
 }
 
 function App() {
