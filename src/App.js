@@ -123,7 +123,7 @@ function getInitialNotes() {
 function App() {
   const { actions } = useOvermind()
 
-  const [cachedNL, cacheNL] = useLocalStorage('notesLookup')
+  const [cachedNL, cacheNL] = useLocalStorage('notes')
 
   const nl = useLookup(() => cachedNL || getInitialNotes())
 
