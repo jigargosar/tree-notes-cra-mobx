@@ -35,12 +35,6 @@ class NoteTree {
   }
 }
 
-// decorate(NoteTree, {
-//   byId: observable,
-//   parentIds: observable,
-//   selectedId: observable,
-// })
-
 const nt = new NoteTree()
 
 const RootTree = observer(() => {
