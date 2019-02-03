@@ -1,4 +1,4 @@
-import React, { createRef, useEffect } from 'react'
+import React, { createRef } from 'react'
 import * as R from 'ramda'
 import { observer, useObservable } from 'mobx-react-lite'
 import {
@@ -8,7 +8,7 @@ import {
 } from './models/note'
 import { autorun, extendObservable, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
-import isHotKey from 'is-hotkey'
+import { useArrowKeys } from './hooks'
 
 // const enhanceNote = R.curry(function enhanceNote(note) {
 //   return extendObservable(note, {
@@ -183,44 +183,6 @@ const RootTree = observer(function RootTree() {
     </div>
   )
 })
-
-function useArrowKeys(ref) {
-  function onKeyDown(ev) {
-    if (ev.defaultPrevented) {
-      return
-    }
-
-    const targetIsFocusable = ev.target.dataset.isFocusable
-
-    if (targetIsFocusable) {
-      const focusables = Array.from(
-        ref.current.querySelectorAll('[data-is-focusable=true]').values(),
-      )
-
-      const idx = focusables.indexOf(ev.target)
-      if (isHotKey(['up', 'left'])(ev)) {
-        const newIdx = R.mathMod(idx - 1)(focusables.length)
-        focusables[newIdx].focus()
-        ev.preventDefault()
-      } else if (isHotKey(['down', 'right'])(ev)) {
-        const newIdx = R.mathMod(idx + 1)(focusables.length)
-        focusables[newIdx].focus()
-        ev.preventDefault()
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.addEventListener('keydown', onKeyDown)
-    }
-    return () => {
-      if (ref.current) {
-        ref.current.removeEventListener('keydown', onKeyDown)
-      }
-    }
-  }, [])
-}
 
 const App = observer(function App() {
   const navContainerRef = createRef()

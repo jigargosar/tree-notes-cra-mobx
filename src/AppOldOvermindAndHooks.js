@@ -10,7 +10,7 @@ import {
 } from './models/note'
 import { useLocalStorage } from 'react-use'
 import { appendChildId, toIdLookup } from './utils'
-import { useObject } from './state-hooks'
+import { useObject } from './hooks'
 
 function renderNoteItemWithId(overmind) {
   const { state } = overmind
