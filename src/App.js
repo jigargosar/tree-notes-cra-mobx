@@ -23,11 +23,10 @@ function useNoteTree() {
   const allNotes = useComputed(notes.values, [notes.state])
 
   const addNewTo = pid => {
-    const parent = notes.get(pid)
     const n = createNewNote()
     notes.set(n.id, n)
-    notes.over(parent.id, appendChildId(n.id))
-    parentIds.set(n.id, parent.id)
+    notes.over(pid, appendChildId(n.id))
+    parentIds.set(n.id, pid)
     // selectNoteId(n.id)
   }
   const addNew = () => addNewTo(ROOT_NOTE_ID)
