@@ -8,7 +8,7 @@ import {
   noteListToPidLookup,
   ROOT_NOTE_ID,
 } from './models/note'
-import { useLocalStorage, useMap } from 'react-use'
+import { useLocalStorage } from 'react-use'
 import { appendChildId, toIdLookup } from './utils'
 import { useComputed } from 'mobx-react-lite'
 import { useObject } from './state-hooks'
@@ -18,7 +18,7 @@ function useNoteTree() {
     createRootNote(),
   ])
   const notes = useObject(() => toIdLookup(cachedNoteList))
-  const [, parentIds] = useMap(() => noteListToPidLookup(cachedNoteList))
+  const parentIds = useObject(() => noteListToPidLookup(cachedNoteList))
 
   const allNotes = useComputed(notes.values, [notes.state])
 
