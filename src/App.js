@@ -133,7 +133,9 @@ function App() {
       </div>
       <div className="pv3">
         {nl.values().map(n => (
-          <div className="pv1">{n.title}</div>
+          <div key={n.id} className="pv1">
+            {n.title}
+          </div>
         ))}
       </div>
       <div className="pv3">
