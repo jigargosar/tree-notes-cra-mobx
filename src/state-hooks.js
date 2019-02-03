@@ -4,6 +4,7 @@ import { useSetState } from 'react-use'
 import { isFunction } from './utils'
 import { useEffect, useRef } from 'react'
 
+const tapValidate = rawSchemas => R.tap(id => validate(rawSchemas, [id]))
 export function useLookup(initialList = []) {
   if (isFunction(initialList)) {
     initialList = initialList()
@@ -12,7 +13,7 @@ export function useLookup(initialList = []) {
   validate('A', [initialList])
 
   function getId(item) {
-    return R.tap(id => validate('S', [id]))(item.id)
+    return tapValidate('S')(item.id)
   }
   const [state, setState] = useSetState(() => {
     return initialList.reduce((acc, item) => {
