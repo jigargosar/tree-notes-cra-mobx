@@ -9,31 +9,37 @@ import {
 import { autorun, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
 
-class NoteTree {
-  byId = observable.object({})
-  parentIds = observable.object({})
-  selectedId = null
+function createNoteTree() {
+  const nt = observable({
+    byId: {},
+    parentIds: {},
+    selectedId: null,
+  })
 
-  constructor() {
+  const init = () => {
     const { byId, selectedId } = getCachedOr(() => ({}), 'noteTree')
 
-    this.byId = byId || createInitialNotesByIdState()
-    this.selectedId = selectedId || null
+    nt.byId = byId || createInitialNotesByIdState()
+    nt.selectedId = selectedId || null
 
     autorun(() => {
-      cache('noteTree', toJS(this))
+      cache('noteTree', toJS(nt))
     })
   }
 
-  add = () => {
+  const add = () => {
     const n = createNewNote()
-    this.byId[n.id] = n
-    this.parentIds[n.id] = ROOT_NOTE_ID
-    this.selectedId = n.id
+    nt.byId[n.id] = n
+    nt.parentIds[n.id] = ROOT_NOTE_ID
+    nt.selectedId = n.id
   }
+
+  init()
+
+  return { add }
 }
 
-const nt = new NoteTree()
+const nt = createNoteTree()
 
 const RootTree = observer(() => {
   return <div className="">RT</div>

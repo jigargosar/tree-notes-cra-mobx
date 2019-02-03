@@ -8,7 +8,9 @@ export const defaultEmptyTo = def =>
   )
 
 export function getCachedOr(thunk, key) {
-  return R.when(R.isNil)(thunk)(JSON.parse(localStorage.getItem(key)))
+  return R.when(R.isNil)(thunk)(
+    JSON.parse(localStorage.getItem(key) || null),
+  )
 }
 
 export function cache(key, jsonValue) {
