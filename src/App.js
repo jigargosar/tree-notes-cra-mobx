@@ -6,7 +6,7 @@ import {
   createNewNote,
   ROOT_NOTE_ID,
 } from './models/note'
-import { autorun, extendObservable, observable, toJS } from 'mobx'
+import { autorun, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
 
 // const enhanceNote = R.curry(function enhanceNote(note) {
@@ -32,10 +32,6 @@ function createNoteTree() {
     parentIds: {},
     selectedId: null,
   })
-
-  function currentRoot() {
-    return get(ROOT_NOTE_ID)
-  }
 
   function init() {
     const { byId, selectedId } = getCachedOr(() => ({}), 'noteTree')
@@ -80,32 +76,35 @@ function createNoteTree() {
   }
 
   init()
-  return { add, get, addAfter, setSelectedId, currentRoot }
+  return { add, get, addAfter, setSelectedId }
 }
 
 const nt = createNoteTree()
 
 function useNote(id) {
   const note = nt.get(id)
-  return useObservable(
-    extendObservable(note, {
-      get isLeaf() {
-        return note.childIds.length === 0
-      },
-      get hasChildren() {
-        return !this.isLeaf
-      },
-      get showChildren() {
-        return this.hasChildren && !this.collapsed
-      },
-      toggleCollapse() {
-        note.collapsed = !note.collapsed
-      },
-      select() {
-        nt.setSelectedId(id)
-      },
-    }),
-  )
+  return useObservable({
+    ...note,
+    get isLeaf() {
+      return note.childIds.length === 0
+    },
+    get hasChildren() {
+      return !this.isLeaf
+    },
+    get showChildren() {
+      return this.hasChildren && !this.collapsed
+    },
+    toggleCollapse() {
+      note.collapsed = !note.collapsed
+    },
+    select() {
+      nt.setSelectedId(id)
+    },
+  })
+}
+
+function useRootNote() {
+  return useNote(ROOT_NOTE_ID)
 }
 
 const NoteItem = observer(({ id }) => {
@@ -156,9 +155,10 @@ const NoteItem = observer(({ id }) => {
 })
 
 const RootTree = observer(() => {
+  const root = useRootNote()
   return (
     <div className="">
-      {nt.currentRoot().childIds.map(id => (
+      {root.childIds.map(id => (
         <NoteItem key={id} id={id} />
       ))}
     </div>
