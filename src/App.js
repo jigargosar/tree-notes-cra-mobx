@@ -21,7 +21,6 @@ function useNoteTree() {
     'selectedId',
     null,
   )
-  console.log(`cachedSelectedId`, cachedSelectedId)
   const notes = useObject(() => toIdLookup(cachedNoteList))
   const parentIds = useObject(() => noteListToPidLookup(cachedNoteList))
   const [selectedId, setSelectedId] = useState(() => cachedSelectedId)
