@@ -19,14 +19,14 @@ function useNoteTree() {
   ])
   const [cachedSelectedId, saveSelectedId] = useLocalStorage(
     'selectedId',
-    '',
+    null,
   )
   console.log(`cachedSelectedId`, cachedSelectedId)
   const notes = useObject(() => toIdLookup(cachedNoteList))
   const parentIds = useObject(() => noteListToPidLookup(cachedNoteList))
-  const [selectedId, setSelectedId] = useState(cachedSelectedId)
+  const [selectedId, setSelectedId] = useState(() => cachedSelectedId)
 
-  const allNotes = useComputed(notes.values, [notes.state])
+  const allNotes = useComputed(() => notes.values(), [notes.state])
 
   const addNewTo = pid => {
     const n = createNewNote()
@@ -37,9 +37,8 @@ function useNoteTree() {
   }
   const addNew = () => addNewTo(ROOT_NOTE_ID)
 
-  useEffect(() => saveNoteList(allNotes), [allNotes])
-  useEffect(() => saveSelectedId(selectedId), [selectedId])
-
+  useEffect(() => saveNoteList(allNotes), [notes.state])
+  useEffect(() => {}, [selectedId])
   return { allNotes, addNew }
 }
 
