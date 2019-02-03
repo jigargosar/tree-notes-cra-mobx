@@ -179,7 +179,7 @@ const RootTree = observer(function RootTree() {
   )
 })
 
-function useArrowNav(ref) {
+function useArrowKeys(ref) {
   function onKeyDown(ev) {
     if (ev.defaultPrevented) {
       return
@@ -219,7 +219,7 @@ function useArrowNav(ref) {
 
 const App = observer(function App() {
   const navContainerRef = createRef()
-  useArrowNav(navContainerRef)
+  useArrowKeys(navContainerRef)
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
