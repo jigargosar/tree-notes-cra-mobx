@@ -27,6 +27,7 @@ function useNoteTree() {
   const [selectedId, setSelectedId] = useState(() => cachedSelectedId)
 
   const allNotes = useComputed(() => notes.values(), [notes.state])
+  const root = notes.get(ROOT_NOTE_ID)
 
   const addNewTo = pid => {
     const n = createNewNote()
@@ -36,10 +37,11 @@ function useNoteTree() {
     setSelectedId(n.id)
   }
   const addNew = () => addNewTo(ROOT_NOTE_ID)
-
   useEffect(() => saveNoteList(allNotes), [notes.state])
-  useEffect(() => {}, [selectedId])
-  return { allNotes, addNew }
+  useEffect(() => {
+    saveSelectedId(selectedId)
+  }, [selectedId])
+  return { root, addNew, get: notes.get }
 }
 
 function renderNoteItemWithId(overmind) {
@@ -156,7 +158,7 @@ function App() {
   const { actions } = useOvermind()
 
   const nt = useNoteTree()
-
+  console.log('Render App')
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Use Tree Notes</div>
@@ -164,11 +166,14 @@ function App() {
         add
       </button>
       <div className="pv3">
-        {nt.allNotes.map(n => (
-          <div key={n.id} className="pv1">
-            {n.title}
-          </div>
-        ))}
+        {nt.root.childIds.map(cid => {
+          const n = nt.get(cid)
+          return (
+            <div key={n.id} className="pv1">
+              {n.title}
+            </div>
+          )
+        })}
       </div>
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
       <div className="pv1">
