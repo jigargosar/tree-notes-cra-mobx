@@ -27,11 +27,16 @@ function createNoteTree() {
     })
   }
 
-  const add = () => {
+  function add() {
+    addTo(ROOT_NOTE_ID)
+  }
+
+  function addTo(pid) {
     const n = createNewNote()
     nt.byId[n.id] = n
-    nt.parentIds[n.id] = ROOT_NOTE_ID
+    nt.parentIds[n.id] = pid
     nt.selectedId = n.id
+    nt.byId[pid].childIds.push(n.id)
   }
 
   init()
