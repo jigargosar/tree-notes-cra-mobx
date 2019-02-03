@@ -6,7 +6,7 @@ import {
   createNewNote,
   ROOT_NOTE_ID,
 } from './models/note'
-import { autorun, observable, toJS } from 'mobx'
+import { autorun, extendObservable, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
 
 // const enhanceNote = R.curry(function enhanceNote(note) {
@@ -76,7 +76,12 @@ function createNoteTree() {
   }
 
   init()
-  return { add, get, addAfter, setSelectedId }
+  return extendObservable(tree, {
+    add,
+    get,
+    addAfter,
+    setSelectedId,
+  })
 }
 
 const nt = createNoteTree()
@@ -84,9 +89,19 @@ const nt = createNoteTree()
 function useNote(id) {
   const note = nt.get(id)
   return useObservable({
-    ...note,
+    get title() {
+      return note.title
+    },
+
+    get childIds() {
+      return note.childIds
+    },
+
     get isLeaf() {
       return note.childIds.length === 0
+    },
+    get isSelected() {
+      return id === nt.selectedId
     },
     get hasChildren() {
       return !this.isLeaf
