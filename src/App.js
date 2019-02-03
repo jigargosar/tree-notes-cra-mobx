@@ -71,7 +71,7 @@ function createNoteTree() {
     tree.byId[n.id] = n
     const pid = tree.parentIds[sid]
     tree.parentIds[n.id] = pid
-    tree.selectedId = n.id
+    setSelectedId(n.id)
     const childIds = get(pid).childIds
     childIds.splice(childIds.indexOf(sid), n.id)
   }
