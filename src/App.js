@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useOvermind } from './overmind'
 import * as R from 'ramda'
 import isHotKey from 'is-hotkey'
@@ -14,11 +14,17 @@ import { useComputed } from 'mobx-react-lite'
 import { useObject } from './state-hooks'
 
 function useNoteTree() {
-  const [cachedNoteList, persistNL] = useLocalStorage('notes', [
+  const [cachedNoteList, saveNoteList] = useLocalStorage('notes', [
     createRootNote(),
   ])
+  const [cachedSelectedId, saveSelectedId] = useLocalStorage(
+    'selectedId',
+    '',
+  )
+  console.log(`cachedSelectedId`, cachedSelectedId)
   const notes = useObject(() => toIdLookup(cachedNoteList))
   const parentIds = useObject(() => noteListToPidLookup(cachedNoteList))
+  const [selectedId, setSelectedId] = useState(cachedSelectedId)
 
   const allNotes = useComputed(notes.values, [notes.state])
 
@@ -31,7 +37,8 @@ function useNoteTree() {
   }
   const addNew = () => addNewTo(ROOT_NOTE_ID)
 
-  useEffect(() => persistNL(allNotes), [allNotes])
+  useEffect(() => saveNoteList(allNotes), [allNotes])
+  useEffect(() => saveSelectedId(selectedId), [selectedId])
 
   return { allNotes, addNew }
 }

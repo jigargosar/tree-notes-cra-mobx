@@ -32,7 +32,7 @@ export function useObject(initial = {}) {
 }
 
 export function useString(initial = '') {
-  validate('F|S', arguments)
+  validate('F|S|Z', arguments)
 
   const [state, setState] = useState(initial)
 
