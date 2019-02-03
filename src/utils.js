@@ -17,3 +17,5 @@ export function cache(key, jsonValue) {
 export function removeCached(cacheKey) {
   localStorage.removeItem(cacheKey)
 }
+
+export const isFunction = R.is(Function)

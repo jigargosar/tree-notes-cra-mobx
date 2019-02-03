@@ -2,6 +2,8 @@ import React from 'react'
 import { useOvermind } from './overmind'
 import * as R from 'ramda'
 import isHotKey from 'is-hotkey'
+import { useLookup } from './state-hooks'
+import { createNewNote } from './models/note'
 
 function renderNoteItemWithId(overmind) {
   const { state } = overmind
@@ -116,6 +118,8 @@ function RootTree() {
 function App() {
   const { actions } = useOvermind()
 
+  const nl = useLookup(() => R.times(createNewNote)(10))
+
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
@@ -126,6 +130,11 @@ function App() {
         <button className="ml3" onClick={actions.deleteAll}>
           delete all
         </button>
+      </div>
+      <div className="pv3">
+        {nl.values().map(n => (
+          <div className="pv1">{n.title}</div>
+        ))}
       </div>
       <div className="pv3">
         <RootTree />
