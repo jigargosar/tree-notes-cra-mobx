@@ -89,8 +89,11 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
       moveDown() {
         tree.moveSelectedBy(1)
       },
+      nest() {
+        tree.nest(id)
+      },
     },
-    { ...asActions(['toggleCollapse', 'moveUp', 'moveDown']) },
+    { ...asActions(['toggleCollapse', 'moveUp', 'moveDown', 'nest']) },
     { name: 'Note:' + id },
   )
 })
@@ -179,6 +182,21 @@ function createNoteTree() {
     get(pid).childIds.unshift(nid)
   }
 
+  function appendTo(pid, note) {
+    const nid = note.id || insertNew().id
+    const oldPid = getPid(nid)
+    if (oldPid) {
+      const oldParent = getParent(nid)
+      const idx = getIdx(nid)
+      if (idx > -1) {
+        oldParent.childIds.splice(idx, 1)
+      }
+    }
+    setPid(pid, nid)
+    setSelectedId(nid)
+    get(pid).childIds.push(nid)
+  }
+
   function addAtOffsetOfSelected(offset) {
     const sid = tree.selectedId || tree.root.firstChildId
 
@@ -210,6 +228,15 @@ function createNoteTree() {
       moveItemByClampedOffset(sid, offset, siblingIds)
     }
   }
+  function nest(id) {
+    if (id) {
+      const newPIdx = getIdx(id) - 1
+      if (newPIdx > -1) {
+        const newPid = getParent(id).childIds[newPIdx]
+        appendTo(newPid, get(id))
+      }
+    }
+  }
   function getIdx(id) {
     return getParent(id).childIds.indexOf(id)
   }
@@ -231,6 +258,7 @@ function createNoteTree() {
       addBefore: () => addAtOffsetOfSelected(0),
       addChild: () => prependTo(tree.selectedId || ROOT_NOTE_ID),
       moveSelectedBy,
+      nest,
       deleteAll,
       setSelectedId,
       selectParentOfId,
@@ -241,6 +269,7 @@ function createNoteTree() {
         'addBefore',
         'addChild',
         'moveSelectedBy',
+        'nest',
         'deleteAll',
         'setSelectedId',
         'selectParentOfId',
@@ -298,6 +327,13 @@ function noteTitleKeyDownHandler(note) {
       (ev, note) => {
         ev.preventDefault()
         note.moveDown()
+      },
+    ],
+    [
+      'mod+right',
+      (ev, note) => {
+        ev.preventDefault()
+        note.nest()
       },
     ],
   ]
