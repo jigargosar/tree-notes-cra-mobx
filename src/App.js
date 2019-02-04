@@ -84,8 +84,8 @@ function createNoteTree() {
     return tree.byId[id]
   }
 
-  function append() {
-    appendTo(ROOT_NOTE_ID)
+  function prepend() {
+    prependTo(ROOT_NOTE_ID)
   }
 
   function createNewEnhancedNote() {
@@ -98,6 +98,14 @@ function createNoteTree() {
     tree.parentIds[n.id] = pid
     setSelectedId(n.id)
     get(pid).childIds.push(n.id)
+  }
+
+  function prependTo(pid) {
+    const n = createNewEnhancedNote()
+    tree.byId[n.id] = n
+    tree.parentIds[n.id] = pid
+    setSelectedId(n.id)
+    get(pid).childIds.unshift(n.id)
   }
 
   function addAfter(sid) {
@@ -115,13 +123,13 @@ function createNoteTree() {
     if (sid) {
       addAfter(sid)
     } else {
-      append()
+      prepend()
     }
   }
 
   init()
   return extendObservable(tree, {
-    append,
+    prepend,
     get,
     addAfter: addAfterSelected,
     setSelectedId,
@@ -221,7 +229,7 @@ const App = observer(function App() {
   const buttonConfig = buttonConfigToButtons({
     add: nt.addAfter,
     'delete all': nt.deleteAll,
-    'append to root': nt.append,
+    'append to root': nt.prepend,
   })
   console.log(`buttonConfig`, buttonConfig)
   return (
