@@ -31,11 +31,12 @@ export function moveItemTo(item, to, a) {
   a.splice(to < 0 ? a.length + to : to, 0, a.splice(from, 1)[0])
 }
 
-export function moveItemByOffset(item, offset, a) {
+export function moveItemByClampedOffset(item, offset, a) {
   validate('*NA', arguments)
 
   const from = a.indexOf(item)
-  const to = from + offset
+  const to = R.clamp(0, a.length - 1)(from + offset)
+
   if (from < 0 || from === to) return
   a.splice(to < 0 ? a.length + to : to, 0, a.splice(from, 1)[0])
 }

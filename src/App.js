@@ -21,7 +21,7 @@ import { useFocusRef } from './hooks/useFocus'
 import {
   asActions,
   insertAtOffsetOf,
-  moveItemByOffset,
+  moveItemByClampedOffset,
   toggle,
 } from './mobx/helpers'
 import DevTools from 'mobx-react-devtools'
@@ -199,9 +199,7 @@ function createNoteTree() {
     if (sid) {
       const siblingIds = getParent(sid).childIds
 
-      const clampedOffset = R.clamp(0, siblingIds.length - 1)(offset)
-
-      moveItemByOffset(sid, clampedOffset, siblingIds)
+      moveItemByClampedOffset(sid, offset, siblingIds)
     }
   }
 
