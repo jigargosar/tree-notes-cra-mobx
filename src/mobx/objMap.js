@@ -9,7 +9,11 @@ import {
 
 export function createObjMap(obj = {}, options) {
   if (!isObservable(obj)) {
-    obj = observable.object(obj, null, options)
+    obj = observable.object(
+      obj,
+      null,
+      Object.assign({}, { name: 'ObjMap' }, options),
+    )
   }
 
   return extendObservable(

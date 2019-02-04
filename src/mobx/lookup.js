@@ -7,7 +7,7 @@ export function createIdLookup(initialItems, options) {
       acc[item.id] = item
       return acc
     }, {}),
-    options,
+    Object.assign({}, { name: 'IdLookup' }, options),
   )
 
   return extendObservable(
