@@ -52,3 +52,9 @@ export function toIdLookup(initialList) {
 export function appendChildId(id) {
   return R.over(R.lensProp('childIds'), R.append(id))
 }
+
+export const clampIdx = R.curry(function clampIdx(idx, a) {
+  validate('NA', arguments)
+
+  return R.clamp(0, a.length - 1)(idx)
+})
