@@ -27,9 +27,6 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
       get isSelected() {
         return id === nt.selectedId
       },
-      select() {
-        tree.setSelectedId(id)
-      },
       get isLeaf() {
         return note.childIds.length === 0
       },
@@ -38,9 +35,6 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
       },
       get showChildren() {
         return note.hasChildren && !note.collapsed
-      },
-      toggleCollapse() {
-        toggle(note, 'collapsed')
       },
       get firstChildId() {
         return note.hasChildren ? note.childIds[0] : null
@@ -53,6 +47,21 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
       },
       get canExpand() {
         return note.hasChildren && note.isCollapsed
+      },
+      get isParentSelectable() {
+        return tree.isParentOfIdSelectable(id)
+      },
+
+      select() {
+        tree.setSelectedId(id)
+      },
+
+      selectParent() {
+        tree.selectParentOfId(id)
+      },
+
+      toggleCollapse() {
+        toggle(note, 'collapsed')
       },
     },
     { ...asActions(['toggleCollapse']) },
@@ -174,6 +183,14 @@ function createNoteTree() {
       prependToRoot()
     }
   }
+  function isParentOfIdSelectable(id) {
+    const pid = getPid(id)
+    return pid && pid !== ROOT_NOTE_ID
+  }
+
+  function selectParentOfId(id) {
+    return setSelectedId(getPid(id))
+  }
 
   function prependToSelected() {
     prependTo(tree.selectedId || ROOT_NOTE_ID)
@@ -184,21 +201,23 @@ function createNoteTree() {
     tree,
     {
       get,
+      isParentOfIdSelectable,
       // actions
       prepend: prependToRoot,
       addAfter: addAfterSelected,
       addBefore: addBeforeSelected,
       addChild: prependToSelected,
-      setSelectedId,
       deleteAll,
+      setSelectedId,
+      selectParentOfId,
     },
     {
       ...asActions([
         'prepend',
         'addAfter',
         'addChild',
-        'setSelectedId',
         'deleteAll',
+        'setSelectedId',
       ]),
     },
   )
@@ -227,6 +246,9 @@ const NoteItem = observer(({ id }) => {
           if (note.canCollapse) {
             ev.preventDefault()
             note.toggleCollapse()
+          } else if (note.isParentSelectable) {
+            ev.preventDefault()
+            note.selectParent()
           }
         },
       ],
