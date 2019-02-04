@@ -46,7 +46,7 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
         return note.collapsed
       },
     },
-    null,
+    { ...asActions(['toggleCollapse']) },
     { name: 'Note:' + id },
   )
 })
