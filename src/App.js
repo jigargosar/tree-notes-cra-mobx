@@ -11,13 +11,17 @@ import { cache, getCachedOr_ } from './utils'
 import { useArrowKeys } from './hooks/useArrowKeys'
 import { createObjMap } from './mobx/objMap'
 import useRestoreFocus from './hooks/useRestoreFocus'
+import { createToggle } from './mobx/toggle'
 
 window.mobx = require('mobx')
 
 const enhanceNote = R.curry(function enhanceNote(tree, note) {
   const id = note.id
   return extendObservable(
-    observable.object(note),
+    observable.object({
+      ...note,
+      collapsed: createToggle(note.collapsed),
+    }),
     {
       get isSelected() {
         return id === nt.selectedId
@@ -32,13 +36,16 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
         return !note.isLeaf
       },
       get showChildren() {
-        return note.hasChildren && !note.collapsed
+        return note.hasChildren && note.collapsed.not
       },
       toggleCollapse() {
-        note.collapsed = !note.collapsed
+        note.collapsed.toggle()
       },
       get firstChildId() {
         return note.hasChildren ? note.childIds[0] : null
+      },
+      get isCollapsed() {
+        return note.collapsed.is
       },
     },
     null,
@@ -172,7 +179,7 @@ const NoteItem = observer(function NoteItem({ id }) {
           className={`ph2 code us-none ${note.isLeaf ? '' : 'pointer'}`}
           onClick={note.toggleCollapse}
         >
-          {note.isLeaf ? 'o' : note.collapsed ? '+' : '-'}
+          {note.isLeaf ? 'o' : note.isCollapsed ? '+' : '-'}
         </div>
         {/*title*/}
         <div

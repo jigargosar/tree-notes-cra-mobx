@@ -1,7 +1,7 @@
 import validate from 'aproba'
 import { extendObservable, observable } from 'mobx'
 
-function createToggle(initial = false) {
+export function createToggle(initial = false) {
   validate('B', arguments)
   const b = observable.box(initial)
   return extendObservable(b, {
