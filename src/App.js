@@ -12,7 +12,7 @@ import { useArrowKeys } from './hooks/useArrowKeys'
 import { createObjMap } from './mobx/objMap'
 import useRestoreFocus from './hooks/useRestoreFocus'
 import { useFocusRef } from './hooks/useFocus'
-import { insertAtOffsetOf, toggle } from './mobx/helpers'
+import { asActions, insertAtOffsetOf, toggle } from './mobx/helpers'
 
 window.mobx = require('mobx')
 
@@ -151,13 +151,25 @@ function createNoteTree() {
   }
 
   init()
-  return extendObservable(tree, {
-    prepend,
-    get,
-    addAfter: addAfterSelected,
-    setSelectedId,
-    deleteAll: deleteAll,
-  })
+  return extendObservable(
+    tree,
+    {
+      prepend,
+      get,
+      addAfter: addAfterSelected,
+      setSelectedId,
+      deleteAll,
+    },
+    {
+      ...asActions([
+        'prepend',
+        'get',
+        'addAfter',
+        'setSelectedId',
+        'deleteAll',
+      ]),
+    },
+  )
 }
 
 const nt = createNoteTree()

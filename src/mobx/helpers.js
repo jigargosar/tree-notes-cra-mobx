@@ -1,4 +1,4 @@
-import { get, set } from 'mobx'
+import { action, get, set } from 'mobx'
 import validate from 'aproba'
 import * as R from 'ramda'
 
@@ -12,4 +12,11 @@ export function insertAtOffsetOf(item, offset, newItem, target) {
   if (idx > -1) {
     target.splice(idx + offset, 0, newItem)
   }
+}
+
+export function asActions(actionNames) {
+  return actionNames.reduce((acc, name) => {
+    acc[name] = action
+    return acc
+  }, {})
 }
