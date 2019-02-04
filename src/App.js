@@ -56,10 +56,14 @@ function createNoteTree() {
   )
 
   function init() {
-    const { byId, selectedId } = getCachedOr(() => ({}), 'noteTree')
+    const { byId, selectedId, parentIds } = getCachedOr(
+      () => ({}),
+      'noteTree',
+    )
 
     const byIdNotes = byId || createInitialNotesByIdState()
     tree.byId = R.mapObjIndexed(enhanceNote(tree))(byIdNotes)
+    tree.parentIds = parentIds || {}
     tree.selectedId = selectedId || null
 
     autorun(() => {
@@ -98,7 +102,7 @@ function createNoteTree() {
     tree.parentIds[n.id] = pid
     setSelectedId(n.id)
     const childIds = get(pid).childIds
-    childIds.splice(childIds.indexOf(sid), n.id)
+    childIds.splice(childIds.indexOf(sid), 0, n.id)
   }
 
   function addAfterSelected() {
