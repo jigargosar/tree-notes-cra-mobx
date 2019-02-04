@@ -75,8 +75,14 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
       toggleCollapse() {
         toggle(note, 'collapsed')
       },
+      moveUp() {
+        tree.moveSelectedBy(-1)
+      },
+      moveDown() {
+        tree.moveSelectedBy(1)
+      },
     },
-    { ...asActions(['toggleCollapse']) },
+    { ...asActions(['toggleCollapse', 'moveUp', 'moveDown']) },
     { name: 'Note:' + id },
   )
 })
@@ -209,8 +215,7 @@ function createNoteTree() {
       addAfter: () => addAtOffsetOfSelected(1),
       addBefore: () => addAtOffsetOfSelected(0),
       addChild: () => prependTo(tree.selectedId || ROOT_NOTE_ID),
-      moveUp: () => moveSelectedBy(-1),
-      moveDown: () => moveSelectedBy(1),
+      moveSelectedBy,
       deleteAll,
       setSelectedId,
       selectParentOfId,
@@ -220,8 +225,7 @@ function createNoteTree() {
         'addAfter',
         'addBefore',
         'addChild',
-        'moveUp',
-        'moveDown',
+        'moveSelectedBy',
         'deleteAll',
         'setSelectedId',
         'selectParentOfId',
@@ -270,14 +274,18 @@ function noteTitleKeyDownHandler(note) {
     [
       'mod+up',
       (ev, note) => {
-        if (note.canExpand) {
-          ev.preventDefault()
-          note.toggleCollapse()
-        }
+        ev.preventDefault()
+        note.moveUp()
+      },
+    ],
+    [
+      'mod+down',
+      (ev, note) => {
+        ev.preventDefault()
+        note.moveDown()
       },
     ],
   ]
-
   const handler = keyMapToHandler(keyMap)
   return ev => handler(ev, note)
 }
