@@ -931,6 +931,13 @@
     log-update "^2.3.0"
     strip-ansi "^3.0.1"
 
+"@medv/finder@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@medv/finder/-/finder-1.1.1.tgz#c502c6578825902e5fae59885b60e0403ad8e933"
+  integrity sha512-LzJbdErL+RAj19mU28OClO4lPocuYBcfktcfo/laTWDsYgTv4Hgy4r0GMp52UJTVxgyBAl/Cym6r0yankaE/6A==
+  dependencies:
+    cssesc "^2.0.0"
+
 "@microsoft/load-themed-styles@^1.7.13":
   version "1.8.55"
   resolved "https://registry.yarnpkg.com/@microsoft/load-themed-styles/-/load-themed-styles-1.8.55.tgz#7bd0162dcc0d7a09deeb1e779df8020b8eb80e2e"

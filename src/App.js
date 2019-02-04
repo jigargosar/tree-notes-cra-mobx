@@ -7,9 +7,10 @@ import {
   ROOT_NOTE_ID,
 } from './models/note'
 import { autorun, extendObservable, observable, toJS } from 'mobx'
-import { cache, getCachedOr } from './utils'
+import { cache, getCachedOr_ } from './utils'
 import { useArrowKeys } from './hooks'
 import { createObjMap } from './mobx/objMap'
+import useRestoreFocus from './hooks/useRestoreFocus'
 
 window.mobx = require('mobx')
 
@@ -61,7 +62,7 @@ function createNoteTree() {
   )
 
   function init() {
-    const { byId, selectedId, parentIds } = getCachedOr(
+    const { byId, selectedId, parentIds } = getCachedOr_(
       () => ({}),
       'noteTree',
     )
@@ -223,6 +224,7 @@ const ButtonBar = observer(({ buttons }) => {
 const App = observer(function App() {
   const navContainerRef = createRef()
   useArrowKeys(navContainerRef)
+  useRestoreFocus()
 
   const buttonConfigToButtons = R.pipeWith(R.call, [
     R.mapObjIndexed((onClick, title) => ({

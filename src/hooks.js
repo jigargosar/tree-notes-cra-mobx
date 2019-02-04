@@ -59,7 +59,7 @@ export function usePrevious(value) {
 
 export function useArrowKeys(ref) {
   function onKeyDown(ev) {
-    if (ev.defaultPrevented) {
+    if (ev.defaultPrevented || !ref.current) {
       return
     }
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import * as R from 'ramda'
-import { cache, defaultEmptyTo, getCachedOr } from './utils'
+import { cache, defaultEmptyTo, getCachedOr_ } from './utils'
 import {
   createInitialNotesByIdState,
   createNewNote,
@@ -9,7 +9,7 @@ import {
 
 function useCachedState(thunk, cacheKey) {
   const [state, setState] = React.useState(() =>
-    getCachedOr(thunk, cacheKey),
+    getCachedOr_(thunk, cacheKey),
   )
 
   React.useEffect(() => cache(cacheKey, state), [state])
