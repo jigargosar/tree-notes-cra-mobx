@@ -48,7 +48,7 @@ function createNoteTree() {
       parentIds: {},
       selectedId: null,
       get root() {
-        return tree.byId[ROOT_NOTE_ID]
+        return get(ROOT_NOTE_ID)
       },
     },
     null,
