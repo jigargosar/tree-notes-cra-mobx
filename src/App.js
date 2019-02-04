@@ -12,7 +12,7 @@ import { useArrowKeys } from './hooks/useArrowKeys'
 import { createObjMap } from './mobx/objMap'
 import useRestoreFocus from './hooks/useRestoreFocus'
 import { useFocusRef } from './hooks/useFocus'
-import { toggle } from './mobx/helpers'
+import { insertAtOffsetOf, toggle } from './mobx/helpers'
 
 window.mobx = require('mobx')
 
@@ -139,7 +139,8 @@ function createNoteTree() {
     setPid(pid, nid)
     setSelectedId(nid)
     const childIds = get(pid).childIds
-    childIds.splice(childIds.indexOf(sid) + 1, 0, nid)
+    insertAtOffsetOf(sid, 1, nid, childIds)
+    // childIds.splice(childIds.indexOf(sid) + 1, 0, nid)
   }
 
   function addAfterSelected() {
