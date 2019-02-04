@@ -1,6 +1,6 @@
 import React, { createRef } from 'react'
 import * as R from 'ramda'
-import { observer, useObservable } from 'mobx-react-lite'
+import { observer, useComputed, useObservable } from 'mobx-react-lite'
 import {
   createInitialNotesByIdState,
   createNewNote,
@@ -10,22 +10,22 @@ import { autorun, extendObservable, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
 import { useArrowKeys } from './hooks'
 
-// const enhanceNote = R.curry(function enhanceNote(note) {
-//   return extendObservable(note, {
-//     get isLeaf() {
-//       return note.childIds.length === 0
-//     },
-//     get hasChildren() {
-//       return !this.isLeaf
-//     },
-//     get showChildren() {
-//       return this.hasChildren && !this.collapsed
-//     },
-//     function() {
-//       note.collapsed = !note.collapsed
-//     },
-//   })
-// })
+const enhanceNote = R.curry(function enhanceNote(note, tree) {
+  return extendObservable(note, {
+    get isLeaf() {
+      return note.childIds.length === 0
+    },
+    get hasChildren() {
+      return !this.isLeaf
+    },
+    get showChildren() {
+      return this.hasChildren && !this.collapsed
+    },
+    toggleCollapse() {
+      note.collapsed = !note.collapsed
+    },
+  })
+})
 
 function createNoteTree() {
   const tree = observable.object({
@@ -38,7 +38,7 @@ function createNoteTree() {
     const { byId, selectedId } = getCachedOr(() => ({}), 'noteTree')
 
     const byIdNotes = byId || createInitialNotesByIdState()
-    tree.byId = R.mapObjIndexed(R.identity)(byIdNotes)
+    tree.byId = R.mapObjIndexed(n => enhanceNote(n, tree))(byIdNotes)
     tree.selectedId = selectedId || null
 
     autorun(() => {
@@ -58,8 +58,12 @@ function createNoteTree() {
     appendNewTo(ROOT_NOTE_ID)
   }
 
+  function createNewEnhancedNote() {
+    return enhanceNote(createNewNote(), tree)
+  }
+
   function appendNewTo(pid) {
-    const n = createNewNote()
+    const n = createNewEnhancedNote()
     tree.byId[n.id] = n
     tree.parentIds[n.id] = pid
     setSelectedId(n.id)
@@ -127,7 +131,7 @@ function useRootNote() {
 }
 
 const NoteItem = observer(function NoteItem({ id }) {
-  const note = useNote(id)
+  const note = useComputed(() => nt.get(id))
 
   const titleRef = React.createRef()
 
