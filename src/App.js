@@ -10,7 +10,7 @@ import { autorun, extendObservable, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
 import { useArrowKeys } from './hooks'
 
-const enhanceNote = R.curry(function enhanceNote(note, tree) {
+const enhanceNote = R.curry(function enhanceNote(tree, note) {
   return extendObservable(note, {
     get isLeaf() {
       return note.childIds.length === 0
@@ -38,7 +38,7 @@ function createNoteTree() {
     const { byId, selectedId } = getCachedOr(() => ({}), 'noteTree')
 
     const byIdNotes = byId || createInitialNotesByIdState()
-    tree.byId = R.mapObjIndexed(n => enhanceNote(n, tree))(byIdNotes)
+    tree.byId = R.mapObjIndexed(enhanceNote(tree))(byIdNotes)
     tree.selectedId = selectedId || null
 
     autorun(() => {
@@ -59,7 +59,7 @@ function createNoteTree() {
   }
 
   function createNewEnhancedNote() {
-    return enhanceNote(createNewNote(), tree)
+    return enhanceNote(tree, createNewNote())
   }
 
   function appendNewTo(pid) {
