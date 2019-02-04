@@ -138,9 +138,7 @@ function createNoteTree() {
     const pid = getPid(sid)
     setPid(pid, nid)
     setSelectedId(nid)
-    const childIds = get(pid).childIds
-    insertAtOffsetOf(sid, 1, nid, childIds)
-    // childIds.splice(childIds.indexOf(sid) + 1, 0, nid)
+    insertAtOffsetOf(sid, 1, nid, get(pid).childIds)
   }
 
   function addAfterSelected() {
