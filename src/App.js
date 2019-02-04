@@ -11,18 +11,15 @@ import { cache, getCachedOr_ } from './utils'
 import { useArrowKeys } from './hooks/useArrowKeys'
 import { createObjMap } from './mobx/objMap'
 import useRestoreFocus from './hooks/useRestoreFocus'
-import { createToggle } from './mobx/toggle'
 import { useFocusRef } from './hooks/useFocus'
+import { toggle } from './mobx/helpers'
 
 window.mobx = require('mobx')
 
 const enhanceNote = R.curry(function enhanceNote(tree, note) {
   const id = note.id
   return extendObservable(
-    observable.object({
-      ...note,
-      collapsed: createToggle(note.collapsed),
-    }),
+    observable.object(note),
     {
       get isSelected() {
         return id === nt.selectedId
@@ -37,16 +34,16 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
         return !note.isLeaf
       },
       get showChildren() {
-        return note.hasChildren && note.collapsed.not
+        return note.hasChildren && !note.collapsed
       },
       toggleCollapse() {
-        note.collapsed.toggle()
+        toggle(note.collapsed)
       },
       get firstChildId() {
         return note.hasChildren ? note.childIds[0] : null
       },
       get isCollapsed() {
-        return note.collapsed.is
+        return note.collapsed
       },
     },
     null,
