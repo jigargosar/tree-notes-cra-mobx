@@ -225,6 +225,7 @@ function createNoteTree() {
       ...asActions([
         'prepend',
         'addAfter',
+        'addBefore',
         'addChild',
         'deleteAll',
         'setSelectedId',
