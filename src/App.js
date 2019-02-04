@@ -104,6 +104,10 @@ function createNoteTree() {
     tree.parentIds[id] = pid
   }
 
+  function getPid(id) {
+    return tree.parentIds[id]
+  }
+
   function prepend() {
     prependTo(ROOT_NOTE_ID)
   }
@@ -114,7 +118,7 @@ function createNoteTree() {
 
   function prependTo(pid) {
     const nid = insertNew().id
-    tree.parentIds[nid] = pid
+    setPid(pid, nid)
     setSelectedId(nid)
     get(pid).childIds.unshift(nid)
   }
@@ -127,7 +131,7 @@ function createNoteTree() {
 
   function addAfter(sid) {
     const nid = insertNew().id
-    const pid = tree.parentIds[sid]
+    const pid = getPid(sid)
     setPid(pid, nid)
     setSelectedId(nid)
     const childIds = get(pid).childIds
