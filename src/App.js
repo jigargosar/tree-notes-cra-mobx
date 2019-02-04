@@ -12,6 +12,18 @@ import { useArrowKeys } from './hooks'
 
 const enhanceNote = R.curry(function enhanceNote(tree, note) {
   return extendObservable(note, {
+    get title() {
+      return note.title
+    },
+    get childIds() {
+      return note.childIds
+    },
+    get isSelected() {
+      return note.id === nt.selectedId
+    },
+    select() {
+      nt.setSelectedId(note.id)
+    },
     get isLeaf() {
       return note.childIds.length === 0
     },
