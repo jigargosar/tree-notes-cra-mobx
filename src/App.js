@@ -114,7 +114,7 @@ function createNoteTree() {
     return tree.parentIds[id]
   }
 
-  function prepend() {
+  function prependToRoot() {
     prependTo(ROOT_NOTE_ID)
   }
 
@@ -142,13 +142,29 @@ function createNoteTree() {
     setSelectedId(nid)
     insertAtOffsetOf(sid, 1, nid, get(pid).childIds)
   }
+  function addBefore(sid) {
+    const nid = insertNew().id
+    const pid = getPid(sid)
+    setPid(pid, nid)
+    setSelectedId(nid)
+    insertAtOffsetOf(sid, 0, nid, get(pid).childIds)
+  }
 
   function addAfterSelected() {
     const sid = tree.selectedId || tree.root.firstChildId
     if (sid) {
       addAfter(sid)
     } else {
-      prepend()
+      prependToRoot()
+    }
+  }
+
+  function addBeforeSelected() {
+    const sid = tree.selectedId || tree.root.firstChildId
+    if (sid) {
+      addBefore(sid)
+    } else {
+      prependToRoot()
     }
   }
 
@@ -162,8 +178,9 @@ function createNoteTree() {
     {
       get,
       // actions
-      prepend,
+      prepend: prependToRoot,
       addAfter: addAfterSelected,
+      addBefore: addBeforeSelected,
       addChild: prependToSelected,
       setSelectedId,
       deleteAll,
@@ -259,6 +276,7 @@ const TopBar = observer(() => {
 
   const buttonConfig = buttonConfigToButtons({
     add: nt.addAfter,
+    'add before': nt.addBefore,
     'add child': nt.addChild,
     'delete all': nt.deleteAll,
     prepend: nt.prepend,
