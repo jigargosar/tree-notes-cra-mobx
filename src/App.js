@@ -6,7 +6,14 @@ import {
   createNewNote,
   ROOT_NOTE_ID,
 } from './models/note'
-import { autorun, extendObservable, observable, toJS } from 'mobx'
+import {
+  autorun,
+  configure,
+  extendObservable,
+  observable,
+  runInAction,
+  toJS,
+} from 'mobx'
 import { cache, getCachedOr_ } from './utils'
 import { handleArrowKeyNav } from './hooks/useArrowKeys'
 import { createObjMap } from './mobx/objMap'
@@ -16,6 +23,7 @@ import { asActions, insertAtOffsetOf, toggle } from './mobx/helpers'
 import DevTools from 'mobx-react-devtools'
 import isHotKey from 'is-hotkey'
 
+configure({ enforceActions: 'always' })
 window.mobx = require('mobx')
 
 const enhanceNote = R.curry(function enhanceNote(tree, note) {
@@ -89,18 +97,20 @@ function createNoteTree() {
   )
 
   function init() {
-    const { byId, selectedId, parentIds } = getCachedOr_(
-      () => ({}),
-      'noteTree',
-    )
+    runInAction('NoteTree.init', () => {
+      const { byId, selectedId, parentIds } = getCachedOr_(
+        () => ({}),
+        'noteTree',
+      )
 
-    const byIdNotes = byId || createInitialNotesByIdState()
-    tree.byId = R.mapObjIndexed(enhanceNote(tree))(byIdNotes)
-    tree.parentIds = parentIds || createInitialParentIds()
-    tree.selectedId = selectedId || null
+      const byIdNotes = byId || createInitialNotesByIdState()
+      tree.byId = R.mapObjIndexed(enhanceNote(tree))(byIdNotes)
+      tree.parentIds = parentIds || createInitialParentIds()
+      tree.selectedId = selectedId || null
 
-    autorun(() => {
-      cache('noteTree', toJS(tree))
+      autorun(() => {
+        cache('noteTree', toJS(tree))
+      })
     })
   }
 
