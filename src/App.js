@@ -17,7 +17,6 @@ import {
 import { cache, getCachedOr_ } from './utils'
 import { handleArrowKeyNav } from './hooks/useArrowKeys'
 import { createObjMap } from './mobx/objMap'
-import useRestoreFocus from './hooks/useRestoreFocus'
 import { useFocusRef } from './hooks/useFocus'
 import { asActions, insertAtOffsetOf, toggle } from './mobx/helpers'
 import DevTools from 'mobx-react-devtools'
@@ -340,7 +339,7 @@ TopBar.displayName = 'TopBar'
 const App = observer(() => {
   const navContainerRef = createRef()
   // useArrowKeys(navContainerRef)
-  useRestoreFocus()
+  // useRestoreFocus()
 
   return (
     <div className="w-80 center sans-serif">
