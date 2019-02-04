@@ -179,9 +179,9 @@ const RootTree = observer(function RootTree() {
 
 const ButtonBar = observer(({ buttons }) => {
   return (
-    <div className="mv3 nl3 nr3">
+    <div className="mv3 nl3">
       {buttons.map(({ title, op }) => (
-        <button key={title} className="mh3" {...op}>
+        <button key={title} className="ml3" {...op}>
           {title}
         </button>
       ))}
@@ -191,10 +191,24 @@ const ButtonBar = observer(({ buttons }) => {
 const App = observer(function App() {
   const navContainerRef = createRef()
   useArrowKeys(navContainerRef)
+
+  const buttonConfigToButtons = R.pipe(
+    R.mapObjIndexed((onClick, title) => ({
+      title,
+      onClick,
+    })),
+    R.values,
+  )
+
+  const buttonConfig = buttonConfigToButtons({
+    add: nt.addAfter,
+    'delete all': nt.deleteAll,
+    'append to root': nt.add,
+  })
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
-      <ButtonBar buttons={[{ title: 'add', onClick: nt.add }]} />
+      <ButtonBar buttons={buttonConfig} />
       <div className="pv1">
         <button className="" onClick={() => nt.add()}>
           add
