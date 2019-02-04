@@ -6,39 +6,57 @@ import {
   createNewNote,
   ROOT_NOTE_ID,
 } from './models/note'
-import { autorun, extendObservable, observable, toJS } from 'mobx'
+import {
+  _getAdministration,
+  autorun,
+  extendObservable,
+  getObserverTree,
+  observable,
+  toJS,
+} from 'mobx'
 import { cache, getCachedOr } from './utils'
 import { useArrowKeys } from './hooks'
 
+window.mobx = require('mobx')
+
 const enhanceNote = R.curry(function enhanceNote(tree, note) {
-  return extendObservable(note, {
-    get isSelected() {
-      return note.id === nt.selectedId
+  return extendObservable(
+    note,
+    {
+      get isSelected() {
+        return note.id === nt.selectedId
+      },
+      select() {
+        nt.setSelectedId(note.id)
+      },
+      get isLeaf() {
+        return note.childIds.length === 0
+      },
+      get hasChildren() {
+        return !this.isLeaf
+      },
+      get showChildren() {
+        return this.hasChildren && !this.collapsed
+      },
+      toggleCollapse() {
+        note.collapsed = !note.collapsed
+      },
     },
-    select() {
-      nt.setSelectedId(note.id)
-    },
-    get isLeaf() {
-      return note.childIds.length === 0
-    },
-    get hasChildren() {
-      return !this.isLeaf
-    },
-    get showChildren() {
-      return this.hasChildren && !this.collapsed
-    },
-    toggleCollapse() {
-      note.collapsed = !note.collapsed
-    },
-  })
+    {},
+    { name: 'Note' },
+  )
 })
 
 function createNoteTree() {
-  const tree = observable.object({
-    byId: {},
-    parentIds: {},
-    selectedId: null,
-  })
+  const tree = observable.object(
+    {
+      byId: {},
+      parentIds: {},
+      selectedId: null,
+    },
+    {},
+    { name: 'NoteTree' },
+  )
 
   function init() {
     const { byId, selectedId } = getCachedOr(() => ({}), 'noteTree')
@@ -101,6 +119,11 @@ function createNoteTree() {
 }
 
 const nt = createNoteTree()
+
+window.nt = nt
+
+console.log(`$mobx`, getObserverTree(nt, 'byId'))
+console.log(`$mobx`, _getAdministration(nt))
 
 function useNote(id) {
   const note = nt.get(id)
