@@ -210,21 +210,13 @@ const App = observer(function App() {
   const navContainerRef = createRef()
   useArrowKeys(navContainerRef)
 
-  const buttonConfigToButtons = R.pipeWith(
-    (f, r) => {
-      // console.log(`r`, r)
-      const r2 = f(r)
-      // console.log(`r2`, r2)
-      return r2
-    },
-    [
-      R.mapObjIndexed((onClick, title) => ({
-        title,
-        onClick,
-      })),
-      R.values,
-    ],
-  )
+  const buttonConfigToButtons = R.pipeWith(R.call, [
+    R.mapObjIndexed((onClick, title) => ({
+      title,
+      onClick,
+    })),
+    R.values,
+  ])
 
   const buttonConfig = buttonConfigToButtons({
     add: nt.addAfter,
