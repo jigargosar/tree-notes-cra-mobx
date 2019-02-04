@@ -64,6 +64,14 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
         return tree.isParentOfIdSelectable(id)
       },
 
+      get pid() {
+        return tree.getPid(id)
+      },
+
+      get idx() {
+        return tree.getIdx(id)
+      },
+
       select() {
         tree.setSelectedId(id)
       },
@@ -190,8 +198,8 @@ function createNoteTree() {
     return pid && pid !== ROOT_NOTE_ID
   }
 
-  function getParent(sid) {
-    return get(getPid(sid))
+  function getParent(id) {
+    return get(getPid(id))
   }
 
   function moveSelectedBy(offset) {
@@ -201,6 +209,9 @@ function createNoteTree() {
 
       moveItemByClampedOffset(sid, offset, siblingIds)
     }
+  }
+  function getIdx(id) {
+    return getParent(id).childIds.indexOf(id)
   }
 
   function selectParentOfId(id) {
@@ -213,6 +224,8 @@ function createNoteTree() {
     {
       get,
       isParentOfIdSelectable,
+      getPid,
+      getIdx,
       // actions
       addAfter: () => addAtOffsetOfSelected(1),
       addBefore: () => addAtOffsetOfSelected(0),
@@ -297,7 +310,11 @@ const NoteItem = observer(({ id }) => {
 
   const titleRef = React.createRef()
 
-  useFocusRef(titleRef, note.isSelected)
+  useFocusRef(titleRef, note.isSelected, [
+    note.isSelected,
+    note.pid,
+    note.idx,
+  ])
 
   return (
     <div>

@@ -5,7 +5,8 @@ export function useFocusRef(ref, shouldFocus, deps = null) {
     console.log(`shouldFocus`, shouldFocus)
     const el = ref.current
     if (el && shouldFocus) {
+      el.blur()
       el.focus()
     }
-  })
+  }, deps)
 }
