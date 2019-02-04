@@ -8,12 +8,13 @@ import {
 } from './models/note'
 import { autorun, extendObservable, observable, toJS } from 'mobx'
 import { cache, getCachedOr_ } from './utils'
-import { useArrowKeys } from './hooks/useArrowKeys'
+import { handleArrowKeyNav } from './hooks/useArrowKeys'
 import { createObjMap } from './mobx/objMap'
 import useRestoreFocus from './hooks/useRestoreFocus'
 import { useFocusRef } from './hooks/useFocus'
 import { asActions, insertAtOffsetOf, toggle } from './mobx/helpers'
 import DevTools from 'mobx-react-devtools'
+import isHotKey from 'is-hotkey'
 
 window.mobx = require('mobx')
 
@@ -46,6 +47,12 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
       },
       get isCollapsed() {
         return note.collapsed
+      },
+      get canCollapse() {
+        return note.showChildren
+      },
+      get canExpand() {
+        return note.hasChildren && note.isCollapsed
       },
     },
     { ...asActions(['toggleCollapse']) },
@@ -212,6 +219,39 @@ const NoteItem = observer(({ id }) => {
 
   useFocusRef(titleRef, note.isSelected)
 
+  function onTitleKeyDown(ev) {
+    const keyMap = [
+      [
+        'left',
+        () => {
+          if (note.canCollapse) {
+            ev.preventDefault()
+            note.toggleCollapse()
+          }
+        },
+      ],
+      [
+        'right',
+        () => {
+          if (note.canExpand) {
+            ev.preventDefault()
+            note.toggleCollapse()
+          }
+        },
+      ],
+    ]
+
+    const keyMapToCond = R.pipe(
+      R.map(([key, handler]) => [
+        ev => isHotKey(key, ev),
+        ev => handler(ev),
+      ]),
+      R.append([R.T, () => R.identity]),
+    )
+
+    R.cond(keyMapToCond(keyMap))(ev)
+  }
+
   return (
     <div>
       {/*header*/}
@@ -231,6 +271,7 @@ const NoteItem = observer(({ id }) => {
           tabIndex={note.isSelected ? 0 : -1}
           data-is-focusable={true}
           onFocus={note.select}
+          onKeyDown={onTitleKeyDown}
         >
           {note.title}
         </div>
@@ -288,14 +329,18 @@ TopBar.displayName = 'TopBar'
 
 const App = observer(() => {
   const navContainerRef = createRef()
-  useArrowKeys(navContainerRef)
+  // useArrowKeys(navContainerRef)
   useRestoreFocus()
 
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
       <TopBar />
-      <div ref={navContainerRef} className="pv3">
+      <div
+        ref={navContainerRef}
+        onKeyDown={handleArrowKeyNav(navContainerRef)}
+        className="pv3"
+      >
         <RootTree />
       </div>
       <DevTools />

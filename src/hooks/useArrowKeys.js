@@ -39,3 +39,30 @@ export function useArrowKeys(ref) {
     }
   }, [])
 }
+
+export function handleArrowKeyNav(ref) {
+  return function onKeyDown(ev) {
+    if (ev.defaultPrevented || !ref.current) {
+      return
+    }
+
+    const targetIsFocusable = ev.target.dataset.isFocusable
+
+    if (targetIsFocusable) {
+      const focusables = Array.from(
+        ref.current.querySelectorAll('[data-is-focusable=true]').values(),
+      )
+
+      const idx = focusables.indexOf(ev.target)
+      if (isHotKey(['up', 'left'])(ev)) {
+        const newIdx = R.mathMod(idx - 1)(focusables.length)
+        focusables[newIdx].focus()
+        ev.preventDefault()
+      } else if (isHotKey(['down', 'right'])(ev)) {
+        const newIdx = R.mathMod(idx + 1)(focusables.length)
+        focusables[newIdx].focus()
+        ev.preventDefault()
+      }
+    }
+  }
+}
