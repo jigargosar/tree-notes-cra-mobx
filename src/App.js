@@ -8,7 +8,7 @@ import {
 } from './models/note'
 import { autorun, extendObservable, observable, toJS } from 'mobx'
 import { cache, getCachedOr_ } from './utils'
-import { useArrowKeys } from './hooks'
+import { useArrowKeys } from './hooks/useArrowKeys'
 import { createObjMap } from './mobx/objMap'
 import useRestoreFocus from './hooks/useRestoreFocus'
 
