@@ -28,6 +28,7 @@ export const cache = R.curry(function setCache(key, jsonValue) {
   validate('S*', arguments)
   localStorage.setItem(key, JSON.stringify(jsonValue))
 })
+
 export function removeCached(cacheKey) {
   localStorage.removeItem(cacheKey)
 }
