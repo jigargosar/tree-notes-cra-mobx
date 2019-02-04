@@ -1,6 +1,6 @@
 import React, { createRef } from 'react'
 import * as R from 'ramda'
-import { observer, useComputed } from 'mobx-react-lite'
+import { observer } from 'mobx-react-lite'
 import {
   createInitialNotesByIdState,
   createNewNote,
@@ -138,7 +138,7 @@ const nt = createNoteTree()
 window.nt = nt
 
 const NoteItem = observer(function NoteItem({ id }) {
-  const note = useComputed(() => nt.get(id))
+  const note = nt.get(id)
 
   const titleRef = React.createRef()
 
