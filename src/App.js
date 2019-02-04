@@ -106,30 +106,26 @@ function createNoteTree() {
     return enhanceNote(tree, createNewNote())
   }
 
-  function appendTo(pid) {
-    const n = createNewEnhancedNote()
-    insert(n)
-    setPid(pid, n.id)
-    setSelectedId(n.id)
-    get(pid).childIds.push(n.id)
+  function prependTo(pid) {
+    const nid = insertNew().id
+    tree.parentIds[nid] = pid
+    setSelectedId(nid)
+    get(pid).childIds.unshift(nid)
   }
 
-  function prependTo(pid) {
+  function insertNew() {
     const n = createNewEnhancedNote()
     insert(n)
-    tree.parentIds[n.id] = pid
-    setSelectedId(n.id)
-    get(pid).childIds.unshift(n.id)
+    return n
   }
 
   function addAfter(sid) {
-    const n = createNewEnhancedNote()
-    insert(n)
+    const nid = insertNew().id
     const pid = tree.parentIds[sid]
-    setPid(pid, n.id)
-    setSelectedId(n.id)
+    setPid(pid, nid)
+    setSelectedId(nid)
     const childIds = get(pid).childIds
-    childIds.splice(childIds.indexOf(sid) + 1, 0, n.id)
+    childIds.splice(childIds.indexOf(sid) + 1, 0, nid)
   }
 
   function addAfterSelected() {
