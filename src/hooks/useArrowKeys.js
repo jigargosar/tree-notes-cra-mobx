@@ -46,11 +46,15 @@ export function handleArrowKeyNav(ref) {
       return
     }
 
-    const targetIsFocusable = ev.target.dataset.isFocusable
+    const targetIsFocusable =
+      ev.target.dataset.isFocusable ||
+      ['BUTTON'].includes(ev.target.tagName)
 
     if (targetIsFocusable) {
       const focusables = Array.from(
-        ref.current.querySelectorAll('[data-is-focusable=true]').values(),
+        ref.current
+          .querySelectorAll('[data-is-focusable=true] , button')
+          .values(),
       )
 
       const idx = focusables.indexOf(ev.target)

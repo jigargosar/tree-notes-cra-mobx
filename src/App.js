@@ -433,8 +433,13 @@ const RootTree = observer(() => (
 RootTree.displayName = 'RootTree'
 
 const ButtonBar = observer(({ buttons }) => {
+  const rootRef = createRef()
   return (
-    <div className="mv3 nl0">
+    <div
+      ref={rootRef}
+      className="mv3 nl0"
+      onKeyDown={handleArrowKeyNav(rootRef)}
+    >
       {buttons.map(({ title, ...op }) => (
         <button key={title} className="ml0 bn bg-transparent blue" {...op}>
           {title}
