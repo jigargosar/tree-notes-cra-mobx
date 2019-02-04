@@ -52,11 +52,15 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
 })
 
 function createNoteTree() {
+  function createInitialParentIds() {
+    return {}
+  }
+
   const tree = observable.object(
     {
       idMap: createObjMap({}),
       byId: {},
-      parentIds: {},
+      parentIds: createInitialParentIds(),
       selectedId: null,
       get root() {
         return get(ROOT_NOTE_ID)
@@ -74,7 +78,7 @@ function createNoteTree() {
 
     const byIdNotes = byId || createInitialNotesByIdState()
     tree.byId = R.mapObjIndexed(enhanceNote(tree))(byIdNotes)
-    tree.parentIds = parentIds || {}
+    tree.parentIds = parentIds || createInitialParentIds()
     tree.selectedId = selectedId || null
 
     autorun(() => {
@@ -85,7 +89,7 @@ function createNoteTree() {
   function deleteAll() {
     tree.byId = createInitialNotesByIdState()
     tree.selectedId = null
-    tree.parentIds = {}
+    tree.parentIds = createInitialParentIds()
   }
 
   function setSelectedId(id) {
