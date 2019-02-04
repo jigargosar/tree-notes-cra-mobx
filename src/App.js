@@ -1,19 +1,12 @@
 import React, { createRef } from 'react'
 import * as R from 'ramda'
-import { observer, useComputed, useObservable } from 'mobx-react-lite'
+import { observer, useComputed } from 'mobx-react-lite'
 import {
   createInitialNotesByIdState,
   createNewNote,
   ROOT_NOTE_ID,
 } from './models/note'
-import {
-  _getAdministration,
-  autorun,
-  extendObservable,
-  getObserverTree,
-  observable,
-  toJS,
-} from 'mobx'
+import { autorun, extendObservable, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
 import { useArrowKeys } from './hooks'
 
@@ -54,8 +47,11 @@ function createNoteTree() {
       byId: {},
       parentIds: {},
       selectedId: null,
+      get root() {
+        return tree.byId[ROOT_NOTE_ID]
+      },
     },
-    {},
+    null,
     { name: 'NoteTree' },
   )
 
@@ -123,43 +119,6 @@ const nt = createNoteTree()
 
 window.nt = nt
 
-console.log(`$mobx`, getObserverTree(nt, 'byId'))
-console.log(`$mobx`, _getAdministration(nt))
-
-function useNote(id) {
-  const note = nt.get(id)
-  return useObservable({
-    get title() {
-      return note.title
-    },
-    get childIds() {
-      return note.childIds
-    },
-    get isLeaf() {
-      return note.childIds.length === 0
-    },
-    get isSelected() {
-      return id === nt.selectedId
-    },
-    get hasChildren() {
-      return !this.isLeaf
-    },
-    get showChildren() {
-      return this.hasChildren && !this.collapsed
-    },
-    toggleCollapse() {
-      note.collapsed = !note.collapsed
-    },
-    select() {
-      nt.setSelectedId(id)
-    },
-  })
-}
-
-function useRootNote() {
-  return useNote(ROOT_NOTE_ID)
-}
-
 const NoteItem = observer(function NoteItem({ id }) {
   const note = useComputed(() => nt.get(id))
 
@@ -208,10 +167,9 @@ const NoteItem = observer(function NoteItem({ id }) {
 })
 
 const RootTree = observer(function RootTree() {
-  const root = useRootNote()
   return (
     <div className="">
-      {root.childIds.map(id => (
+      {nt.root.childIds.map(id => (
         <NoteItem key={id} id={id} />
       ))}
     </div>
@@ -228,7 +186,7 @@ const App = observer(function App() {
         <button className="" onClick={() => nt.add()}>
           add
         </button>
-        <button className="ml3" onClick={R.identity}>
+        <button className="ml3" onClick={nt.deleteAll}>
           delete all
         </button>
       </div>
