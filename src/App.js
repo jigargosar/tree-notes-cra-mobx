@@ -27,13 +27,16 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
         return note.childIds.length === 0
       },
       get hasChildren() {
-        return !this.isLeaf
+        return !note.isLeaf
       },
       get showChildren() {
-        return this.hasChildren && !this.collapsed
+        return note.hasChildren && !note.collapsed
       },
       toggleCollapse() {
         note.collapsed = !note.collapsed
+      },
+      get firstChildId() {
+        return note.hasChildren ? note.childIds[0] : null
       },
     },
     {},
@@ -106,9 +109,11 @@ function createNoteTree() {
   }
 
   function addAfterSelected() {
-    const sid = tree.selectedId
+    const sid = tree.selectedId || tree.root.firstChildId
     if (sid) {
       addAfter(sid)
+    } else {
+      append()
     }
   }
 
