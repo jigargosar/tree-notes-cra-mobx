@@ -221,48 +221,46 @@ function renderNoteChildren(note) {
   return note.childIds.map(id => <NoteItem key={id} id={id} />)
 }
 
+const keyMapToHandler = R.pipe(
+  R.map(([key, handler]) => [ev => isHotKey(key, ev), handler]),
+  R.append([R.T, () => R.identity]),
+  R.cond,
+)
+
+function noteTitleKeyDownHandler(note) {
+  const keyMap = [
+    [
+      'left',
+      (ev, note) => {
+        if (note.canCollapse) {
+          ev.preventDefault()
+          note.toggleCollapse()
+        } else if (note.isParentSelectable) {
+          ev.preventDefault()
+          note.selectParent()
+        }
+      },
+    ],
+    [
+      'right',
+      (ev, note) => {
+        if (note.canExpand) {
+          ev.preventDefault()
+          note.toggleCollapse()
+        }
+      },
+    ],
+  ]
+
+  return ev => keyMapToHandler(keyMap)(ev, note)
+}
+
 const NoteItem = observer(({ id }) => {
   const note = nt.get(id)
 
   const titleRef = React.createRef()
 
   useFocusRef(titleRef, note.isSelected)
-
-  function onTitleKeyDown(ev) {
-    const keyMap = [
-      [
-        'left',
-        () => {
-          if (note.canCollapse) {
-            ev.preventDefault()
-            note.toggleCollapse()
-          } else if (note.isParentSelectable) {
-            ev.preventDefault()
-            note.selectParent()
-          }
-        },
-      ],
-      [
-        'right',
-        () => {
-          if (note.canExpand) {
-            ev.preventDefault()
-            note.toggleCollapse()
-          }
-        },
-      ],
-    ]
-
-    const keyMapToCond = R.pipe(
-      R.map(([key, handler]) => [
-        ev => isHotKey(key, ev),
-        ev => handler(ev),
-      ]),
-      R.append([R.T, () => R.identity]),
-    )
-
-    R.cond(keyMapToCond(keyMap))(ev)
-  }
 
   return (
     <div>
@@ -283,7 +281,7 @@ const NoteItem = observer(({ id }) => {
           tabIndex={note.isSelected ? 0 : -1}
           data-is-focusable={true}
           onFocus={note.select}
-          onKeyDown={onTitleKeyDown}
+          onKeyDown={noteTitleKeyDownHandler(note)}
         >
           {note.title}
         </div>
