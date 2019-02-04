@@ -75,6 +75,7 @@ function createNoteTree() {
       cache('noteTree', toJS(tree))
     })
   }
+
   function deleteAll() {
     tree.byId = createInitialNotesByIdState()
     tree.selectedId = null
