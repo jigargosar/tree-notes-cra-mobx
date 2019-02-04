@@ -17,9 +17,10 @@ import { asActions, insertAtOffsetOf, toggle } from './mobx/helpers'
 window.mobx = require('mobx')
 
 const enhanceNote = R.curry(function enhanceNote(tree, note) {
+  note = observable.object(note)
   const id = note.id
   return extendObservable(
-    observable.object(note),
+    note,
     {
       get isSelected() {
         return id === nt.selectedId
@@ -37,7 +38,7 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
         return note.hasChildren && !note.collapsed
       },
       toggleCollapse() {
-        toggle(note.collapsed)
+        toggle(note, 'collapsed')
       },
       get firstChildId() {
         return note.hasChildren ? note.childIds[0] : null
@@ -150,6 +151,10 @@ function createNoteTree() {
     }
   }
 
+  function prependToSelected() {
+    prependTo(tree.selectedId || ROOT_NOTE_ID)
+  }
+
   init()
   return extendObservable(
     tree,
@@ -157,11 +162,18 @@ function createNoteTree() {
       prepend,
       get,
       addAfter: addAfterSelected,
+      addChild: prependToSelected,
       setSelectedId,
       deleteAll,
     },
     {
-      ...asActions(['prepend', 'addAfter', 'setSelectedId', 'deleteAll']),
+      ...asActions([
+        'prepend',
+        'addAfter',
+        'setSelectedId',
+        'deleteAll',
+        'addChild',
+      ]),
     },
   )
 }
@@ -169,6 +181,10 @@ function createNoteTree() {
 const nt = createNoteTree()
 
 window.nt = nt
+
+function renderNoteChildren(note) {
+  return note.childIds.map(id => <NoteItem key={id} id={id} />)
+}
 
 const NoteItem = observer(function NoteItem({ id }) {
   const note = nt.get(id)
@@ -202,24 +218,14 @@ const NoteItem = observer(function NoteItem({ id }) {
       </div>
       {/*children*/}
       {note.showChildren && (
-        <div className="ml3">
-          {note.childIds.map(id => (
-            <NoteItem key={id} id={id} />
-          ))}
-        </div>
+        <div className="ml3">{renderNoteChildren(note)}</div>
       )}
     </div>
   )
 })
 
 const RootTree = observer(function RootTree() {
-  return (
-    <div className="">
-      {nt.root.childIds.map(id => (
-        <NoteItem key={id} id={id} />
-      ))}
-    </div>
-  )
+  return <div className="">{renderNoteChildren(nt.root)}</div>
 })
 
 const ButtonBar = observer(({ buttons }) => {
@@ -249,6 +255,7 @@ const App = observer(function App() {
 
   const buttonConfig = buttonConfigToButtons({
     add: nt.addAfter,
+    'add child': nt.addChild,
     'delete all': nt.deleteAll,
     prepend: nt.prepend,
   })

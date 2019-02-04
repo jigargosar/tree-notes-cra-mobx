@@ -3,6 +3,8 @@ import validate from 'aproba'
 import * as R from 'ramda'
 
 export function toggle(target, prop) {
+  validate('OS', arguments)
+
   set(target, prop, !get(target, prop))
 }
 
