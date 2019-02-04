@@ -159,17 +159,21 @@ const nt = createNoteTree()
 
 window.nt = nt
 
+function useFocus(ref, shouldFocus, deps = null) {
+  React.useLayoutEffect(() => {
+    const el = ref.current
+    if (el && shouldFocus) {
+      el.focus()
+    }
+  })
+}
+
 const NoteItem = observer(function NoteItem({ id }) {
   const note = nt.get(id)
 
   const titleRef = React.createRef()
 
-  React.useLayoutEffect(() => {
-    const el = titleRef.current
-    if (el && note.isSelected) {
-      el.focus()
-    }
-  })
+  useFocus(titleRef, note.isSelected)
 
   return (
     <div>
