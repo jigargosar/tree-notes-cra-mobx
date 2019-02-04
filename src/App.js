@@ -235,7 +235,7 @@ const App = observer(function App() {
   const buttonConfig = buttonConfigToButtons({
     add: nt.addAfter,
     'delete all': nt.deleteAll,
-    'append to root': nt.prepend,
+    prepend: nt.prepend,
   })
   console.log(`buttonConfig`, buttonConfig)
   return (
