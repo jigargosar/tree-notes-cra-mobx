@@ -5,6 +5,7 @@
   "dependencies": {
     "@medv/finder": "^1.1.1",
     "aproba": "^2.0.0",
+    "array-move": "^1.0.0",
     "faker": "^4.1.0",
     "highland": "^2.13.0",
     "idx.macro": "^3.0.4",

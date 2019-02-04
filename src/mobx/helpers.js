@@ -8,11 +8,11 @@ export function toggle(target, prop) {
   set(target, prop, !get(target, prop))
 }
 
-export function insertAtOffsetOf(item, offset, newItem, target) {
+export function insertAtOffsetOf(item, offset, newItem, a) {
   validate('*N*A', arguments)
-  const idx = R.indexOf(item)(target)
+  const idx = R.indexOf(item)(a)
   if (idx > -1) {
-    target.splice(idx + offset, 0, newItem)
+    a.splice(idx + offset, 0, newItem)
   }
 }
 
@@ -21,4 +21,12 @@ export function asActions(actionNames) {
     acc[name] = action
     return acc
   }, {})
+}
+
+export function moveItemTo(item, to, a) {
+  validate('*NA', arguments)
+
+  const from = a.indexOf(item)
+  if (from < 0 || from === to) return
+  a.splice(to < 0 ? a.length + to : to, 0, a.splice(from, 1)[0])
 }

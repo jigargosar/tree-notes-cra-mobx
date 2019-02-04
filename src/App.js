@@ -18,7 +18,12 @@ import { cache, getCachedOr_ } from './utils'
 import { handleArrowKeyNav } from './hooks/useArrowKeys'
 import { createObjMap } from './mobx/objMap'
 import { useFocusRef } from './hooks/useFocus'
-import { asActions, insertAtOffsetOf, toggle } from './mobx/helpers'
+import {
+  asActions,
+  insertAtOffsetOf,
+  moveItemTo,
+  toggle,
+} from './mobx/helpers'
 import DevTools from 'mobx-react-devtools'
 import isHotKey from 'is-hotkey'
 
@@ -179,6 +184,17 @@ function createNoteTree() {
     return pid && pid !== ROOT_NOTE_ID
   }
 
+  function moveSelectedBy(offset) {
+    const id = tree.selectedId
+    if (id) {
+      const siblingIds = getPid(id).childIds
+
+      const [newIdx] = [R.clamp(0, siblingIds.length - 1)(offset)]
+
+      moveItemTo(id, newIdx, siblingIds)
+    }
+  }
+
   function selectParentOfId(id) {
     return setSelectedId(getPid(id))
   }
@@ -192,9 +208,9 @@ function createNoteTree() {
       // actions
       addAfter: () => addAtOffsetOfSelected(1),
       addBefore: () => addAtOffsetOfSelected(0),
-      addChild: function() {
-        prependTo(tree.selectedId || ROOT_NOTE_ID)
-      },
+      addChild: () => prependTo(tree.selectedId || ROOT_NOTE_ID),
+      moveUp: () => moveSelectedBy(-1),
+      moveDown: () => moveSelectedBy(1),
       deleteAll,
       setSelectedId,
       selectParentOfId,
@@ -204,6 +220,8 @@ function createNoteTree() {
         'addAfter',
         'addBefore',
         'addChild',
+        'moveUp',
+        'moveDown',
         'deleteAll',
         'setSelectedId',
         'selectParentOfId',
@@ -242,6 +260,15 @@ function noteTitleKeyDownHandler(note) {
     ],
     [
       'right',
+      (ev, note) => {
+        if (note.canExpand) {
+          ev.preventDefault()
+          note.toggleCollapse()
+        }
+      },
+    ],
+    [
+      'mod+up',
       (ev, note) => {
         if (note.canExpand) {
           ev.preventDefault()
