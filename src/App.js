@@ -100,7 +100,7 @@ function createNoteTree() {
     return tree.byId[id]
   }
 
-  function insert(n) {
+  function put(n) {
     tree.byId[n.id] = n
   }
 
@@ -129,7 +129,7 @@ function createNoteTree() {
 
   function insertNew() {
     const n = createNewEnhancedNote()
-    insert(n)
+    put(n)
     return n
   }
 
