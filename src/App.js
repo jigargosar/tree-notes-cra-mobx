@@ -247,11 +247,7 @@ const ButtonBar = observer(({ buttons }) => {
 
 ButtonBar.displayName = 'ButtonBar'
 
-const App = observer(() => {
-  const navContainerRef = createRef()
-  useArrowKeys(navContainerRef)
-  useRestoreFocus()
-
+const TopBar = observer(() => {
   const buttonConfigToButtons = R.pipeWith(R.call, [
     R.mapObjIndexed((onClick, title) => ({
       title,
@@ -266,12 +262,20 @@ const App = observer(() => {
     'delete all': nt.deleteAll,
     prepend: nt.prepend,
   })
+  return <ButtonBar buttons={buttonConfig} />
+})
+
+TopBar.displayName = 'TopBar'
+
+const App = observer(() => {
+  const navContainerRef = createRef()
+  useArrowKeys(navContainerRef)
+  useRestoreFocus()
+
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
-
-      <ButtonBar buttons={buttonConfig} />
-
+      <TopBar />
       <div ref={navContainerRef} className="pv3">
         <RootTree />
       </div>
