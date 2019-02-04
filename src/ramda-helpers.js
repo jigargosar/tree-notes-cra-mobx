@@ -7,32 +7,6 @@ export const defaultEmptyTo = def =>
     R.when(R.isEmpty, R.always(def)),
   )
 
-export function getCachedOr_(thunk, key) {
-  return R.when(R.isNil)(thunk)(
-    JSON.parse(localStorage.getItem(key) || null),
-  )
-}
-
-export function getCached(key) {
-  validate('S', arguments)
-
-  try {
-    return JSON.parse(localStorage.getItem(key) || null)
-  } catch (e) {
-    console.error(e)
-    return null
-  }
-}
-
-export const cache = R.curry(function setCache(key, jsonValue) {
-  validate('S*', arguments)
-  localStorage.setItem(key, JSON.stringify(jsonValue))
-})
-
-export function removeCached(cacheKey) {
-  localStorage.removeItem(cacheKey)
-}
-
 export const isFunction = R.is(Function)
 
 export const tapValidate = rawSchemas =>

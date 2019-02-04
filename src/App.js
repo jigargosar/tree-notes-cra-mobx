@@ -14,7 +14,7 @@ import {
   runInAction,
   toJS,
 } from 'mobx'
-import { cache, getCachedOr_ } from './utils'
+import { getCachedOr_, setCache } from './dom-helpers'
 import { handleArrowKeyNav } from './hooks/useArrowKeys'
 import { createObjMap } from './mobx/objMap'
 import { useFocusRef } from './hooks/useFocus'
@@ -142,7 +142,7 @@ function createNoteTree() {
       tree.selectedId = selectedId || null
 
       autorun(() => {
-        cache('noteTree', toJS(tree))
+        setCache('noteTree', toJS(tree))
       })
     })
   }

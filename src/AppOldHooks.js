@@ -1,18 +1,19 @@
 import React from 'react'
 import * as R from 'ramda'
-import { cache, defaultEmptyTo, getCachedOr_ } from './utils'
+import { defaultEmptyTo } from './ramda-helpers'
 import {
   createInitialNotesByIdState,
   createNewNote,
   ROOT_NOTE_ID,
 } from './models/note'
+import { getCachedOr_, setCache } from './dom-helpers'
 
 function useCachedState(thunk, cacheKey) {
   const [state, setState] = React.useState(() =>
     getCachedOr_(thunk, cacheKey),
   )
 
-  React.useEffect(() => cache(cacheKey, state), [state])
+  React.useEffect(() => setCache(cacheKey, state), [state])
 
   return [state, setState]
 }

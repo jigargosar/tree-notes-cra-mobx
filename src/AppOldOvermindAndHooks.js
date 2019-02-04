@@ -9,7 +9,7 @@ import {
   ROOT_NOTE_ID,
 } from './models/note'
 import { useLocalStorage } from 'react-use'
-import { appendChildId, toIdLookup } from './utils'
+import { appendChildId, toIdLookup } from './ramda-helpers'
 import { useObject } from './hooks'
 
 function renderNoteItemWithId(overmind) {

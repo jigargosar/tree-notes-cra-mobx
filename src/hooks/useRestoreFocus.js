@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import finder from '@medv/finder'
-import { cache, getCached } from '../utils'
+import { getCached, setCache } from '../dom-helpers'
 
 function useListener(name, fn) {
   useEffect(() => {
@@ -15,7 +15,7 @@ function useListener(name, fn) {
 export default function useRestoreFocus() {
   // const [selector, setSelector] = useLocalStorage('__useRestoreFocus')
   const cacheKey = '__useRestoreFocus'
-  const [selector, setSelector] = [getCached(cacheKey), cache(cacheKey)]
+  const [selector, setSelector] = [getCached(cacheKey), setCache(cacheKey)]
 
   function onFocus(ev) {
     const selector = finder(ev.target)

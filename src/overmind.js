@@ -1,6 +1,6 @@
 import { action, debounce, Overmind, pipe } from 'overmind'
 import { createHook } from 'overmind-react'
-import { cache, getCachedOr_ } from './utils'
+import { getCachedOr_, setCache } from './dom-helpers'
 
 import {
   appendChildId_,
@@ -76,7 +76,7 @@ export const notes = {
   },
   effects: {
     cacheState(state) {
-      cache('state', pickCacheStateProps(state))
+      setCache('state', pickCacheStateProps(state))
     },
     getCachedState() {
       return R.pipe(
