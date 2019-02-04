@@ -237,7 +237,7 @@ const ButtonBar = observer(({ buttons }) => {
   return (
     <div className="mv3 nl3">
       {buttons.map(({ title, ...op }) => (
-        <button key={title} className="ml3" {...op}>
+        <button key={title} className="ml3 bn bg-transparent blue" {...op}>
           {title}
         </button>
       ))}
