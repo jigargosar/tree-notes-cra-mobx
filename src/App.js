@@ -440,8 +440,13 @@ const ButtonBar = observer(({ buttons }) => {
       className="mv3 nl0"
       onKeyDown={handleArrowKeyNav(rootRef)}
     >
-      {buttons.map(({ title, ...op }) => (
-        <button key={title} className="ml0 bn bg-transparent blue" {...op}>
+      {buttons.map(({ title, ...op }, idx) => (
+        <button
+          key={title}
+          className="ml0 bn bg-transparent blue"
+          {...op}
+          tabIndex={idx === 0 ? 0 : -1}
+        >
           {title}
         </button>
       ))}
