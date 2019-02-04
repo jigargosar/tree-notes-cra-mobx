@@ -249,23 +249,24 @@ function createNoteTree() {
   }
   function unNest(id) {
     const oldPid = getPid(id)
-    if (oldPid) {
-      const newPid = getPid(oldPid)
-      const newIdx = getIdx(oldPid) + 1
-      if (newPid && newPid !== ROOT_NOTE_ID) {
-        const oldParent = getParent(id)
-        const idx = getIdx(id)
-        if (idx > -1) {
-          oldParent.childIds.splice(idx, 1)
-        }
+    const newPid = getPid(oldPid)
+    const newParent = get(newPid)
+    const oldParent = getParent(id)
+    const oldPidIdx = getIdx(oldPid)
+    const newIdx = oldPidIdx + 1
 
-        const newParent = get(newPid)
-        newParent.childIds.splice(newIdx, 0, id)
+    if (newParent && oldParent && newIdx >= 0) {
+      const idx = getIdx(id)
+      if (idx > -1) {
+        oldParent.childIds.splice(idx, 1)
       }
+      newParent.childIds.splice(newIdx, 0, id)
+      setPid(newPid, id)
     }
   }
   function getIdx(id) {
-    return getParent(id).childIds.indexOf(id)
+    const parent = getParent(id)
+    return parent ? parent.childIds.indexOf(id) : null
   }
 
   function selectParentOfId(id) {
