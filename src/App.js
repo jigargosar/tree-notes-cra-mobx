@@ -13,6 +13,7 @@ import { createObjMap } from './mobx/objMap'
 import useRestoreFocus from './hooks/useRestoreFocus'
 import { useFocusRef } from './hooks/useFocus'
 import { asActions, insertAtOffsetOf, toggle } from './mobx/helpers'
+import DevTools from 'mobx-react-devtools'
 
 window.mobx = require('mobx')
 
@@ -259,7 +260,6 @@ const App = observer(function App() {
     'delete all': nt.deleteAll,
     prepend: nt.prepend,
   })
-  console.log(`buttonConfig`, buttonConfig)
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
@@ -269,6 +269,7 @@ const App = observer(function App() {
       <div ref={navContainerRef} className="pv3">
         <RootTree />
       </div>
+      <DevTools />
     </div>
   )
 })
