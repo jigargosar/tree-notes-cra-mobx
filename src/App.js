@@ -175,13 +175,6 @@ function createNoteTree() {
     }
   }
 
-  function addAfterSelected() {
-    addAtOffsetOfSelected(1)
-  }
-
-  function addBeforeSelected() {
-    addAtOffsetOfSelected(0)
-  }
   function isParentOfIdSelectable(id) {
     const pid = getPid(id)
     return pid && pid !== ROOT_NOTE_ID
@@ -202,8 +195,12 @@ function createNoteTree() {
       get,
       isParentOfIdSelectable,
       // actions
-      addAfter: addAfterSelected,
-      addBefore: addBeforeSelected,
+      addAfter: function() {
+        addAtOffsetOfSelected(1)
+      },
+      addBefore: function() {
+        addAtOffsetOfSelected(0)
+      },
       addChild: prependToSelected,
       deleteAll,
       setSelectedId,
