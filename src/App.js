@@ -75,7 +75,7 @@ function createNoteTree() {
     return tree.byId[id]
   }
 
-  function add() {
+  function append() {
     appendTo(ROOT_NOTE_ID)
   }
 
@@ -91,8 +91,7 @@ function createNoteTree() {
     get(pid).childIds.push(n.id)
   }
 
-  function addAfter(sid = tree.selectedId) {
-    if (!sid) return
+  function addAfter(sid) {
     const n = createNewNote()
     tree.byId[n.id] = n
     const pid = tree.parentIds[sid]
@@ -102,11 +101,18 @@ function createNoteTree() {
     childIds.splice(childIds.indexOf(sid), n.id)
   }
 
+  function addAfterSelected() {
+    const sid = tree.selectedId
+    if (sid) {
+      addAfter(sid)
+    }
+  }
+
   init()
   return extendObservable(tree, {
-    add,
+    append,
     get,
-    addAfter,
+    addAfter: addAfterSelected,
     setSelectedId,
     deleteAll() {
       tree.byId = createInitialNotesByIdState()
@@ -180,7 +186,7 @@ const RootTree = observer(function RootTree() {
 const ButtonBar = observer(({ buttons }) => {
   return (
     <div className="mv3 nl3">
-      {buttons.map(({ title, op }) => (
+      {buttons.map(({ title, ...op }) => (
         <button key={title} className="ml3" {...op}>
           {title}
         </button>
@@ -188,29 +194,41 @@ const ButtonBar = observer(({ buttons }) => {
     </div>
   )
 })
+
+function tapLog() {}
+
 const App = observer(function App() {
   const navContainerRef = createRef()
   useArrowKeys(navContainerRef)
 
-  const buttonConfigToButtons = R.pipe(
-    R.mapObjIndexed((onClick, title) => ({
-      title,
-      onClick,
-    })),
-    R.values,
+  const buttonConfigToButtons = R.pipeWith(
+    (f, r) => {
+      // console.log(`r`, r)
+      const r2 = f(r)
+      // console.log(`r2`, r2)
+      return r2
+    },
+    [
+      R.mapObjIndexed((onClick, title) => ({
+        title,
+        onClick,
+      })),
+      R.values,
+    ],
   )
 
   const buttonConfig = buttonConfigToButtons({
-    add: nt.addAfter,
+    append: nt.addAfter,
     'delete all': nt.deleteAll,
-    'append to root': nt.add,
+    'append to root': nt.append,
   })
+  console.log(`buttonConfig`, buttonConfig)
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
       <ButtonBar buttons={buttonConfig} />
       <div className="pv1">
-        <button className="" onClick={() => nt.add()}>
+        <button className="" onClick={() => nt.append()}>
           add
         </button>
         <button className="ml3" onClick={nt.deleteAll}>
