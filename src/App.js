@@ -12,6 +12,7 @@ import { useArrowKeys } from './hooks/useArrowKeys'
 import { createObjMap } from './mobx/objMap'
 import useRestoreFocus from './hooks/useRestoreFocus'
 import { createToggle } from './mobx/toggle'
+import { useFocusRef } from './hooks/useFocus'
 
 window.mobx = require('mobx')
 
@@ -159,21 +160,12 @@ const nt = createNoteTree()
 
 window.nt = nt
 
-function useFocus(ref, shouldFocus, deps = null) {
-  React.useLayoutEffect(() => {
-    const el = ref.current
-    if (el && shouldFocus) {
-      el.focus()
-    }
-  }, deps)
-}
-
 const NoteItem = observer(function NoteItem({ id }) {
   const note = nt.get(id)
 
   const titleRef = React.createRef()
 
-  useFocus(titleRef, note.isSelected)
+  useFocusRef(titleRef, note.isSelected)
 
   return (
     <div>
