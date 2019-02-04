@@ -7,5 +7,5 @@ export function useFocusRef(ref, shouldFocus, deps = null) {
     if (el && shouldFocus) {
       el.focus()
     }
-  }, deps)
+  })
 }
