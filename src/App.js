@@ -213,7 +213,6 @@ function createNoteTree() {
       get,
       isParentOfIdSelectable,
       // actions
-      prepend: prependToRoot,
       addAfter: addAfterSelected,
       addBefore: addBeforeSelected,
       addChild: prependToSelected,
@@ -223,7 +222,6 @@ function createNoteTree() {
     },
     {
       ...asActions([
-        'prepend',
         'addAfter',
         'addBefore',
         'addChild',
@@ -354,7 +352,6 @@ const TopBar = observer(() => {
     'add before': nt.addBefore,
     'add child': nt.addChild,
     'delete all': nt.deleteAll,
-    prepend: nt.prepend,
   })
   return <ButtonBar buttons={buttonConfig} />
 })
