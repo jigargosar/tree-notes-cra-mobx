@@ -165,7 +165,7 @@ function useFocus(ref, shouldFocus, deps = null) {
     if (el && shouldFocus) {
       el.focus()
     }
-  })
+  }, deps)
 }
 
 const NoteItem = observer(function NoteItem({ id }) {
