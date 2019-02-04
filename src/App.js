@@ -343,12 +343,12 @@ const App = observer(() => {
 
   return (
     <div className="w-80 center sans-serif">
-      <div className="pv3 f4 ttu tracked">Tree Notes</div>
+      <div className="mv3 f4 ttu tracked">Tree Notes</div>
       <TopBar />
       <div
         ref={navContainerRef}
         onKeyDown={handleArrowKeyNav(navContainerRef)}
-        className="pv3"
+        className="mv3"
       >
         <RootTree />
       </div>
