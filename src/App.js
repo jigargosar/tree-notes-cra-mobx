@@ -179,7 +179,7 @@ const RootTree = observer(function RootTree() {
 
 const ButtonBar = observer(({ buttons }) => {
   return (
-    <div className="pv1 nl3 nr3">
+    <div className="mv3 nl3 nr3">
       {buttons.map(({ title, op }) => (
         <button key={title} className="mh3" {...op}>
           {title}
