@@ -17,6 +17,7 @@ export function createObjMap(obj = {}, options) {
     {
       get: k => obj[k],
       set: (k, v) => (obj[k] = v),
+      has: k => !!obj[k],
       get keys() {
         return keys(obj)
       },
