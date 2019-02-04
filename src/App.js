@@ -75,6 +75,11 @@ function createNoteTree() {
       cache('noteTree', toJS(tree))
     })
   }
+  function deleteAll() {
+    tree.byId = createInitialNotesByIdState()
+    tree.selectedId = null
+    tree.parentIds = {}
+  }
 
   function setSelectedId(id) {
     tree.selectedId = id
@@ -88,6 +93,10 @@ function createNoteTree() {
     tree.byId[n.id] = n
   }
 
+  function setPid(pid, id) {
+    tree.parentIds[id] = pid
+  }
+
   function prepend() {
     prependTo(ROOT_NOTE_ID)
   }
@@ -99,7 +108,7 @@ function createNoteTree() {
   function appendTo(pid) {
     const n = createNewEnhancedNote()
     insert(n)
-    tree.parentIds[n.id] = pid
+    setPid(pid, n.id)
     setSelectedId(n.id)
     get(pid).childIds.push(n.id)
   }
@@ -116,7 +125,7 @@ function createNoteTree() {
     const n = createNewEnhancedNote()
     insert(n)
     const pid = tree.parentIds[sid]
-    tree.parentIds[n.id] = pid
+    setPid(pid, n.id)
     setSelectedId(n.id)
     const childIds = get(pid).childIds
     childIds.splice(childIds.indexOf(sid) + 1, 0, n.id)
@@ -137,11 +146,7 @@ function createNoteTree() {
     get,
     addAfter: addAfterSelected,
     setSelectedId,
-    deleteAll() {
-      tree.byId = createInitialNotesByIdState()
-      tree.selectedId = null
-      tree.parentIds = {}
-    },
+    deleteAll: deleteAll,
   })
 }
 
