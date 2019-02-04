@@ -106,7 +106,7 @@ function createNoteTree() {
   return extendObservable(tree, {
     add,
     get,
-    addAfter: addAfter,
+    addAfter,
     setSelectedId,
     deleteAll() {
       tree.byId = createInitialNotesByIdState()
@@ -177,15 +177,30 @@ const RootTree = observer(function RootTree() {
   )
 })
 
+const ButtonBar = observer(({ buttons }) => {
+  return (
+    <div className="pv1">
+      {buttons.map(({ title, op }) => (
+        <button key={title} className="ml3" {...op}>
+          {title}
+        </button>
+      ))}
+    </div>
+  )
+})
 const App = observer(function App() {
   const navContainerRef = createRef()
   useArrowKeys(navContainerRef)
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
+      <ButtonBar buttons={[{ title: 'add', onClick: nt.add }]} />
       <div className="pv1">
         <button className="" onClick={() => nt.add()}>
           add
+        </button>
+        <button className="ml3" onClick={nt.deleteAll}>
+          delete all
         </button>
         <button className="ml3" onClick={nt.deleteAll}>
           delete all
