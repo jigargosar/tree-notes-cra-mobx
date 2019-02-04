@@ -195,12 +195,8 @@ function createNoteTree() {
       get,
       isParentOfIdSelectable,
       // actions
-      addAfter: function() {
-        addAtOffsetOfSelected(1)
-      },
-      addBefore: function() {
-        addAtOffsetOfSelected(0)
-      },
+      addAfter: () => addAtOffsetOfSelected(1),
+      addBefore: () => addAtOffsetOfSelected(0),
       addChild: prependToSelected,
       deleteAll,
       setSelectedId,
