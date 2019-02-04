@@ -161,13 +161,7 @@ function createNoteTree() {
       deleteAll,
     },
     {
-      ...asActions([
-        'prepend',
-        'get',
-        'addAfter',
-        'setSelectedId',
-        'deleteAll',
-      ]),
+      ...asActions(['prepend', 'addAfter', 'setSelectedId', 'deleteAll']),
     },
   )
 }
