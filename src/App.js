@@ -467,7 +467,7 @@ const App = observer(() => {
   // useRestoreFocus()
 
   return (
-    <div className="w-80 center sans-serif">
+    <div className="w-80 center">
       <div className="mv3 f4 ttu tracked">Tree Notes</div>
       <TopBar />
       <div
