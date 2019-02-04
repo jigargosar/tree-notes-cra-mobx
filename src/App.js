@@ -184,10 +184,6 @@ function createNoteTree() {
     return setSelectedId(getPid(id))
   }
 
-  function prependToSelected() {
-    prependTo(tree.selectedId || ROOT_NOTE_ID)
-  }
-
   init()
   return extendObservable(
     tree,
@@ -197,7 +193,9 @@ function createNoteTree() {
       // actions
       addAfter: () => addAtOffsetOfSelected(1),
       addBefore: () => addAtOffsetOfSelected(0),
-      addChild: prependToSelected,
+      addChild: function() {
+        prependTo(tree.selectedId || ROOT_NOTE_ID)
+      },
       deleteAll,
       setSelectedId,
       selectParentOfId,
