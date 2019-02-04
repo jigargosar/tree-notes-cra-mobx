@@ -227,18 +227,9 @@ const App = observer(function App() {
   return (
     <div className="w-80 center sans-serif">
       <div className="pv3 f4 ttu tracked">Tree Notes</div>
+
       <ButtonBar buttons={buttonConfig} />
-      <div className="pv1">
-        <button className="" onClick={() => nt.append()}>
-          add
-        </button>
-        <button className="ml3" onClick={nt.deleteAll}>
-          delete all
-        </button>
-        <button className="ml3" onClick={nt.deleteAll}>
-          delete all
-        </button>
-      </div>
+
       <div ref={navContainerRef} className="pv3">
         <RootTree />
       </div>
