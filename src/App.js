@@ -218,6 +218,7 @@ function createNoteTree() {
         'addChild',
         'deleteAll',
         'setSelectedId',
+        'selectParentOfId',
       ]),
     },
   )
