@@ -1,15 +1,28 @@
-import { action, extendObservable, isObservable, observable } from 'mobx'
+import {
+  action,
+  extendObservable,
+  isObservable,
+  keys,
+  observable,
+  values,
+} from 'mobx'
 
-function createObjMap(initial = {}, options) {
-  if (!isObservable(initial)) {
-    initial = observable.object(initial, null, options)
+export function createObjMap(obj = {}, options) {
+  if (!isObservable(obj)) {
+    obj = observable.object(obj, null, options)
   }
 
   return extendObservable(
-    initial,
+    obj,
     {
-      get: k => initial[k],
-      set: (k, v) => (initial[k] = v),
+      get: k => obj[k],
+      set: (k, v) => (obj[k] = v),
+      get keys() {
+        return keys(obj)
+      },
+      get values() {
+        return values(obj)
+      },
     },
     { get: action, set: action },
   )

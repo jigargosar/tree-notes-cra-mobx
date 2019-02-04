@@ -9,6 +9,7 @@ import {
 import { autorun, extendObservable, observable, toJS } from 'mobx'
 import { cache, getCachedOr } from './utils'
 import { useArrowKeys } from './hooks'
+import { createObjMap } from './mobx/objMap'
 
 window.mobx = require('mobx')
 
@@ -47,6 +48,7 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
 function createNoteTree() {
   const tree = observable.object(
     {
+      idMap: createObjMap({}),
       byId: {},
       parentIds: {},
       selectedId: null,
@@ -203,8 +205,6 @@ const ButtonBar = observer(({ buttons }) => {
     </div>
   )
 })
-
-function tapLog() {}
 
 const App = observer(function App() {
   const navContainerRef = createRef()
