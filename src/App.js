@@ -15,7 +15,7 @@ window.mobx = require('mobx')
 const enhanceNote = R.curry(function enhanceNote(tree, note) {
   const id = note.id
   return extendObservable(
-    note,
+    observable.object(note),
     {
       get isSelected() {
         return id === nt.selectedId
