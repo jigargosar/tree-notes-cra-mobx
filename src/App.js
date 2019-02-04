@@ -304,9 +304,9 @@ RootTree.displayName = 'RootTree'
 
 const ButtonBar = observer(({ buttons }) => {
   return (
-    <div className="mv3 nl3">
+    <div className="mv3 nl0">
       {buttons.map(({ title, ...op }) => (
-        <button key={title} className="ml3 bn bg-transparent blue" {...op}>
+        <button key={title} className="ml0 bn bg-transparent blue" {...op}>
           {title}
         </button>
       ))}
