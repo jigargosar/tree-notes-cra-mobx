@@ -26,6 +26,7 @@ import {
 } from './mobx/helpers'
 import DevTools from 'mobx-react-devtools'
 import isHotKey from 'is-hotkey'
+import { focusRef } from './react-helpers'
 
 configure({ enforceActions: 'always' })
 window.mobx = require('mobx')
@@ -387,10 +388,14 @@ const NoteItem = observer(({ id }) => {
     note.idx,
   ])
 
+  const onHeaderClick = () => {
+    note.select()
+    focusRef(titleRef)
+  }
   return (
     <div>
       {/*header*/}
-      <div className="flex items-center" onClick={note.select}>
+      <div className="flex items-center" onClick={onHeaderClick}>
         <div
           className={`ph2 code us-none ${note.isLeaf ? '' : 'pointer'}`}
           onClick={note.toggleCollapse}
