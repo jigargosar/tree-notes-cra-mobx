@@ -161,7 +161,7 @@ function createNoteTree() {
     return n
   }
 
-  function addAtOffsetOf(offset) {
+  function addAtOffsetOfSelected(offset) {
     const sid = tree.selectedId || tree.root.firstChildId
 
     if (sid) {
@@ -176,11 +176,11 @@ function createNoteTree() {
   }
 
   function addAfterSelected() {
-    addAtOffsetOf(1)
+    addAtOffsetOfSelected(1)
   }
 
   function addBeforeSelected() {
-    addAtOffsetOf(0)
+    addAtOffsetOfSelected(0)
   }
   function isParentOfIdSelectable(id) {
     const pid = getPid(id)
