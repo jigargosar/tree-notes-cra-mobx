@@ -39,7 +39,7 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
         return note.hasChildren ? note.childIds[0] : null
       },
     },
-    {},
+    null,
     { name: 'Note:' + id },
   )
 })
