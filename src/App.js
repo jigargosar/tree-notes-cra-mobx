@@ -252,7 +252,8 @@ function noteTitleKeyDownHandler(note) {
     ],
   ]
 
-  return ev => keyMapToHandler(keyMap)(ev, note)
+  const handler = keyMapToHandler(keyMap)
+  return ev => handler(ev, note)
 }
 
 const NoteItem = observer(({ id }) => {
