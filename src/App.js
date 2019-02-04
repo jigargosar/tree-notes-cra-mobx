@@ -187,7 +187,7 @@ function renderNoteChildren(note) {
   return note.childIds.map(id => <NoteItem key={id} id={id} />)
 }
 
-const NoteItem = observer(function NoteItem({ id }) {
+const NoteItem = observer(({ id }) => {
   const note = nt.get(id)
 
   const titleRef = React.createRef()
@@ -225,9 +225,13 @@ const NoteItem = observer(function NoteItem({ id }) {
   )
 })
 
-const RootTree = observer(function RootTree() {
-  return <div className="">{renderNoteChildren(nt.root)}</div>
-})
+NoteItem.displayName = 'NoteItem'
+
+const RootTree = observer(() => (
+  <div className="">{renderNoteChildren(nt.root)}</div>
+))
+
+RootTree.displayName = 'RootTree'
 
 const ButtonBar = observer(({ buttons }) => {
   return (
@@ -241,7 +245,9 @@ const ButtonBar = observer(({ buttons }) => {
   )
 })
 
-const App = observer(function App() {
+ButtonBar.displayName = 'ButtonBar'
+
+const App = observer(() => {
   const navContainerRef = createRef()
   useArrowKeys(navContainerRef)
   useRestoreFocus()
@@ -273,5 +279,7 @@ const App = observer(function App() {
     </div>
   )
 })
+
+App.displayName = 'App'
 
 export default App
