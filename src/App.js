@@ -148,17 +148,17 @@ function createNoteTree() {
     return enhanceNote(tree, createNewNote())
   }
 
+  function insertNew() {
+    const n = createNewEnhancedNote()
+    put(n)
+    return n
+  }
+
   function prependTo(pid) {
     const nid = insertNew().id
     setPid(pid, nid)
     setSelectedId(nid)
     get(pid).childIds.unshift(nid)
-  }
-
-  function insertNew() {
-    const n = createNewEnhancedNote()
-    put(n)
-    return n
   }
 
   function addAtOffsetOfSelected(offset) {
