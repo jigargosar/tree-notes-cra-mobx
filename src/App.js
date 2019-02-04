@@ -99,13 +99,13 @@ function createNoteTree() {
   }
 
   function addAfter(sid) {
-    const n = createNewNote()
+    const n = createNewEnhancedNote()
     tree.byId[n.id] = n
     const pid = tree.parentIds[sid]
     tree.parentIds[n.id] = pid
     setSelectedId(n.id)
     const childIds = get(pid).childIds
-    childIds.splice(childIds.indexOf(sid), 0, n.id)
+    childIds.splice(childIds.indexOf(sid) + 1, 0, n.id)
   }
 
   function addAfterSelected() {
@@ -227,7 +227,7 @@ const App = observer(function App() {
   )
 
   const buttonConfig = buttonConfigToButtons({
-    append: nt.addAfter,
+    add: nt.addAfter,
     'delete all': nt.deleteAll,
     'append to root': nt.append,
   })
