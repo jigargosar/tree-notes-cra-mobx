@@ -160,8 +160,9 @@ function createNoteTree() {
   return extendObservable(
     tree,
     {
-      prepend,
       get,
+      // actions
+      prepend,
       addAfter: addAfterSelected,
       addChild: prependToSelected,
       setSelectedId,
@@ -171,9 +172,9 @@ function createNoteTree() {
       ...asActions([
         'prepend',
         'addAfter',
+        'addChild',
         'setSelectedId',
         'deleteAll',
-        'addChild',
       ]),
     },
   )
