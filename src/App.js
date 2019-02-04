@@ -20,14 +20,15 @@ import { useArrowKeys } from './hooks'
 window.mobx = require('mobx')
 
 const enhanceNote = R.curry(function enhanceNote(tree, note) {
+  const id = note.id
   return extendObservable(
     note,
     {
       get isSelected() {
-        return note.id === nt.selectedId
+        return id === nt.selectedId
       },
       select() {
-        nt.setSelectedId(note.id)
+        nt.setSelectedId(id)
       },
       get isLeaf() {
         return note.childIds.length === 0
@@ -43,7 +44,7 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
       },
     },
     {},
-    { name: 'Note' },
+    { name: 'Note:' + id },
   )
 })
 
