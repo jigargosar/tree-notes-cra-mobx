@@ -22,7 +22,7 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
         return id === nt.selectedId
       },
       select() {
-        nt.setSelectedId(id)
+        tree.setSelectedId(id)
       },
       get isLeaf() {
         return note.childIds.length === 0
