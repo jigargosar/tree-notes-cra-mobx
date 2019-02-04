@@ -1,7 +1,8 @@
 import React from 'react'
 
 export function useFocusRef(ref, shouldFocus, deps = null) {
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
+    console.log(`shouldFocus`, shouldFocus)
     const el = ref.current
     if (el && shouldFocus) {
       el.focus()
