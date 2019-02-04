@@ -190,14 +190,18 @@ function createNoteTree() {
     return pid && pid !== ROOT_NOTE_ID
   }
 
+  function getParent(sid) {
+    return get(getPid(sid))
+  }
+
   function moveSelectedBy(offset) {
-    const id = tree.selectedId
-    if (id) {
-      const siblingIds = getPid(id).childIds
+    const sid = tree.selectedId
+    if (sid) {
+      const siblingIds = getParent(sid).childIds
 
-      const [newIdx] = [R.clamp(0, siblingIds.length - 1)(offset)]
+      const newIdx = R.clamp(0, siblingIds.length - 1)(offset)
 
-      moveItemTo(id, newIdx, siblingIds)
+      moveItemTo(sid, newIdx, siblingIds)
     }
   }
 

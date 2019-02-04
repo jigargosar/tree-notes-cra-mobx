@@ -30,3 +30,12 @@ export function moveItemTo(item, to, a) {
   if (from < 0 || from === to) return
   a.splice(to < 0 ? a.length + to : to, 0, a.splice(from, 1)[0])
 }
+
+export function moveItemByOffset(item, offset, a) {
+  validate('*NA', arguments)
+
+  const from = a.indexOf(item)
+  const to = from + offset
+  if (from < 0 || from === to) return
+  a.splice(to < 0 ? a.length + to : to, 0, a.splice(from, 1)[0])
+}
