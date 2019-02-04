@@ -252,7 +252,7 @@ function createNoteTree() {
     if (oldPid) {
       const newPid = getPid(oldPid)
       const newIdx = getIdx(oldPid) + 1
-      if (newPid && newPid !== ROOT_NOTE_ID && newIdx > -1) {
+      if (newPid && newPid !== ROOT_NOTE_ID) {
         const oldParent = getParent(id)
         const idx = getIdx(id)
         if (idx > -1) {
