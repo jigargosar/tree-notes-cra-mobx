@@ -127,6 +127,10 @@ function createNoteTree() {
     { name: 'NoteTree' },
   )
 
+  function enhanceByIdNotes(byIdNotes) {
+    R.mapObjIndexed(enhanceNote(tree))(byIdNotes)
+  }
+
   function init() {
     runInAction('NoteTree.init', () => {
       const { byId, selectedId, parentIds } = getCachedOr_(
@@ -134,8 +138,7 @@ function createNoteTree() {
         'noteTree',
       )
 
-      const byIdNotes = byId || createInitialNotesByIdState()
-      tree.byId = R.mapObjIndexed(enhanceNote(tree))(byIdNotes)
+      tree.byId = enhanceByIdNotes(byId || createInitialNotesByIdState())
       tree.parentIds = parentIds || createInitialParentIds()
       tree.selectedId = selectedId || null
 
@@ -145,16 +148,13 @@ function createNoteTree() {
     })
   }
 
-  function root() {
-    return getNote(ROOT_NOTE_ID)
+  function deleteAll() {
+    tree.byId = enhanceByIdNotes(createInitialNotesByIdState())
+    tree.parentIds = createInitialParentIds()
   }
 
-  function deleteAll() {
-    tree.byId = R.mapObjIndexed(enhanceNote(tree))(
-      createInitialNotesByIdState(),
-    )
-    tree.selectedId = null
-    tree.parentIds = createInitialParentIds()
+  function root() {
+    return tree.root
   }
 
   function expandAncestors(id) {
