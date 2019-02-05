@@ -1,6 +1,7 @@
 import { extendObservable, observable } from 'mobx'
 import { createObjMap } from './objMap'
 import { ROOT_NOTE_ID } from '../models/note'
+import { wrapActions } from './helpers'
 
 function createTree(rootData) {
   function enhanceNodeData(node) {
@@ -31,9 +32,12 @@ function createTree(rootData) {
     { name: 'MobxTree' },
   )
 
+  function addBefore() {}
+
   return extendObservable(tree, {
     get root() {
       return tree.idMap[ROOT_NOTE_ID]
     },
+    ...wrapActions({ addBefore }),
   })
 }
