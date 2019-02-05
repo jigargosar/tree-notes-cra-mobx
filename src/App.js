@@ -232,7 +232,7 @@ function createNoteTree() {
     setSelectedId(note.id)
   }
 
-  function addAtOffsetOfSelected(offset) {
+  function insertAtOffsetFromSelected(offset) {
     const sid = getSelectedId() || root().firstChildId
 
     if (sid) {
@@ -303,8 +303,8 @@ function createNoteTree() {
     getPid,
     getIdx,
     ...wrapActions({
-      addAfter: () => addAtOffsetOfSelected(1),
-      addBefore: () => addAtOffsetOfSelected(0),
+      addAfter: () => insertAtOffsetFromSelected(1),
+      addBefore: () => insertAtOffsetFromSelected(0),
       addChild: () => prependNewTo(getSelectedId() || ROOT_NOTE_ID),
       moveSelectedBy,
       nest,
