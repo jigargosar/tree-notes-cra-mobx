@@ -1,4 +1,4 @@
-import { action, get, set } from 'mobx'
+import { action, get, remove, set } from 'mobx'
 import validate from 'aproba'
 import * as R from 'ramda'
 import { clampIdx } from '../ramda-helpers'
@@ -39,4 +39,8 @@ export function moveItemByClampedOffset(item, offset, a) {
   if (from < 0 || from === to) return
   a.splice(from, 1)
   a.splice(to, 0, item)
+}
+
+export function removeByIndexOf(item, a) {
+  remove(a, a.indexOf(item))
 }

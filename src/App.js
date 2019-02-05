@@ -6,6 +6,7 @@ import {
   createNewNote,
   ROOT_NOTE_ID,
 } from './models/note'
+import * as mobx from 'mobx'
 import {
   autorun,
   configure,
@@ -21,6 +22,7 @@ import { useFocusRef } from './hooks/useFocus'
 import {
   insertAtOffsetOf,
   moveItemByClampedOffset,
+  removeByIndexOf,
   toggle,
   wrapActions,
 } from './mobx/helpers'
@@ -29,7 +31,7 @@ import isHotKey from 'is-hotkey'
 import { focusRef } from './react-helpers'
 
 configure({ enforceActions: 'always' })
-window.mobx = require('mobx')
+window.mobx = mobx
 
 const enhanceNote = R.curry(function enhanceNote(tree, note) {
   note = observable.object(note)
@@ -177,6 +179,10 @@ function createNoteTree() {
     tree.parentIds[id] = pid
   }
 
+  function removePid(id) {
+    mobx.remove(tree.parentIds, id)
+  }
+
   function getPid(id) {
     return tree.parentIds[id]
   }
@@ -187,6 +193,23 @@ function createNoteTree() {
 
   function createNewEnhancedNote() {
     return enhanceNote(tree, createNewNote())
+  }
+
+  function cutId(id) {
+    const note = get(id)
+    const parent = getParent(id)
+    removeByIndexOf(id, parent.childIds)
+    removePid(id)
+    return note
+  }
+
+  function insertNoteInParentAt(idx, note, parent) {
+    parent.childIds.splice(idx, 0, note.id)
+    setPid(parent.id, note.id)
+  }
+
+  function moveToById(pid, idx, id) {
+    insertNoteInParentAt(idx, cutId(id), getParent(id))
   }
 
   function insertNew() {
