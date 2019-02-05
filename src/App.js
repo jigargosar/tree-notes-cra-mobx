@@ -118,7 +118,7 @@ function createNoteTree() {
       parentIds: createInitialParentIds(),
       selectedId: null,
       get root() {
-        return root()
+        return getNote(ROOT_NOTE_ID)
       },
     },
     null,
@@ -212,8 +212,8 @@ function createNoteTree() {
     setPid(parent.id, note.id)
   }
 
-  function moveToById(pid, idx, id) {
-    insertNoteInParentAt(idx, cutId(id), getParent(id))
+  function moveToById(newPid, idx, id) {
+    insertNoteInParentAt(idx, cutId(id), getNote(newPid))
   }
 
   function insertNew() {
