@@ -158,6 +158,10 @@ function createNoteTree() {
     tree.selectedId = id
   }
 
+  function getSelectedId() {
+    return tree.selectedId
+  }
+
   function get(id) {
     return tree.byId[id]
   }
@@ -211,7 +215,7 @@ function createNoteTree() {
   }
 
   function addAtOffsetOfSelected(offset) {
-    const sid = tree.selectedId || tree.root.firstChildId
+    const sid = getSelectedId() || tree.root.firstChildId
 
     if (sid) {
       const nid = insertNew().id
@@ -234,7 +238,7 @@ function createNoteTree() {
   }
 
   function moveSelectedBy(offset) {
-    const sid = tree.selectedId
+    const sid = getSelectedId()
     if (sid) {
       const siblingIds = getParent(sid).childIds
 
@@ -283,7 +287,7 @@ function createNoteTree() {
     ...wrapActions({
       addAfter: () => addAtOffsetOfSelected(1),
       addBefore: () => addAtOffsetOfSelected(0),
-      addChild: () => prependTo(tree.selectedId || ROOT_NOTE_ID),
+      addChild: () => prependTo(getSelectedId() || ROOT_NOTE_ID),
       moveSelectedBy,
       nest,
       unNest,
