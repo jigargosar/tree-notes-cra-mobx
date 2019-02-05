@@ -19,7 +19,6 @@ import { handleArrowKeyNav } from './hooks/useArrowKeys'
 import { createObjMap } from './mobx/objMap'
 import { useFocusRef } from './hooks/useFocus'
 import {
-  asActions,
   insertAtOffsetOf,
   moveItemByClampedOffset,
   toggle,
@@ -73,40 +72,35 @@ const enhanceNote = R.curry(function enhanceNote(tree, note) {
       get idx() {
         return tree.getIdx(id)
       },
-
       select() {
         tree.setSelectedId(id)
       },
-
       selectParent() {
         tree.selectParentOfId(id)
       },
 
-      toggleCollapse() {
-        toggle(note, 'collapsed')
-      },
-      moveUp() {
-        tree.moveSelectedBy(-1)
-      },
-      moveDown() {
-        tree.moveSelectedBy(1)
-      },
-      nest() {
-        tree.nest(id)
-      },
-      unNest() {
-        tree.unNest(id)
-      },
+      ...wrapActions({
+        toggleCollapse() {
+          toggle(note, 'collapsed')
+        },
+        expand() {
+          note.collapsed = false
+        },
+        moveUp() {
+          tree.moveSelectedBy(-1)
+        },
+        moveDown() {
+          tree.moveSelectedBy(1)
+        },
+        nest() {
+          tree.nest(id)
+        },
+        unNest() {
+          tree.unNest(id)
+        },
+      }),
     },
-    {
-      ...asActions([
-        'toggleCollapse',
-        'moveUp',
-        'moveDown',
-        'nest',
-        'unNest',
-      ]),
-    },
+    null,
     { name: 'Note:' + id },
   )
 })
@@ -154,8 +148,17 @@ function createNoteTree() {
     tree.parentIds = createInitialParentIds()
   }
 
+  function expandAncestors(id) {
+    const parent = getParent(id)
+    if (parent) {
+      parent.expand()
+      expandAncestors(parent.id)
+    }
+  }
+
   function setSelectedId(id) {
     tree.selectedId = id
+    expandAncestors(id)
   }
 
   function getSelectedId() {
