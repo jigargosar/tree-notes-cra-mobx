@@ -3,7 +3,7 @@ import { createObjMap } from './objMap'
 import { ROOT_NOTE_ID } from '../models/note'
 import { wrapActions } from './helpers'
 
-function createTree(rootData) {
+export function createTree(rootData) {
   function enhanceNodeData(node) {
     node = extendObservable(node, null, { name: `Node:${node.id}` })
     return extendObservable(node, {})
