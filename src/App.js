@@ -213,6 +213,8 @@ function createNoteTree() {
   }
 
   function moveToById(newPid, idx, id) {
+    validate('SNS', arguments)
+
     insertNoteInParentAt(idx, cutId(id), getNote(newPid))
   }
 
@@ -279,7 +281,7 @@ function createNoteTree() {
     if (newPIdx > -1) {
       const newPid = getParent(id).childIds[newPIdx]
       // appendTo(newPid, getNote(id))
-      moveToById(newPid, id)
+      moveToById(newPid, 0, id)
     }
   }
   function unNest(id) {
