@@ -29,6 +29,7 @@ import {
 import DevTools from 'mobx-react-devtools'
 import isHotKey from 'is-hotkey'
 import { focusRef } from './react-helpers'
+import validate from 'aproba'
 
 configure({ enforceActions: 'always' })
 window.mobx = mobx
@@ -119,7 +120,7 @@ function createNoteTree() {
       parentIds: createInitialParentIds(),
       selectedId: null,
       get root() {
-        return get(ROOT_NOTE_ID)
+        return root()
       },
     },
     null,
@@ -144,8 +145,14 @@ function createNoteTree() {
     })
   }
 
+  function root() {
+    return getNote(ROOT_NOTE_ID)
+  }
+
   function deleteAll() {
-    tree.byId = createInitialNotesByIdState()
+    tree.byId = R.mapObjIndexed(enhanceNote(tree))(
+      createInitialNotesByIdState(),
+    )
     tree.selectedId = null
     tree.parentIds = createInitialParentIds()
   }
@@ -153,6 +160,8 @@ function createNoteTree() {
   function expandAncestors(id) {
     const parent = getParent(id)
     if (parent) {
+      validate('O', [parent])
+      console.log(`parent.expand`, parent)
       parent.expand()
       expandAncestors(parent.id)
     }
@@ -167,7 +176,7 @@ function createNoteTree() {
     return tree.selectedId
   }
 
-  function get(id) {
+  function getNote(id) {
     return tree.byId[id]
   }
 
@@ -187,16 +196,12 @@ function createNoteTree() {
     return tree.parentIds[id]
   }
 
-  function prependToRoot() {
-    prependTo(ROOT_NOTE_ID)
-  }
-
   function createNewEnhancedNote() {
     return enhanceNote(tree, createNewNote())
   }
 
   function cutId(id) {
-    const note = get(id)
+    const note = getNote(id)
     const parent = getParent(id)
     removeByIndexOf(id, parent.childIds)
     removePid(id)
@@ -218,11 +223,10 @@ function createNoteTree() {
     return n
   }
 
-  function prependTo(pid) {
-    const nid = insertNew().id
-    setPid(pid, nid)
-    setSelectedId(nid)
-    get(pid).childIds.unshift(nid)
+  function prependNewTo(pid) {
+    const note = insertNew()
+    insertNoteInParentAt(0, note, getNote(pid))
+    setSelectedId(note.id)
   }
 
   function appendTo(pid, note) {
@@ -237,20 +241,20 @@ function createNoteTree() {
     }
     setPid(pid, nid)
     setSelectedId(nid)
-    get(pid).childIds.push(nid)
+    getNote(pid).childIds.push(nid)
   }
 
   function addAtOffsetOfSelected(offset) {
-    const sid = getSelectedId() || tree.root.firstChildId
+    const sid = getSelectedId() || root().firstChildId
 
     if (sid) {
       const nid = insertNew().id
       const pid = getPid(sid)
       setPid(pid, nid)
       setSelectedId(nid)
-      insertAtOffsetOf(sid, offset, nid, get(pid).childIds)
+      insertAtOffsetOf(sid, offset, nid, getNote(pid).childIds)
     } else {
-      prependToRoot()
+      prependNewTo(ROOT_NOTE_ID)
     }
   }
 
@@ -260,7 +264,7 @@ function createNoteTree() {
   }
 
   function getParent(id) {
-    return get(getPid(id))
+    return getNote(getPid(id))
   }
 
   function moveSelectedBy(offset) {
@@ -275,14 +279,14 @@ function createNoteTree() {
     const newPIdx = getIdx(id) - 1
     if (newPIdx > -1) {
       const newPid = getParent(id).childIds[newPIdx]
-      appendTo(newPid, get(id))
+      appendTo(newPid, getNote(id))
     }
   }
   function unNest(id) {
     const oldPid = getPid(id)
     const oldParent = getParent(id)
     const oldPidIdx = getIdx(oldPid)
-    const newParent = get(getPid(oldPid))
+    const newParent = getNote(getPid(oldPid))
     const newIdx = oldPidIdx + 1
 
     if (newParent && oldParent && newIdx >= 0) {
@@ -305,14 +309,14 @@ function createNoteTree() {
 
   init()
   return extendObservable(tree, {
-    get,
+    get: getNote,
     isParentOfIdSelectable,
     getPid,
     getIdx,
     ...wrapActions({
       addAfter: () => addAtOffsetOfSelected(1),
       addBefore: () => addAtOffsetOfSelected(0),
-      addChild: () => prependTo(getSelectedId() || ROOT_NOTE_ID),
+      addChild: () => prependNewTo(getSelectedId() || ROOT_NOTE_ID),
       moveSelectedBy,
       nest,
       unNest,
