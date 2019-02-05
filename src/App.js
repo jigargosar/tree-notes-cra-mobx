@@ -230,21 +230,6 @@ function createNoteTree() {
     setSelectedId(note.id)
   }
 
-  function appendTo(pid, note) {
-    const nid = note.id || insertNew().id
-    const oldPid = getPid(nid)
-    if (oldPid) {
-      const oldParent = getParent(nid)
-      const idx = getIdx(nid)
-      if (idx > -1) {
-        oldParent.childIds.splice(idx, 1)
-      }
-    }
-    setPid(pid, nid)
-    setSelectedId(nid)
-    getNote(pid).childIds.push(nid)
-  }
-
   function addAtOffsetOfSelected(offset) {
     const sid = getSelectedId() || root().firstChildId
 
