@@ -23,6 +23,7 @@ import {
   insertAtOffsetOf,
   moveItemByClampedOffset,
   toggle,
+  wrapActions,
 } from './mobx/helpers'
 import DevTools from 'mobx-react-devtools'
 import isHotKey from 'is-hotkey'
@@ -274,14 +275,12 @@ function createNoteTree() {
   }
 
   init()
-  return extendObservable(
-    tree,
-    {
-      get,
-      isParentOfIdSelectable,
-      getPid,
-      getIdx,
-      // actions
+  return extendObservable(tree, {
+    get,
+    isParentOfIdSelectable,
+    getPid,
+    getIdx,
+    ...wrapActions({
       addAfter: () => addAtOffsetOfSelected(1),
       addBefore: () => addAtOffsetOfSelected(0),
       addChild: () => prependTo(tree.selectedId || ROOT_NOTE_ID),
@@ -291,21 +290,8 @@ function createNoteTree() {
       deleteAll,
       setSelectedId,
       selectParentOfId,
-    },
-    {
-      ...asActions([
-        'addAfter',
-        'addBefore',
-        'addChild',
-        'moveSelectedBy',
-        'nest',
-        'unNest',
-        'deleteAll',
-        'setSelectedId',
-        'selectParentOfId',
-      ]),
-    },
-  )
+    }),
+  })
 }
 
 const nt = createNoteTree()

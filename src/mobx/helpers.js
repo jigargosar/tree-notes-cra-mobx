@@ -24,6 +24,12 @@ export function asActions(actionNames) {
   }, {})
 }
 
+export function wrapActions(obj) {
+  validate('O', arguments)
+
+  return R.mapObjIndexed((fn, name) => action(name, fn))(obj)
+}
+
 export function moveItemByClampedOffset(item, offset, a) {
   validate('*NA', arguments)
 
