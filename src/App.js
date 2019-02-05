@@ -309,7 +309,7 @@ function createNoteTree() {
 
   init()
   return extendObservable(tree, {
-    get: getNote,
+    getNote,
     isParentOfIdSelectable,
     getPid,
     getIdx,
@@ -398,7 +398,7 @@ function noteTitleKeyDownHandler(note) {
 }
 
 const NoteItem = observer(({ id }) => {
-  const note = nt.get(id)
+  const note = nt.getNote(id)
 
   const titleRef = React.createRef()
 
