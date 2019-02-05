@@ -208,6 +208,8 @@ function createNoteTree() {
   }
 
   function insertNoteInParentAt(idx, note, parent) {
+    validate('SOO', arguments)
+
     parent.childIds.splice(idx, 0, note.id)
     setPid(parent.id, note.id)
   }
