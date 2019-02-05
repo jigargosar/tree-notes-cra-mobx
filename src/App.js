@@ -128,7 +128,7 @@ function createNoteTree() {
   )
 
   function enhanceByIdNotes(byIdNotes) {
-    R.mapObjIndexed(enhanceNote(tree))(byIdNotes)
+    return R.mapObjIndexed(enhanceNote(tree))(byIdNotes)
   }
 
   function init() {
@@ -279,7 +279,8 @@ function createNoteTree() {
     const newPIdx = getIdx(id) - 1
     if (newPIdx > -1) {
       const newPid = getParent(id).childIds[newPIdx]
-      appendTo(newPid, getNote(id))
+      // appendTo(newPid, getNote(id))
+      moveToById(newPid, id)
     }
   }
   function unNest(id) {
