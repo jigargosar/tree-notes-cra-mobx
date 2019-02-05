@@ -17,7 +17,6 @@ import {
 } from 'mobx'
 import { getCachedOr_, setCache } from './dom-helpers'
 import { handleArrowKeyNav } from './hooks/useArrowKeys'
-import { createObjMap } from './mobx/objMap'
 import { useFocusRef } from './hooks/useFocus'
 import {
   insertAtOffsetOf,
@@ -115,7 +114,6 @@ function createNoteTree() {
 
   const tree = observable.object(
     {
-      idMap: createObjMap({}),
       byId: {},
       parentIds: createInitialParentIds(),
       selectedId: null,
@@ -126,10 +124,6 @@ function createNoteTree() {
     null,
     { name: 'NoteTree' },
   )
-
-  function enhanceByIdNotes(byIdNotes) {
-    return R.mapObjIndexed(enhanceNote(tree))(byIdNotes)
-  }
 
   function init() {
     runInAction('NoteTree.init', () => {
@@ -148,9 +142,14 @@ function createNoteTree() {
     })
   }
 
+  function enhanceByIdNotes(byIdNotes) {
+    return R.mapObjIndexed(enhanceNote(tree))(byIdNotes)
+  }
+
   function deleteAll() {
     tree.byId = enhanceByIdNotes(createInitialNotesByIdState())
     tree.parentIds = createInitialParentIds()
+    setSelectedId(null)
   }
 
   function root() {
