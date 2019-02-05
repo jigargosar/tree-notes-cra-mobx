@@ -257,10 +257,9 @@ function createNoteTree() {
   }
   function unNest(id) {
     const oldPid = getPid(id)
-    const newPid = getPid(oldPid)
-    const newParent = get(newPid)
     const oldParent = getParent(id)
     const oldPidIdx = getIdx(oldPid)
+    const newParent = get(getPid(oldPid))
     const newIdx = oldPidIdx + 1
 
     if (newParent && oldParent && newIdx >= 0) {
@@ -269,7 +268,7 @@ function createNoteTree() {
         oldParent.childIds.splice(idx, 1)
       }
       newParent.childIds.splice(newIdx, 0, id)
-      setPid(newPid, id)
+      setPid(newParent.id, id)
     }
   }
   function getIdx(id) {
